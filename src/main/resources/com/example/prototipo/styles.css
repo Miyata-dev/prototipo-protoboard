@@ -1,0 +1,14 @@
+.root {
+    -fx-background-color: #272727;
+}
+
+#protoboardShape {
+    -fx-fill: #ebebeb;
+}
+
+.button {
+    -fx-background-color: #fff;
+    -fx-text-fill: #454545;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
