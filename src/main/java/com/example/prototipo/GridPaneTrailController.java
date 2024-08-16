@@ -45,7 +45,7 @@ public class GridPaneTrailController {
         }
         return grid;
     }
-
+    //toma un gridPane y agrega circulos con la clase CustomCircle.
     private void fillGridPaneWithCircles() {
         for (int i = 0; i < gridPane.getRowCount(); i++) { //row
             for (int j = 0; j < gridPane.getColumnCount(); j++) { //column
