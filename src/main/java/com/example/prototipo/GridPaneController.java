@@ -1,9 +1,6 @@
 package com.example.prototipo;
 
-import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 public class GridPaneController {
     private GridPane gridPane;
@@ -11,8 +8,13 @@ public class GridPaneController {
 
     public GridPaneController(int rows, int columns) {
         this.gridPane = createGridPane(rows, columns);
-        addClickEvent();
     }
+
+    public GridPaneController(GridPane gridPane) {
+        this.gridPane = gridPane;
+        fillGridPaneWithCircles();
+    }
+
     //to improve readability
     private static GridPane createGridPane(int rows, int columns) {
         GridPane grid = new GridPane();
@@ -20,29 +22,32 @@ public class GridPaneController {
         for (int i = 0; i < rows; i++) { //row
             for (int j = 0; j < columns; j++) { //column
                 ID temporaryID = new ID(i, j); // (column, row)
-                CustomCircle circle = new CustomCircle(10, Color.RED, temporaryID, 0);
+                CustomCircle circle = new CustomCircle(10, temporaryID, 0);
                 circle.setId(temporaryID.getGeneratedID());
                 grid.add(circle, j, i); //(column, row)
             }
         }
         return grid;
     }
-    //Agregamos el onMouseClicked a todos los circulos.
-    private void addClickEvent() {
-        for (Node circle : gridPane.getChildren()) {
-            String targetID  = circle.getId();
-            Circle targetedCircle = (Circle) circle;
 
-            targetedCircle.setOnMouseClicked(e -> {
-                CustomCircle circleClicked = (CustomCircle) e.getTarget();
-                ID circledClikedID = new ID(circleClicked.getId());
-                int indexColumn = circledClikedID.getIndexColumn();
+    //agrega energia positiva o negativa dependiendo del numero de fila.
+    private void fillGridPaneWithCircles() {
+        for (int i = 0; i < gridPane.getRowCount(); i++) { //row
+            for (int j = 0; j < gridPane.getColumnCount(); j++) { //column
+                ID temporaryID = new ID(i, j); // (column, row)
+                CustomCircle circle = new CustomCircle(8, temporaryID, 0);
 
-                //Utils.paintCircles(gridPane, indexColumn, 1);
-                //circleClicked.setState(-1);
-                System.out.println(circledClikedID.getGeneratedID() + " state: " + circleClicked.getState());
-            });
-            //System.out.println(circle.getId() + " " + circle.getId().getClass());
+                circle.setId(temporaryID.getGeneratedID());
+
+                //la fila es negativa
+                if (i == 0) {
+                    circle.setState(-1);
+                } else if (i == 1) {
+                    circle.setState(1);
+                }
+
+                gridPane.add(circle, j, i); //(column, row)
+            }
         }
     }
 

@@ -12,3 +12,9 @@
     -fx-font-weight: bold;
     -fx-cursor: hand;
 }
+
+.custom-content {
+    -fx-fill: gray;
+    -fx-stroke: black;
+    -fx-stroke-width: 1px;
+}

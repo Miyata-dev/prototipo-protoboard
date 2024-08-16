@@ -14,6 +14,7 @@ public class HelloApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         Image icon = new Image(getClass().getResource("Utalca.png").toExternalForm());
         stage.getIcons().add(icon);
+
         String css = this.getClass().getResource("styles.css").toExternalForm();
         scene.getStylesheets().add(css);
 
