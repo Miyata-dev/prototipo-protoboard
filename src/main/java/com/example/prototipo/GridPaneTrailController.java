@@ -7,17 +7,25 @@ import javafx.scene.shape.Circle;
 public class GridPaneTrailController {
     final private static String CSS_CLASS = "custom-content";
     private GridPane gridPane;
+    public int stateToUse; //controlla el flujo de energia que se pasa en los trails.
     //private CustomCircle[][] customCircles; //esto es para monitorear
 
-    public GridPaneTrailController(int rows, int columns) {
+    public GridPaneTrailController(int rows, int columns, int stateToUse) {
         this.gridPane = createGridPane(rows, columns);
+        this.stateToUse = stateToUse;
         addClickEvent();
     }
 
-    public GridPaneTrailController(GridPane gridPane) {
+    public GridPaneTrailController(GridPane gridPane, int stateToUse) {
         this.gridPane = gridPane;
+        this.stateToUse = stateToUse;
         fillGridPaneWithCircles();
         addClickEvent();
+    }
+
+    public static void setStateToUse(GridPaneTrailController gridpane, int stateToUse) {
+        System.out.println("Changing state to " + stateToUse);
+        gridpane.stateToUse = stateToUse;
     }
 
     //to improve readability
@@ -63,11 +71,9 @@ public class GridPaneTrailController {
                 ID circledClikedID = new ID(circleClicked.getId());
                 int indexColumn = circledClikedID.getIndexColumn();
 
-                Utils.paintCircles(gridPane, indexColumn, 1);
-                //circleClicked.setState(-1);
+                Utils.paintCircles(gridPane, indexColumn, stateToUse);
                 System.out.println(circledClikedID.getGeneratedID() + " state: " + circleClicked.getState());
             });
-            //System.out.println(circle.getId() + " " + circle.getId().getClass());
         }
     }
 

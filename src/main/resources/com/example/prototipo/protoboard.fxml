@@ -257,5 +257,7 @@
       <Label layoutX="644.0" layoutY="439.0" rotate="-90.0" text="29" />
       <Label layoutX="664.0" layoutY="439.0" prefWidth="13.0" rotate="-90.0" text="30" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c3c3c3" height="25.0" layoutX="123.0" layoutY="273.0" stroke="BLACK" strokeType="INSIDE" width="581.0" />
+      <Button fx:id="energiaPositivaBtn" layoutX="513.0" layoutY="555.0" mnemonicParsing="false" onAction="#usarEnergiaNegativa" text="Usar energia negativa" />
+      <Button fx:id="energiaNegativaBtn" layoutX="159.0" layoutY="555.0" mnemonicParsing="false" onAction="#usarEnergiaPositiva" text="Usar energia positiva" />
    </children>
 </AnchorPane>

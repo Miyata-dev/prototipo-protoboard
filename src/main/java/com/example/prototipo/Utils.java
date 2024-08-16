@@ -16,7 +16,9 @@ public class Utils {
             String targetID = circle.getId();
             ID temporaryID = new ID(targetID);
             CustomCircle targetedCircle = (CustomCircle) circle;
+
             if (ID.isThisColumn(temporaryID, columnToPaint)) {
+                System.out.println("state in paintCircles: " + state);
                 targetedCircle.setState(state);
             }
         }
