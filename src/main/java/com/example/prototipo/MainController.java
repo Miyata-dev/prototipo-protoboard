@@ -30,9 +30,7 @@ public class MainController {
         matrizCargaDos = new GridPaneController(MatrizCarga2);
 
         Image bateriaImg = new Image(getClass().getResource("bateria.png").toExternalForm());
-
         Bateria bateria = new Bateria(bateriaImg, 1000);
-
 
         parent.getChildren().add(bateria.getImage());
     }

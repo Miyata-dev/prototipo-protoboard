@@ -3,6 +3,7 @@ package com.example.prototipo;
 import javafx.scene.layout.GridPane;
 
 public class GridPaneController {
+    private final String CSS_CLASS = "volt";
     private GridPane gridPane;
     //private CustomCircle[][] customCircles; //esto es para monitorear
 
@@ -39,6 +40,7 @@ public class GridPaneController {
 
                 circle.setId(temporaryID.getGeneratedID());
 
+                circle.getStyleClass().add(CSS_CLASS);
                 //la fila es negativa
                 if (i == 0) {
                     circle.setState(-1);
