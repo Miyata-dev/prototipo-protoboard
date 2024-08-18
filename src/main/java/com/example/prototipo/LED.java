@@ -7,7 +7,7 @@ public class LED {
     private boolean estado;
     private Punto ubicacion1;
     private Punto ubicacion2;
-     private Image image;
+    private Image image;
 
     public LED(boolean estado, Punto ubicacion1, Punto ubicacion2, Image image) {
         this.estado = estado;
