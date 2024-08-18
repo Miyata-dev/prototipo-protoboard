@@ -30,8 +30,19 @@ public class MainController {
         matrizCargaDos = new GridPaneController(MatrizCarga2);
 
         Image bateriaImg = new Image(getClass().getResource("bateria.png").toExternalForm());
-        Bateria bateria = new Bateria(bateriaImg, 1000);
+        Image LEDImg = new Image(getClass().getResource("LED.png").toExternalForm());
+        Image CablesImg = new Image(getClass().getResource("Cables.png").toExternalForm());
+        Image SwitchImg = new Image(getClass().getResource("Switch.png").toExternalForm());
 
+        LED led = new LED( false,new Punto(0,0),new Punto(0,0),LEDImg);
+        Bateria bateria = new Bateria(bateriaImg, 1000);
+        Cable cable = new Cable(0,new Punto(0,0),new Punto(0,0),CablesImg);
+        Switch switchC = new Switch(false,new Punto(0,0),new Punto(0,0),SwitchImg);
+
+
+        parent.getChildren().add(switchC.getImage());
+        parent.getChildren().add(cable.getImage());
+        parent.getChildren().add(led.getImage());
         parent.getChildren().add(bateria.getImage());
     }
 

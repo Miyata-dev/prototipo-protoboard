@@ -1,7 +1,8 @@
 package com.example.prototipo;
 
 public class Punto {
-    int x, y;
+    private int x;
+    private int y;
 
 
     public Punto(int x, int y){
