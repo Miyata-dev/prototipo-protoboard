@@ -22,7 +22,7 @@ public class GridPaneTrailController {
         fillGridPaneWithCircles();
         addClickEvent();
     }
-
+    //TODO pasarlo a no estatico.
     public static void setStateToUse(GridPaneTrailController gridpane, int stateToUse) {
         System.out.println("Changing state to " + stateToUse);
         gridpane.stateToUse = stateToUse;
