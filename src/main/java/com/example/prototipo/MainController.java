@@ -16,7 +16,7 @@ public class MainController {
     public Button energiaNegativaBtn;
     public AnchorPane parent;
 
-    public int state = -1;
+    public int state = -1; //tiene q ser estado local de cada matriz de alimentación.
 
     public GridPaneTrailController matrizCirculosUnoController;
     public GridPaneTrailController matrizCirculosDosController;

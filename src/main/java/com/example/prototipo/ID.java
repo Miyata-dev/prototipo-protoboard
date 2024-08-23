@@ -1,6 +1,6 @@
 package com.example.prototipo;
 
-public class ID {
+public class ID { //TODO agregar nombre de gridpane para diferenciar entre circulos de distintos gridpanes.
     private int indexRow, indexColumn;
     private String generatedID; //para agregarlo como id a los circulos.
 
