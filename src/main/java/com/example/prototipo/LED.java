@@ -2,18 +2,39 @@ package com.example.prototipo;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class LED {
     private boolean estado;
     private Punto ubicacion1;
     private Punto ubicacion2;
-    private Image image;
+    private Rectangle rectangle;
 
-    public LED(boolean estado, Punto ubicacion1, Punto ubicacion2, Image image) {
+    public LED(boolean estado, Punto ubicacion1, Punto ubicacion2) {
         this.estado = estado;
         this.ubicacion1 = ubicacion1;
         this.ubicacion2 = ubicacion2;
-        this.image = image;
+        this.rectangle = createRectangle();
+    }
+
+    private Rectangle createRectangle() {
+        Rectangle rectangle = new Rectangle(50, 50, 25, 15);
+
+        rectangle.setFill(Color.YELLOW);
+        rectangle.setTranslateX(300);
+        rectangle.setTranslateY(300);
+        rectangle.setStroke(Color.BLACK);
+        rectangle.setStrokeWidth(2);
+
+        rectangle.setY(100);
+        rectangle.setX(420);
+
+        return rectangle;
+    }
+
+    public Rectangle getRectangle() {
+        return rectangle;
     }
 
     //Setters
@@ -41,16 +62,4 @@ public class LED {
     public Punto getUbicacion2() {
         return ubicacion2;
     }
-
-    public ImageView getImage() {
-        ImageView imageView = new ImageView(image);
-
-        imageView.setFitHeight(100);
-        imageView.setFitWidth(100);
-        imageView.setY(100);
-        imageView.setX(700);
-
-        return imageView;
-    }
-
 }

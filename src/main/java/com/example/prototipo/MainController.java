@@ -42,7 +42,7 @@ public class MainController {
         Image CablesImg = new Image(getClass().getResource("Cables.png").toExternalForm());
         Image SwitchImg = new Image(getClass().getResource("Switch.png").toExternalForm());
 
-        LED led = new LED( false,new Punto(0,0),new Punto(0,0),LEDImg);
+        LED led = new LED( false,new Punto(0,0),new Punto(0,0));
         Bateria bateria = new Bateria(bateriaImg, 1000);
         Cable cable = new Cable(0,new Punto(0,0),new Punto(0,0),CablesImg);
         Switch switchC = new Switch(false,new Punto(0,0),new Punto(0,0),SwitchImg);
@@ -50,7 +50,7 @@ public class MainController {
 
         parent.getChildren().add(switchC.getImage());
         parent.getChildren().add(cable.getImage());
-        parent.getChildren().add(led.getImage());
+        parent.getChildren().add(led.getRectangle());
         parent.getChildren().add(bateria.getImage());
         ClickLine.CircleAsignator(parent, Matriz1);
         ClickLine.CircleAsignator(parent, Matriz2);

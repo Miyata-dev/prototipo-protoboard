@@ -1,8 +1,6 @@
 package com.example.prototipo;
 
-
 import javafx.scene.Node;
-
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -93,16 +91,8 @@ public class ClickLine {
             CurrentLine.setEndX(Event.getX());
             CurrentLine.setEndY(Event.getY());
             line = CurrentLine;
-        } else{
-            //root.getChildren().remove(CurrentLine);
         }
     }
-
-
-
-
-
-
     public static void SetStartHandler(CustomCircle startHandler){
         StartHandler = startHandler;
     }
