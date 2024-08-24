@@ -42,6 +42,12 @@ public class MainController {
 
     }
 
+    public void crearLed() {
+        LED led = new LED(false);
+        parent.getChildren().add(led.getRectangle());
+    }
+
+    //TODO eliminar los ultimos tres metodos.
     public void usarEnergiaNegativa() {
         GridPaneTrailController.setStateToUse(matrizCirculosUnoController, -1);
         GridPaneTrailController.setStateToUse(matrizCirculosDosController, -1);

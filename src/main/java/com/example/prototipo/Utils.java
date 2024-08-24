@@ -1,6 +1,8 @@
 package com.example.prototipo;
 
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicReference;
+
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 
@@ -22,5 +24,27 @@ public class Utils {
                 targetedCircle.setState(state);
             }
         }
+    }
+
+    public static void makeDraggableNode(Node node) {
+        //si no coloco esto me llora.
+        AtomicReference<Double> startX = new AtomicReference<>((double) 0);
+        AtomicReference<Double> startY = new AtomicReference<>((double) 0);
+
+        node.setOnMousePressed(e -> {
+            //calculate offset points
+            startX.set(e.getSceneX() - node.getTranslateX()); //get x value  or teh cursor
+            startY.set(e.getSceneY() - node.getTranslateY()); //get x value or teh cursor
+        });
+
+        node.setOnMouseDragged(e -> {
+            //set values every time the mouse drags.
+            node.setTranslateX(e.getSceneX() - startX.get());
+            node.setTranslateY(e.getSceneY() - startY.get());
+        });
+
+        node.setOnMouseReleased(e -> {
+            Node target = (Node) e.getTarget();
+        });
     }
 }

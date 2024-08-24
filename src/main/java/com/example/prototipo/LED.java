@@ -14,9 +14,7 @@ public class LED {
     public LED(boolean estado) {
         this.estado = estado;
         this.rectangle = createRectangle();
-        this.rectangle.setOnMouseClicked(e -> {
-            System.out.println("creando led");
-        });
+        Utils.makeDraggableNode(this.rectangle); //TODO hacer que no se pueda draggear cuando la linea se conecte con un circulo.
     }
 
     private Rectangle createRectangle() {
@@ -32,20 +30,6 @@ public class LED {
         rectangle.setX(420);
 
         return rectangle;
-    }
-
-    public void makeDraggableNode(Node node) {
-        node.setOnMousePressed(e -> {
-            //calculate offset points
-            startX = e.getSceneX() - node.getTranslateX(); //get x value  or teh cursor
-            startY = e.getSceneY() - node.getTranslateY(); //get x value or teh cursor
-        });
-
-        node.setOnMouseDragged(e -> {
-            //set values every time the mouse drags.
-            node.setTranslateX(e.getSceneX() - startX);
-            node.setTranslateY(e.getSceneY() - startY);
-        });
     }
 
     public Rectangle getRectangle() {
