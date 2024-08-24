@@ -1,5 +1,6 @@
 package com.example.prototipo;
 
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -7,15 +8,15 @@ import javafx.scene.shape.Rectangle;
 
 public class LED {
     private boolean estado;
-    private Punto ubicacion1;
-    private Punto ubicacion2;
+    private double startX, startY;
     private Rectangle rectangle;
 
-    public LED(boolean estado, Punto ubicacion1, Punto ubicacion2) {
+    public LED(boolean estado) {
         this.estado = estado;
-        this.ubicacion1 = ubicacion1;
-        this.ubicacion2 = ubicacion2;
         this.rectangle = createRectangle();
+        this.rectangle.setOnMouseClicked(e -> {
+            System.out.println("creando led");
+        });
     }
 
     private Rectangle createRectangle() {
@@ -33,6 +34,20 @@ public class LED {
         return rectangle;
     }
 
+    public void makeDraggableNode(Node node) {
+        node.setOnMousePressed(e -> {
+            //calculate offset points
+            startX = e.getSceneX() - node.getTranslateX(); //get x value  or teh cursor
+            startY = e.getSceneY() - node.getTranslateY(); //get x value or teh cursor
+        });
+
+        node.setOnMouseDragged(e -> {
+            //set values every time the mouse drags.
+            node.setTranslateX(e.getSceneX() - startX);
+            node.setTranslateY(e.getSceneY() - startY);
+        });
+    }
+
     public Rectangle getRectangle() {
         return rectangle;
     }
@@ -42,24 +57,8 @@ public class LED {
         this.estado = estado;
     }
 
-    public void setUbicacion1(Punto ubicacion1) {
-        this.ubicacion1 = ubicacion1;
-    }
-
-    public void setUbicacion2(Punto ubicacion2) {
-        this.ubicacion2 = ubicacion2;
-    }
-
     //Getters
     public boolean getEstado() {
         return estado;
-    }
-
-    public Punto getUbicacion1() {
-        return ubicacion1;
-    }
-
-    public Punto getUbicacion2() {
-        return ubicacion2;
     }
 }

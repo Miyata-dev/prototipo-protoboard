@@ -7,7 +7,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Line;
 
-
 public class ClickLine {
     private static Line line;
     private static Line CurrentLine;
