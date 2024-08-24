@@ -42,6 +42,14 @@ public class ClickLine {
             }
 
         });
+        //elimin la linea que se presiona.
+        root.setOnMouseClicked(e -> {
+            Node pressedNode = (Node) e.getTarget();
+
+            if (e.getTarget() instanceof Line) {
+                ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
+            }
+        });
 
 
         root.setOnMousePressed(e -> {
@@ -63,8 +71,6 @@ public class ClickLine {
             CurrentLine = new Line(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
             CurrentLine.setStrokeWidth(5);
             root.getChildren().add(CurrentLine);
-        }else{
-            root.getChildren().remove(CurrentLine);
         }
     }
 
