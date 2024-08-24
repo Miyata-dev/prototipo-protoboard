@@ -24,10 +24,18 @@ public class MainController {
     public GridPaneController matrizCargaDos;
 
     public void initialize() {
-        matrizCirculosUnoController = new GridPaneTrailController(Matriz1, state);
-        matrizCirculosDosController = new GridPaneTrailController(Matriz2, state);
-        matrizCargaUno = new GridPaneController(MatrizCarga1);
-        matrizCargaDos = new GridPaneController(MatrizCarga2);
+        //nombres para cada grid para los identificadores unicos.
+        String[] gridNames = {
+                "gridTrail1",
+                "gridTrail2",
+                "gridVolt1",
+                "gridVolt2",
+        };
+
+        matrizCirculosUnoController = new GridPaneTrailController(Matriz1, state, gridNames[0]);
+        matrizCirculosDosController = new GridPaneTrailController(Matriz2, state, gridNames[1]);
+        matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
+        matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
         Image bateriaImg = new Image(getClass().getResource("bateria.png").toExternalForm());
         Image LEDImg = new Image(getClass().getResource("LED.png").toExternalForm());

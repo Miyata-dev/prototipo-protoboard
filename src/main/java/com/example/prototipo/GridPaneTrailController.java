@@ -7,18 +7,21 @@ import javafx.scene.shape.Circle;
 public class GridPaneTrailController {
     final private static String CSS_CLASS = "custom-content";
     private GridPane gridPane;
+    private String name;
     public int stateToUse; //controlla el flujo de energia que se pasa en los trails.
     //private CustomCircle[][] customCircles; //esto es para monitorear
 
-    public GridPaneTrailController(int rows, int columns, int stateToUse) {
+    public GridPaneTrailController(int rows, int columns, int stateToUse, String name) {
         this.gridPane = createGridPane(rows, columns);
         this.stateToUse = stateToUse;
+        this.name = name;
         addClickEvent();
     }
 
-    public GridPaneTrailController(GridPane gridPane, int stateToUse) {
+    public GridPaneTrailController(GridPane gridPane, int stateToUse, String name) {
         this.gridPane = gridPane;
         this.stateToUse = stateToUse;
+        this.name = name;
         fillGridPaneWithCircles();
         addClickEvent();
     }
@@ -29,12 +32,12 @@ public class GridPaneTrailController {
     }
 
     //to improve readability
-    private static GridPane createGridPane(int rows, int columns) {
+    private GridPane createGridPane(int rows, int columns) {
         GridPane grid = new GridPane();
 
         for (int i = 0; i < rows; i++) { //row
             for (int j = 0; j < columns; j++) { //column
-                ID temporaryID = new ID(i, j); // (column, row)
+                ID temporaryID = new ID(i, j, name); // (column, row)
                 CustomCircle circle = new CustomCircle(7, temporaryID, 0);
 
                 circle.getStyleClass().add(CSS_CLASS);
@@ -49,7 +52,7 @@ public class GridPaneTrailController {
     private void fillGridPaneWithCircles() {
         for (int i = 0; i < gridPane.getRowCount(); i++) { //row
             for (int j = 0; j < gridPane.getColumnCount(); j++) { //column
-                ID temporaryID = new ID(i, j); // (column, row)
+                ID temporaryID = new ID(i, j, name); // (column, row)
                 CustomCircle circle = new CustomCircle(7, temporaryID, 0);
 
                 circle.getStyleClass().add(CSS_CLASS);
@@ -69,10 +72,10 @@ public class GridPaneTrailController {
             targetedCircle.setOnMouseClicked(e -> {
                 CustomCircle circleClicked = (CustomCircle) e.getTarget();
                 ID circledClikedID = new ID(circleClicked.getId());
+                System.out.println(circledClikedID.getGeneratedID());
                 int indexColumn = circledClikedID.getIndexColumn();
 
                 Utils.paintCircles(gridPane, indexColumn, stateToUse);
-                System.out.println(circledClikedID.getGeneratedID() + " state: " + circleClicked.getState());
             });
         }
     }

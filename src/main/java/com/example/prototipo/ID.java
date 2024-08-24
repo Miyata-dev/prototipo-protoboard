@@ -2,13 +2,15 @@ package com.example.prototipo;
 
 public class ID { //TODO agregar nombre de gridpane para diferenciar entre circulos de distintos gridpanes.
     private int indexRow, indexColumn;
+    private String gridName;
     private String generatedID; //para agregarlo como id a los circulos.
 
     //se busca crear una ID con los indices separados con un gion ej: "indiceRoe-indiceCol"
-    public ID(int indexRow, int indexColumn) {
+    public ID(int indexRow, int indexColumn, String gridName) {
         this.indexRow = indexRow;
         this.indexColumn = indexColumn;
-        this.generatedID = indexRow + "-" + indexColumn;
+        this.gridName = gridName;
+        this.generatedID = indexRow + "-" + indexColumn + "-" + gridName;
     }
 
     //para que este constructor funcione se debe de separar los indices con - en el string computed.
@@ -16,9 +18,10 @@ public class ID { //TODO agregar nombre de gridpane para diferenciar entre circu
         String[] indexes = computedID.split("-");
         String rowIndex = indexes[0];
         String columnIndex = indexes[1];
+        String gridName = indexes[2];
         this.indexRow = Integer.parseInt(rowIndex);
         this.indexColumn = Integer.parseInt(columnIndex);
-        this.generatedID = rowIndex + "-" + columnIndex;
+        this.generatedID = rowIndex + "-" + columnIndex + "-" + gridName;
     }
 
     public String getGeneratedID() {
