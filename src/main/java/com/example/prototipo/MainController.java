@@ -52,6 +52,9 @@ public class MainController {
         parent.getChildren().add(cable.getImage());
         parent.getChildren().add(led.getImage());
         parent.getChildren().add(bateria.getImage());
+        ClickLine.CircleAsignator(parent, Matriz1);
+        ClickLine.CircleAsignator(parent, Matriz2);
+
     }
 
     public void usarEnergiaNegativa() {

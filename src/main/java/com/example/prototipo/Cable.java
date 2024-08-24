@@ -2,8 +2,9 @@ package com.example.prototipo;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Line;
 
-public class Cable {
+public class Cable extends Line {
     private int tipodecarga;
     private Punto origenpunto;
     private Punto destinopunto;

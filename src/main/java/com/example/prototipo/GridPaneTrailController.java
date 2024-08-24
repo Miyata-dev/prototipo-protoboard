@@ -15,7 +15,7 @@ public class GridPaneTrailController {
         this.gridPane = createGridPane(rows, columns);
         this.stateToUse = stateToUse;
         this.name = name;
-        addClickEvent();
+        //addClickEvent();
     }
 
     public GridPaneTrailController(GridPane gridPane, int stateToUse, String name) {
@@ -23,7 +23,7 @@ public class GridPaneTrailController {
         this.stateToUse = stateToUse;
         this.name = name;
         fillGridPaneWithCircles();
-        addClickEvent();
+        //addClickEvent();
     }
     //TODO pasarlo a no estatico.
     public static void setStateToUse(GridPaneTrailController gridpane, int stateToUse) {
@@ -72,10 +72,10 @@ public class GridPaneTrailController {
             targetedCircle.setOnMouseClicked(e -> {
                 CustomCircle circleClicked = (CustomCircle) e.getTarget();
                 ID circledClikedID = new ID(circleClicked.getId());
-                System.out.println(circledClikedID.getGeneratedID());
                 int indexColumn = circledClikedID.getIndexColumn();
 
                 Utils.paintCircles(gridPane, indexColumn, stateToUse);
+                System.out.println(circledClikedID.getGeneratedID() + " state: " + circleClicked.getState());
             });
         }
     }
