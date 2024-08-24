@@ -13,14 +13,14 @@ public class GridPaneTrailController {
     public GridPaneTrailController(int rows, int columns, int stateToUse) {
         this.gridPane = createGridPane(rows, columns);
         this.stateToUse = stateToUse;
-        addClickEvent();
+        //addClickEvent();
     }
 
     public GridPaneTrailController(GridPane gridPane, int stateToUse) {
         this.gridPane = gridPane;
         this.stateToUse = stateToUse;
         fillGridPaneWithCircles();
-        addClickEvent();
+        //addClickEvent();
     }
     //TODO pasarlo a no estatico.
     public static void setStateToUse(GridPaneTrailController gridpane, int stateToUse) {
