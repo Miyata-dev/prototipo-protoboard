@@ -33,6 +33,9 @@ public class MainController {
         Bateria bateria = new Bateria(bateriaImg, 1000);
 
         parent.getChildren().add(bateria.getImage());
+        ClickLine.CreateLine(parent, Matriz1);
+        ClickLine.CreateLine(parent, Matriz2);
+
     }
 
     public void usarEnergiaNegativa() {
