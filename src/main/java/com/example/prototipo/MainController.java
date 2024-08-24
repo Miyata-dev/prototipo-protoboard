@@ -44,8 +44,8 @@ public class MainController {
         parent.getChildren().add(cable.getImage());
         parent.getChildren().add(led.getImage());
         parent.getChildren().add(bateria.getImage());
-        ClickLine.CreateLine(parent, Matriz1);
-        ClickLine.CreateLine(parent, Matriz2);
+        ClickLine.CircleAsignator(parent, Matriz1);
+        ClickLine.CircleAsignator(parent, Matriz2);
 
     }
 

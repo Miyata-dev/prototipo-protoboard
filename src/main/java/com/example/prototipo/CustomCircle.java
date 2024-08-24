@@ -7,6 +7,7 @@ public class CustomCircle extends Circle {
     private int state = 0;
     private ID id;
 
+
     public CustomCircle(int radius, ID id, int state) {
         super((double) radius);
         this.id = id;
@@ -27,4 +28,5 @@ public class CustomCircle extends Circle {
             this.setFill(Color.ORANGE);
         }
     }
+
 }
