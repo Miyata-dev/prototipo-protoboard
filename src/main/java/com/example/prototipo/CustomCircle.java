@@ -6,14 +6,17 @@ import javafx.scene.shape.Circle;
 public class CustomCircle extends Circle {
     private int state = 0;
     private ID id;
-
+    private boolean isTaken; //Este atributo revisa si el circulo tiene un cable
 
     public CustomCircle(int radius, ID id, int state) {
         super((double) radius);
         this.id = id;
         this.state = state;
         this.setId("customCircle");
+        this.isTaken = false;
     }
+
+    public void setisTaken(boolean isTaken) {this.isTaken = isTaken;}
 
     public int getState() {
         return this.state;

@@ -18,7 +18,7 @@ public class ClickLine {
     static ID[] ids = new ID[2];
 
     public static void CircleAsignator(AnchorPane root, GridPane gridPane){
-        root.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> { //Problema con el evento Arreglar...
+        root.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             Node nodoclickeado = event.getPickResult().getIntersectedNode();
             if(nodoclickeado instanceof CustomCircle){
                 CustomCircle Circulo = (CustomCircle) nodoclickeado;
@@ -30,20 +30,7 @@ public class ClickLine {
                 System.out.println("no se presiono");
             }
         });
-
-//        root.addEventHandler(MouseEvent.MOUSE_RELEASED, mouseEvent -> {        //NO ENTRA NUNCA
-//            Node nodoliberado = mouseEvent.getPickResult().getIntersectedNode();
-//            if(nodoliberado instanceof CustomCircle){
-//                CustomCircle Circlefree = (CustomCircle) nodoliberado;
-//                SetEndHandler(Circlefree);
-//                System.out.println("El nodo liberado es: "+Circlefree.getId());
-//                LinePressed(root,mouseEvent);
-//            } else{
-//                System.out.println("no se presiono");
-//            }
-//
-//        });
-        //elimin la linea que se presiona.
+        //elimina la linea que se presiona.
         root.setOnMouseClicked(e -> {
             Node pressedNode = (Node) e.getTarget();
 
@@ -51,21 +38,16 @@ public class ClickLine {
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
             }
         });
-
-
         root.setOnMousePressed(e -> {
            // Agregar cable
                LinePressed(root,e);
-
         });
         root.setOnMouseDragged(e -> DragLine(e.getX(), e.getY(),e ));
-        root.setOnMouseReleased(e -> MouseReleased(/*e.getX(), e.getY(),*/root,e));
-
+//        root.setOnMouseReleased(e -> MouseReleased(root,e));
     }
 
     private static void LinePressed(AnchorPane root,MouseEvent Event){
         if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) {  //Verifica que empiece solo de los circulos
-
             CurrentLine = new Line(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
             CurrentLine.setStrokeWidth(5);
             root.getChildren().add(CurrentLine);
@@ -73,26 +55,28 @@ public class ClickLine {
     }
 
     private static void DragLine(double x, double y, MouseEvent event){
-
-
         if(CurrentLine != null && (event.getPickResult().getIntersectedNode() instanceof CustomCircle)){
             CustomCircle UltimateCircle = (CustomCircle) event.getPickResult().getIntersectedNode();
             ids[1] = new ID(UltimateCircle.getId());
             System.out.println(ids[0]+" -- "+ids[1]);
-            CurrentLine.setEndX(x);
-            CurrentLine.setEndY(y);
+
+            if(!(ID.isSameID(ids[0], ids[1]))){
+
+                CurrentLine.setEndX(x);
+                CurrentLine.setEndY(y);
+            }
         }
 
     }
 
-   private static void MouseReleased(AnchorPane root, MouseEvent Event){  //Verificar si la conexion es correcta
-
-        if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) { //Igual entra, ya que termina con la conexion correcta, pero esta mal
-            CurrentLine.setEndX(Event.getX());
-            CurrentLine.setEndY(Event.getY());
-            line = CurrentLine;
-        }
-    }
+//   private static void MouseReleased(AnchorPane root, MouseEvent Event){  //Verificar si la conexion es correcta
+//
+//        if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) { //Igual entra, ya que termina con la conexion correcta, pero esta mal
+//            CurrentLine.setEndX(Event.getX());
+//            CurrentLine.setEndY(Event.getY());
+//            line = CurrentLine;
+//        }
+//    }
     public static void SetStartHandler(CustomCircle startHandler){
         StartHandler = startHandler;
     }
