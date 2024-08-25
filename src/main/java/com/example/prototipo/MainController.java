@@ -46,6 +46,10 @@ public class MainController {
         LED led = new LED(false);
         parent.getChildren().add(led.getRectangle());
     }
+    public void CreateSwitch(){
+        Switch switch1 = new Switch(false);
+        parent.getChildren().add(switch1.GetSquare());
+    }
 
     //TODO eliminar los ultimos tres metodos.
     public void usarEnergiaNegativa() {

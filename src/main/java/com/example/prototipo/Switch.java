@@ -3,28 +3,33 @@ package com.example.prototipo;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 public class Switch {
-    private boolean PasoDeCarga;
-    private Image image;
+    private boolean PasoDeCarga; // true= deja la carga pasar           false= la carga no pasa
+    private Rectangle Square;
 
-    public Switch(boolean PasoDeCarga,  Image image) {
+    public Switch(boolean PasoDeCarga ) {
         this.PasoDeCarga = PasoDeCarga;
-        this.image = image;
+        this.Square = CreateSquare();
+        Utils.makeDraggableNode(this.Square);
     }
 
     public void setPasoDeCarga(boolean PasoDeCarga) {this.PasoDeCarga = PasoDeCarga;}
     public boolean getPasoDeCarga() {return PasoDeCarga;}
-    public ImageView getImage() {
-        ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(100);
-        imageView.setFitWidth(100);
-        imageView.setY(500);
-        imageView.setX(700);
+    public Rectangle GetSquare() {return Square;}
 
-        return imageView;
+    public Rectangle CreateSquare(){
+        Rectangle Square = new Rectangle(50,50, 30,30);
+        Square.setFill(Color.WHITE);
+        Square.setStroke(Color.BLACK);
+        Square.setStrokeWidth(3);
+        //Le añadimos la ubicacion en la que aparecera
+        Square.setX(720);
+        Square.setY(554);
+        return Square;
     }
-    public void setImage(Image image) {
-        this.image = image;
-    }
+
 }

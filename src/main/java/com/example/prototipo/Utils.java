@@ -27,7 +27,7 @@ public class Utils {
     }
 
     public static void makeDraggableNode(Node node) {
-        //si no coloco esto me llora.
+        //Para hacer que funcione necesitamos utilizar AtomicReference
         AtomicReference<Double> startX = new AtomicReference<>((double) 0);
         AtomicReference<Double> startY = new AtomicReference<>((double) 0);
 
