@@ -1,28 +1,38 @@
 package com.example.prototipo;
 
 import javafx.scene.Node;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-
-import javax.management.monitor.MonitorSettingException;
+import java.util.ArrayList;
 
 public class ClickLine {
-    private static Line line;
-    private static Line CurrentLine;
+    private Cable CurrentLine;
+    private CustomCircle StartHandler;
+    private CustomCircle EndHandler;
+    private ID[] ids;
 
-    static CustomCircle StartHandler;
-    static CustomCircle EndHandler;
-    static ID[] ids = new ID[2];
+    private AnchorPane root;
+    private GridPane gridPane;
+    private ArrayList<Cable> cables = new ArrayList<>();
 
-    public static void CircleAsignator(AnchorPane root, GridPane gridPane){
+    public ClickLine(AnchorPane root, GridPane gridPane) {
+        this.root = root;
+        this.gridPane = gridPane;
+        ids = new ID[2];
+        CurrentLine = new Cable(new Line());
+    }
+
+    public void CircleAsignator(){
         root.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             Node nodoclickeado = event.getPickResult().getIntersectedNode();
             if(nodoclickeado instanceof CustomCircle){
                 CustomCircle Circulo = (CustomCircle) nodoclickeado;
                 SetStartHandler(Circulo);
+                CurrentLine.setTipodecarga(Circulo.getState()); //se pasa por el cable el tipo de carga que tiene el circulo
+
                 ids[0] = new ID(Circulo.getId());
                 System.out.println("El presionado es: "+ Circulo.getId());
 
@@ -30,7 +40,7 @@ public class ClickLine {
                 System.out.println("no se presiono");
             }
         });
-        //elimina la linea que se presiona.
+        //elimina la linea que se presiona, TODO implementar quite de energia una vez el cable se va.
         root.setOnMouseClicked(e -> {
             Node pressedNode = (Node) e.getTarget();
 
@@ -42,34 +52,53 @@ public class ClickLine {
            // Agregar cable
                LinePressed(root,e);
         });
-        root.setOnMouseDragged(e -> DragLine(e.getX(), e.getY(),e ));
-//        root.setOnMouseReleased(e -> MouseReleased(root,e));
+        root.setOnMouseDragged(e -> {
+            //se asegura que acabe en un circulo.
+            if (e.getTarget() instanceof Circle) {
+                DragLine(e.getX(), e.getY(),e );
+            }
+        });
+        root.setOnMouseReleased(e -> {
+            //verificar que se suelta en un circulo.
+            if (e.getTarget() instanceof CustomCircle) {
+                CurrentLine.setIds(ids);
+                cables.add(CurrentLine);
+
+                Utils.paintCircles(gridPane, ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
+            }
+        });
     }
 
-    private static void LinePressed(AnchorPane root,MouseEvent Event){
+    private void LinePressed(AnchorPane root,MouseEvent Event){
         if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) {  //Verifica que empiece solo de los circulos
-            CurrentLine = new Line(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
-            CurrentLine.setStrokeWidth(5);
-            root.getChildren().add(CurrentLine);
+            CurrentLine.setLine(new Line(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY()));
+            CurrentLine.getLine().setStrokeWidth(5);
+            root.getChildren().add(CurrentLine.getLine());
         }
     }
 
-    private static void DragLine(double x, double y, MouseEvent event){
+    private void DragLine(double x, double y, MouseEvent event){
         if(CurrentLine != null && (event.getPickResult().getIntersectedNode() instanceof CustomCircle)){
             CustomCircle UltimateCircle = (CustomCircle) event.getPickResult().getIntersectedNode();
             ids[1] = new ID(UltimateCircle.getId());
-            System.out.println(ids[0]+" -- "+ids[1]);
+            SetEndHandler(UltimateCircle);
 
             if(!(ID.isSameID(ids[0], ids[1]))){
-
-                CurrentLine.setEndX(x);
-                CurrentLine.setEndY(y);
+                CurrentLine.getLine().setEndX(x);
+                CurrentLine.getLine().setEndY(y);
             }
         }
 
     }
+    public void SetStartHandler(CustomCircle startHandler){
+        StartHandler = startHandler;
+    }
+    public void SetEndHandler(CustomCircle endHandler){
+        System.out.println(ids[1]);
+        EndHandler = endHandler;
+    }
 
-//   private static void MouseReleased(AnchorPane root, MouseEvent Event){  //Verificar si la conexion es correcta
+    //   private static void MouseReleased(AnchorPane root, MouseEvent Event){  //Verificar si la conexion es correcta
 //
 //        if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) { //Igual entra, ya que termina con la conexion correcta, pero esta mal
 //            CurrentLine.setEndX(Event.getX());
@@ -77,13 +106,4 @@ public class ClickLine {
 //            line = CurrentLine;
 //        }
 //    }
-    public static void SetStartHandler(CustomCircle startHandler){
-        StartHandler = startHandler;
-    }
-    public static void SetEndHandler(CustomCircle endHandler){
-        EndHandler = endHandler;
-    }
 }
-
-
-

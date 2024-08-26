@@ -1,51 +1,54 @@
 package com.example.prototipo;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.shape.Line;
 
-public class Cable extends Line {
-    private int tipodecarga;
-    private Punto origenpunto;
-    private Punto destinopunto;
-    private Image image;
+import java.util.ArrayList;
 
-    public Cable(int tipodecarga, Punto origenpunto, Punto destinopunto, Image image) {
-        this.tipodecarga = tipodecarga;
-        this.origenpunto = origenpunto;
-        this.destinopunto = destinopunto;
-        this.image = image;
+public class Cable {
+    private Line line;
+    private int tipodecarga;
+    private ID[] ids;
+
+    public Cable(Line line) {
+        this.line = line;
+        this.tipodecarga = 0;
     }
+
+    public static boolean compareCables(Cable c1, Cable c2) {
+        return ID.isSameID(c1.ids[0], c2.ids[0]) && ID.isSameID(c1.ids[1], c2.ids[1]);
+    }
+    //retorna null si no encuentra un cable.
+    public static Cable getCableFromCollection(ArrayList<Cable> cables, Cable cableToFind) {
+        for (Cable c : cables) {
+            if (Cable.compareCables(c, cableToFind)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
     //Setters
-    public void SetTipodecarga(int tipodecarga){
+    public void setTipodecarga(int tipodecarga) {
         this.tipodecarga = tipodecarga;
     }
-    public void SetOrigenpunto(Punto origenpunto){
-        this.origenpunto = origenpunto;
+
+    public void setIds(ID[] ids) {
+        this.ids = ids;
     }
-    public void SetDestinopunto(Punto destinopunto){
-        this.destinopunto = destinopunto;
+
+    public void setLine(Line line) {
+        this.line = line;
     }
-    //Getters
-    public int GetTipodecarga(){
+
+    public ID[] getIds() {
+        return ids;
+    }
+
+    public int getTipodecarga() {
         return tipodecarga;
     }
-    public Punto GetOrigenpunto(){
-        return origenpunto;
-    }
-    public Punto GetDestinopunto(){
-        return destinopunto;
-    }
 
-    public ImageView getImage() {
-        ImageView imageView = new ImageView(image);
-        System.out.println(image);
-
-        imageView.setFitHeight(100);
-        imageView.setFitWidth(100);
-        imageView.setY(0);
-        imageView.setX(0);
-
-        return imageView;
+    public Line getLine() {
+        return line;
     }
 }

@@ -7,14 +7,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class Switch {
     private boolean PasoDeCarga; // true= deja la carga pasar           false= la carga no pasa
+    private AtomicReference<Double> startX = new AtomicReference<>((double) 0);
+    private AtomicReference<Double> startY = new AtomicReference<>((double) 0);
     private Rectangle Square;
 
     public Switch(boolean PasoDeCarga ) {
         this.PasoDeCarga = PasoDeCarga;
         this.Square = CreateSquare();
-        Utils.makeDraggableNode(this.Square);
+        Utils.makeDraggableNode(this.Square, startX, startY);
     }
 
     public void setPasoDeCarga(boolean PasoDeCarga) {this.PasoDeCarga = PasoDeCarga;}

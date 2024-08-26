@@ -21,6 +21,10 @@ public class CustomCircle extends Circle {
     public int getState() {
         return this.state;
     }
+    public ID getID() {
+        return this.id;
+    }
+
     //TODO implementar energia para los leds.
     public void setState(int state) {
         this.state = state;
@@ -31,5 +35,4 @@ public class CustomCircle extends Circle {
             this.setFill(Color.ORANGE);
         }
     }
-
 }

@@ -1,20 +1,23 @@
 package com.example.prototipo;
 
-import javafx.scene.Node;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class LED {
     private boolean estado;
-    private double startX, startY;
+    private AtomicReference<Double> startX = new AtomicReference<>((double) 0);
+    private AtomicReference<Double> startY = new AtomicReference<>((double) 0);
     private Rectangle rectangle;
 
     public LED(boolean estado) {
         this.estado = estado;
         this.rectangle = createRectangle();
-        Utils.makeDraggableNode(this.rectangle); //TODO hacer que no se pueda draggear cuando la linea se conecte con un circulo.
+        Utils.makeDraggableNode(this.rectangle, startX, startY); //TODO hacer que no se pueda draggear cuando la linea se conecte con un circulo.
+
+        this.rectangle.setOnMouseClicked(e -> {
+            Utils.makeUndraggableNode(this.rectangle);
+        });
     }
 
     private Rectangle createRectangle() {
@@ -44,5 +47,13 @@ public class LED {
     //Getters
     public boolean getEstado() {
         return estado;
+    }
+
+    public AtomicReference<Double> getStartX() {
+        return startX;
+    }
+
+    public AtomicReference<Double> getStartY() {
+        return startY;
     }
 }

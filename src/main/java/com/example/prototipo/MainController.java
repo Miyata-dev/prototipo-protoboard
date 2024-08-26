@@ -24,6 +24,8 @@ public class MainController {
     public GridPaneController matrizCargaDos;
 
     public void initialize() {
+        ClickLine clickLineMatrizUno = new ClickLine(parent, Matriz1);
+        ClickLine clickLineMatrizDos = new ClickLine(parent, Matriz2);
         //nombres para cada grid para los identificadores unicos.
         String[] gridNames = {
                 "gridTrail1",
@@ -37,9 +39,8 @@ public class MainController {
         matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
-        ClickLine.CircleAsignator(parent, Matriz1);
-        ClickLine.CircleAsignator(parent, Matriz2);
-
+        clickLineMatrizUno.CircleAsignator();
+        clickLineMatrizDos.CircleAsignator();
     }
 
     public void crearLed() {

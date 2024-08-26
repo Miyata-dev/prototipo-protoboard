@@ -21,11 +21,16 @@ public class ID { //TODO agregar nombre de gridpane para diferenciar entre circu
         String gridName = indexes[2];
         this.indexRow = Integer.parseInt(rowIndex);
         this.indexColumn = Integer.parseInt(columnIndex);
+        this.gridName = gridName;
         this.generatedID = rowIndex + "-" + columnIndex + "-" + gridName;
     }
 
     public String getGeneratedID() {
         return generatedID;
+    }
+
+    public String getGridName() {
+        return gridName;
     }
 
     public int getIndexRow() {
@@ -45,6 +50,10 @@ public class ID { //TODO agregar nombre de gridpane para diferenciar entre circu
         int secondIDcolumnIndex = idDos.getIndexColumn();
 
         return firstIDcolumnIndex == secondIDcolumnIndex;
+    }
+
+    public static boolean sameGridPane(ID idUno, ID idDos) {
+        return idUno.getGridName().compareTo(idDos.getGridName()) == 0;
     }
 
     public static boolean isThisColumn(ID id, int desiredColumn) {
