@@ -39,8 +39,10 @@ public class MainController {
         matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
-        clickLineMatrizUno.CircleAsignator();
+        //problema
         clickLineMatrizDos.CircleAsignator();
+        clickLineMatrizUno.CircleAsignator();
+
     }
 
     public void crearLed() {

@@ -6,25 +6,25 @@ import java.util.ArrayList;
 
 public class Cable {
     private Line line;
-    private int tipodecarga;
-    private ID[] ids;
+    private int tipodecarga;//0=Carga Neutra    1=Carga Positiva    -1=Carga Negativa
+    private ID[] ids; //El Cable guarda las id de los circulos que esta utilizando
 
     public Cable(Line line) {
         this.line = line;
-        this.tipodecarga = 0;
+        this.tipodecarga = 0;//Se crea con carga neutra ya que no tiene ningun tipo de carga
     }
 
     public static boolean compareCables(Cable c1, Cable c2) {
         return ID.isSameID(c1.ids[0], c2.ids[0]) && ID.isSameID(c1.ids[1], c2.ids[1]);
-    }
-    //retorna null si no encuentra un cable.
+    } //Retorna true=los dos cables son iguales.    false=los dos cables no son iguales
+
     public static Cable getCableFromCollection(ArrayList<Cable> cables, Cable cableToFind) {
         for (Cable c : cables) {
             if (Cable.compareCables(c, cableToFind)) {
                 return c;
             }
         }
-        return null;
+        return null; //Retorna null si no encuentra un cable
     }
 
     //Setters
@@ -40,6 +40,7 @@ public class Cable {
         this.line = line;
     }
 
+    //Getters
     public ID[] getIds() {
         return ids;
     }

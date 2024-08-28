@@ -5,13 +5,13 @@ import javafx.scene.shape.Rectangle;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class LED {
-    private boolean estado;
+    private boolean state;
     private AtomicReference<Double> startX = new AtomicReference<>((double) 0);
     private AtomicReference<Double> startY = new AtomicReference<>((double) 0);
     private Rectangle rectangle;
 
-    public LED(boolean estado) {
-        this.estado = estado;
+    public LED(boolean state) {
+        this.state = state;
         this.rectangle = createRectangle();
         Utils.makeDraggableNode(this.rectangle, startX, startY); //TODO hacer que no se pueda draggear cuando la linea se conecte con un circulo.
 
@@ -35,18 +35,15 @@ public class LED {
         return rectangle;
     }
 
-    public Rectangle getRectangle() {
-        return rectangle;
-    }
 
     //Setters
-    public void setEstado(boolean estado) {
-        this.estado = estado;
+    public void setEstado(boolean state) {
+        this.state = state;
     }
 
     //Getters
     public boolean getEstado() {
-        return estado;
+        return state;
     }
 
     public AtomicReference<Double> getStartX() {
@@ -55,5 +52,9 @@ public class LED {
 
     public AtomicReference<Double> getStartY() {
         return startY;
+    }
+
+    public Rectangle getRectangle() {
+        return rectangle;
     }
 }

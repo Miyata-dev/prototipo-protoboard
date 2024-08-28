@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class ClickLine {
     private Cable CurrentLine;
-    private CustomCircle StartHandler;
-    private CustomCircle EndHandler;
+    private CustomCircle StartHandler;//El circulo inicial al que estara vinculado el cable
+    private CustomCircle EndHandler;//El circulo final al que estara vinculado el cable
     private ID[] ids;
 
     private AnchorPane root;

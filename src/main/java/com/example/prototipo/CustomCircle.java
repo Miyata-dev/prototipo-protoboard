@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 //1 = positivo, -1 = negativo, neutro = 0
 public class CustomCircle extends Circle {
-    private int state = 0;
+    private int state = 0;//state=1 -> cargaPositiva    state=0 -> cargaNeutra  state=-1 -> cargaNegativa
     private ID id;
     private boolean isTaken; //Este atributo revisa si el circulo tiene un cable
 
@@ -16,16 +16,8 @@ public class CustomCircle extends Circle {
         this.isTaken = false;
     }
 
+    //setters
     public void setisTaken(boolean isTaken) {this.isTaken = isTaken;}
-
-    public int getState() {
-        return this.state;
-    }
-    public ID getID() {
-        return this.id;
-    }
-
-    //TODO implementar energia para los leds.
     public void setState(int state) {
         this.state = state;
 
@@ -35,4 +27,12 @@ public class CustomCircle extends Circle {
             this.setFill(Color.ORANGE);
         }
     }
+    //getters
+    public int getState() {
+        return this.state;
+    }
+    public ID getID() {
+        return this.id;
+    }
+
 }
