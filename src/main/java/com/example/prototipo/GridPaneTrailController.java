@@ -84,4 +84,8 @@ public class GridPaneTrailController {
     public GridPane getGridPane() {
         return gridPane;
     }
+
+    public String getName() {
+        return name;
+    }
 }

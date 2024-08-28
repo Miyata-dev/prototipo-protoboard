@@ -2,7 +2,6 @@ package com.example.prototipo;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
@@ -24,8 +23,6 @@ public class MainController {
     public GridPaneController matrizCargaDos;
 
     public void initialize() {
-        ClickLine clickLineMatrizUno = new ClickLine(parent, Matriz1);
-        ClickLine clickLineMatrizDos = new ClickLine(parent, Matriz2);
         //nombres para cada grid para los identificadores unicos.
         String[] gridNames = {
                 "gridTrail1",
@@ -39,8 +36,9 @@ public class MainController {
         matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
+        ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController);
+
         clickLineMatrizUno.CircleAsignator();
-        clickLineMatrizDos.CircleAsignator();
     }
 
     public void crearLed() {

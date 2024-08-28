@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import java.util.ArrayList;
@@ -15,12 +16,14 @@ public class ClickLine {
     private ID[] ids;
 
     private AnchorPane root;
-    private GridPane gridPane;
+    private GridPaneTrailController firstGridPane;
+    private GridPaneTrailController secondGridPane;
     private ArrayList<Cable> cables = new ArrayList<>();
 
-    public ClickLine(AnchorPane root, GridPane gridPane) {
+    public ClickLine(AnchorPane root, GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane) {
         this.root = root;
-        this.gridPane = gridPane;
+        this.firstGridPane = firstGridPane;
+        this.secondGridPane = secondGridPane;
         ids = new ID[2];
         CurrentLine = new Cable(new Line());
     }
@@ -34,10 +37,6 @@ public class ClickLine {
                 CurrentLine.setTipodecarga(Circulo.getState()); //se pasa por el cable el tipo de carga que tiene el circulo
 
                 ids[0] = new ID(Circulo.getId());
-                System.out.println("El presionado es: "+ Circulo.getId());
-
-            } else{
-                System.out.println("no se presiono");
             }
         });
         //elimina la linea que se presiona, TODO implementar quite de energia una vez el cable se va.
@@ -64,7 +63,16 @@ public class ClickLine {
                 CurrentLine.setIds(ids);
                 cables.add(CurrentLine);
 
-                Utils.paintCircles(gridPane, ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
+                //Utils.paintCircles(firstGridPane.getGridPane(), ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
+
+                //recuperamos el nombre del gridName para ver en cuan gridpane pintar
+                String endCircleGridName = new ID(EndHandler.getId()).getGridName();
+
+                if (endCircleGridName.equals(firstGridPane.getName())) {
+                    Utils.paintCircles(firstGridPane.getGridPane(), ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
+                } else {
+                    Utils.paintCircles(secondGridPane.getGridPane(), ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
+                }
             }
         });
     }
@@ -94,7 +102,6 @@ public class ClickLine {
         StartHandler = startHandler;
     }
     public void SetEndHandler(CustomCircle endHandler){
-        System.out.println(ids[1]);
         EndHandler = endHandler;
     }
 

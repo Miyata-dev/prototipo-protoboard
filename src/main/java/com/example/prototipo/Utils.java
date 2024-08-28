@@ -21,7 +21,6 @@ public class Utils {
             CustomCircle targetedCircle = (CustomCircle) circle;
 
             if (ID.isThisColumn(temporaryID, columnToPaint)) {
-                System.out.println("state in paintCircles: " + state);
                 targetedCircle.setState(state);
             }
         }

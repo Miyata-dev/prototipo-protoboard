@@ -2,7 +2,7 @@ package com.example.prototipo;
 
 import javafx.scene.layout.GridPane;
 
-public class    GridPaneController {
+public class GridPaneController {
     private final String CSS_CLASS = "volt";
     private GridPane gridPane;
     private String name;
@@ -57,5 +57,9 @@ public class    GridPaneController {
     //getters
     public GridPane getGridPane() {
         return gridPane;
+    }
+
+    public String getName() {
+        return name;
     }
 }
