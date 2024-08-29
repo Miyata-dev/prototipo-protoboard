@@ -18,12 +18,6 @@ public class CustomCircle extends Circle {
 
     public void setisTaken(boolean isTaken) {this.isTaken = isTaken;}
 
-    public int getState() {
-        return this.state;
-    }
-    public ID getID() {
-        return this.id;
-    }
 
     //TODO implementar energia para los leds.
     public void setState(int state) {
@@ -35,4 +29,16 @@ public class CustomCircle extends Circle {
             this.setFill(Color.ORANGE);
         }
     }
+    public boolean getIsTaken(){return this.isTaken;}
+    public int getState() {
+        return this.state;
+    }
+    public ID getID() {
+        return this.id;
+    }
+
+
+
+
+
 }
