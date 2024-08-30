@@ -1,5 +1,6 @@
 package com.example.prototipo;
 
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
@@ -10,17 +11,32 @@ public class Switch {
     private AtomicReference<Double> startX = new AtomicReference<>((double) 0);
     private AtomicReference<Double> startY = new AtomicReference<>((double) 0);
     private Rectangle Square;//Se utiliza un rectangulo para hacer un cuadrado
+    private CustomCircle pata1;
+    private CustomCircle pata2;
+    private Group prueba;
 
 
     public Switch(boolean PasoDeCarga) {
         this.PasoDeCarga = PasoDeCarga;
         this.Square = CreateSquare();
+        this.pata1= new CustomCircle(15, new ID(1,1, "gridVolt1"), 0);
+        this.pata2= new CustomCircle(15, new ID(1,1, "gridVolt1"), 0);
 
+        this.prueba=new Group(this.Square, this.pata1, this.pata2);//Igualmente funciona
 
-        Utils.makeDraggableNode(this.Square, startX, startY);//Llamamos a la clase Util para poder convertir el Switch en un nodo movible.
+        /*
+        this.prueba.getChildren().add(this.Square);
+        this.prueba.getChildren().add(this.pata1);
+        this.prueba.getChildren().add(this.pata2);
+        */
+        this.pata1.setTranslateX(710);
+        this.pata1.setTranslateY(554);
+        this.pata2.setTranslateY(554);
+        this.pata2.setTranslateX(730);
+        Utils.makeDraggableNode(this.prueba, startX, startY);//Llamamos a la clase Util para poder convertir el Switch en un nodo movible.
 
-        this.Square.setOnMouseClicked(e -> {
-            Utils.makeUndraggableNode(this.Square);
+        this.prueba.setOnMouseClicked(e -> {
+            Utils.makeUndraggableNode(this.prueba);
         });
 
     }
@@ -47,6 +63,8 @@ public class Switch {
         Square.setY(554);
         return Square;
     }
-
+    public Group getPrueba(){
+        return this.prueba;
+    }
 
 }

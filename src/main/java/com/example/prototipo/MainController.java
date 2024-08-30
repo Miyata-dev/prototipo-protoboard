@@ -58,7 +58,7 @@ public class MainController {
     public void CreateSwitch(){
         Switch switch1 = new Switch(false);
         //parent.getChildren().add(switch1.getPath());
-        parent.getChildren().add(switch1.GetSquare());
+        parent.getChildren().add(switch1.getPrueba());
     }
 
     //TODO eliminar los ultimos tres metodos.
