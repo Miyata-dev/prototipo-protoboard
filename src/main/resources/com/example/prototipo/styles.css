@@ -23,3 +23,8 @@
     -fx-stroke: black;
     -fx-stroke-width: 1px;
 }
+
+#basureroLabel {
+    -fx-font-size: 15;
+    -fx-text-fill: #fff;
+}

@@ -5,8 +5,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import jdk.jshell.execution.Util;
-
 import java.util.ArrayList;
 
 public class ClickLine {
@@ -55,30 +53,37 @@ public class ClickLine {
             }
         });
         root.setOnMouseReleased(e -> {
+            if(!(e.getTarget() instanceof CustomCircle)) return;
             if (EndHandler == null) return;
 
-            //verificar que se suelta en un circulo.
-            if (e.getTarget() instanceof CustomCircle) {
-                CurrentLine.setIds(ids);
-                //si no se hace esto, los cables de la coleccion terminan siendo iguales al ultimo cable.
-                Cable current = new Cable(CurrentLine.getLine());
-                current.setIds(CurrentLine.getIds());
-                current.setTipodecarga(CurrentLine.getTipodecarga());
+            CurrentLine.setIds(ids);
+            //si no se hace esto, los cables de la coleccion terminan siendo iguales al ultimo cable.
+            Cable current = new Cable(CurrentLine.getLine());
+            current.setIds(CurrentLine.getIds());
+            current.setTipodecarga(CurrentLine.getTipodecarga());
+            cables.add(current);
+            //si el circulo inicial no tiene energia, se toma la energia del circlo final.
+            if (!StartHandler.hasEnergy()) {
+                String startCircleGridName = new ID(StartHandler.getId()).getGridName();
 
-                cables.add(current);
-
-                System.out.println();
-                //recuperamos el nombre del gridName para ver en cuan gridpane pintar
-                String endCircleGridName = new ID(EndHandler.getId()).getGridName();
-
-                if (endCircleGridName.equals(firstGridPane.getName())) {
-                    Utils.paintCircles(firstGridPane.getGridPane(), ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
+                if (startCircleGridName.equals(firstGridPane.getName())) {
+                    Utils.paintCircles(firstGridPane.getGridPane(), ids[0].getIndexColumn(), CurrentLine.getTipodecarga());
                 } else {
-                    Utils.paintCircles(secondGridPane.getGridPane(), ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
+                    Utils.paintCircles(secondGridPane.getGridPane(), ids[0].getIndexColumn(), CurrentLine.getTipodecarga());
                 }
-
                 EndHandler.setisTaken(true);
+                return;
             }
+
+            //recuperamos el nombre del gridName para ver en cuan gridpane pintar
+            String endCircleGridName = new ID(EndHandler.getId()).getGridName();
+
+            if (endCircleGridName.equals(firstGridPane.getName())) {
+                Utils.paintCircles(firstGridPane.getGridPane(), ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
+            } else {
+                Utils.paintCircles(secondGridPane.getGridPane(), ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
+            }
+            EndHandler.setisTaken(true);
         });
     }
 

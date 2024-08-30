@@ -18,7 +18,9 @@ public class CustomCircle extends Circle {
 
     public void setisTaken(boolean isTaken) {this.isTaken = isTaken;}
 
-
+    public boolean hasEnergy() {
+        return state != 0;
+    }
     //TODO implementar energia para los leds.
     public void setState(int state) {
         this.state = state;

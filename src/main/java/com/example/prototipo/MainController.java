@@ -2,6 +2,8 @@ package com.example.prototipo;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
@@ -37,8 +39,16 @@ public class MainController {
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
         ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController);
-
         clickLineMatrizUno.CircleAsignator();
+
+        Label basureroLabel = new Label("Activar");
+        Basurero basurero = new Basurero(
+                new Image(getClass().getResource("basurero.png").toExternalForm()),
+                basureroLabel
+        );
+        parent.getChildren().addAll(basurero, basureroLabel);
+
+        System.out.println("controller: " + basurero.getParent());
     }
 
     public void crearLed() {
