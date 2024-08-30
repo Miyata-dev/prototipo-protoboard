@@ -1,5 +1,6 @@
 package com.example.prototipo;
 
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
@@ -8,10 +9,17 @@ public class Cable {
     private Line line;
     private int tipodecarga;
     private ID[] ids;
+    private boolean isDeletable;
 
     public Cable(Line line) {
         this.line = line;
         this.tipodecarga = 0;
+        this.isDeletable = false;
+        //TODO implementar un basurero que permita eliminar el cable.
+        this.line.setOnMouseClicked(e -> {
+            if (!isDeletable) return;
+            ((AnchorPane) this.line.getParent()).getChildren().remove(this.line);
+        });
     }
 
     public static boolean compareCables(Cable c1, Cable c2) {
@@ -29,6 +37,8 @@ public class Cable {
 
     //Setters
     public void setTipodecarga(int tipodecarga) {
+        //si el tipo de energia es neutra (0), no se asigna al cable.
+        if (tipodecarga == 0) return;
         this.tipodecarga = tipodecarga;
     }
 

@@ -5,7 +5,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Line;
 
 public class Utils {
     public Utils() {
@@ -39,6 +41,14 @@ public class Utils {
                 System.out.println("state in paintCircles: " + 0);
                 targetedCircle.setState(0);
             }
+        }
+    }
+
+    public static void deleteNode(MouseEvent e) {
+        Node pressedNode = (Node) e.getTarget();
+
+        if (e.getTarget() instanceof Line) {
+            ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
         }
     }
 

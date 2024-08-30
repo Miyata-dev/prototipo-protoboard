@@ -3,10 +3,10 @@ package com.example.prototipo;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import jdk.jshell.execution.Util;
+
 import java.util.ArrayList;
 
 public class ClickLine {
@@ -46,13 +46,8 @@ public class ClickLine {
             }
         });
         //elimina la linea que se presiona, TODO implementar quite de energia una vez el cable se va.
-        root.setOnMouseClicked(e -> {
-            Node pressedNode = (Node) e.getTarget();
+        //root.setOnMouseClicked(Utils::deleteNode);
 
-            if (e.getTarget() instanceof Line) {
-                ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
-            }
-        });
         root.setOnMouseDragged(e -> {
             //se asegura que acabe en un circulo.
             if (e.getTarget() instanceof Circle) {
@@ -60,13 +55,19 @@ public class ClickLine {
             }
         });
         root.setOnMouseReleased(e -> {
+            if (EndHandler == null) return;
+
             //verificar que se suelta en un circulo.
-            if (e.getTarget() instanceof CustomCircle && ids[1] != null && !((CustomCircle) e.getTarget()).getIsTaken()) {
+            if (e.getTarget() instanceof CustomCircle) {
                 CurrentLine.setIds(ids);
-                cables.add(CurrentLine);
+                //si no se hace esto, los cables de la coleccion terminan siendo iguales al ultimo cable.
+                Cable current = new Cable(CurrentLine.getLine());
+                current.setIds(CurrentLine.getIds());
+                current.setTipodecarga(CurrentLine.getTipodecarga());
 
-                //Utils.paintCircles(firstGridPane.getGridPane(), ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
+                cables.add(current);
 
+                System.out.println();
                 //recuperamos el nombre del gridName para ver en cuan gridpane pintar
                 String endCircleGridName = new ID(EndHandler.getId()).getGridName();
 
@@ -114,13 +115,4 @@ public class ClickLine {
     public void SetEndHandler(CustomCircle endHandler){
         this.EndHandler = endHandler;
     }
-
-    //   private static void MouseReleased(AnchorPane root, MouseEvent Event){  //Verificar si la conexion es correcta
-//
-//        if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) { //Igual entra, ya que termina con la conexion correcta, pero esta mal
-//            CurrentLine.setEndX(Event.getX());
-//            CurrentLine.setEndY(Event.getY());
-//            line = CurrentLine;
-//        }
-//    }
 }
