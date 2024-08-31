@@ -13,8 +13,6 @@ public class MainController {
     public GridPane Matriz2;
     public GridPane MatrizCarga2;
     public GridPane MatrizCarga1;
-    public Button energiaPositivaBtn;
-    public Button energiaNegativaBtn;
     public AnchorPane parent;
 
     public int state = -1; //tiene q ser estado local de cada matriz de alimentación.
