@@ -15,7 +15,7 @@ public class Cable {
         this.line = line;
         this.tipodecarga = 0;
         this.isDeletable = false;
-        //TODO implementar un basurero que permita eliminar el cable.
+
         this.line.setOnMouseClicked(e -> {
             if (!isDeletable) return;
             ((AnchorPane) this.line.getParent()).getChildren().remove(this.line);

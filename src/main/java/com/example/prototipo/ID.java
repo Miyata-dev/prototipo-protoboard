@@ -1,11 +1,11 @@
 package com.example.prototipo;
 
-public class ID { //TODO agregar nombre de gridpane para diferenciar entre circulos de distintos gridpanes.
+public class ID {
     private int indexRow, indexColumn;
     private String gridName;
-    private String generatedID; //para agregarlo como id a los circulos.
+    private String generatedID;//La id generado se agregan como id a los CustomCircles
 
-    //se busca crear una ID con los indices separados con un gion ej: "indiceRoe-indiceCol"
+    //se busca crear una ID con los indices separados y el nombre del GridPane con un gion ej: "indexRow-indexCol-gridName"
     public ID(int indexRow, int indexColumn, String gridName) {
         this.indexRow = indexRow;
         this.indexColumn = indexColumn;
@@ -13,7 +13,7 @@ public class ID { //TODO agregar nombre de gridpane para diferenciar entre circu
         this.generatedID = indexRow + "-" + indexColumn + "-" + gridName;
     }
 
-    //para que este constructor funcione se debe de separar los indices con - en el string computed.
+    //para que este constructor funcione se debe de separar los indices con - en el string computedID.
     public ID(String computedID) {
         String[] indexes = computedID.split("-");
         String rowIndex = indexes[0];
@@ -25,6 +25,7 @@ public class ID { //TODO agregar nombre de gridpane para diferenciar entre circu
         this.generatedID = rowIndex + "-" + columnIndex + "-" + gridName;
     }
 
+    //Getters
     public String getGeneratedID() {
         return generatedID;
     }
@@ -41,6 +42,7 @@ public class ID { //TODO agregar nombre de gridpane para diferenciar entre circu
         return indexColumn;
     }
 
+    //compara si dos Id son iguales o diferentes
     public static boolean isSameID(ID idUno, ID idDos) {
         return idUno.generatedID.compareTo(idDos.generatedID) == 0;
     }

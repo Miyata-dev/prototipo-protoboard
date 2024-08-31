@@ -12,6 +12,7 @@ import javafx.scene.shape.Line;
 public class Utils {
     public Utils() {
     }
+
     //pinta una columna de un color dependiendo del estado que tenga (1 ¿ positivo, -1 negativo)
     public static void paintCircles(GridPane grid, int columnToPaint, int state) {
         Iterator circleToPaint = grid.getChildren().iterator();
@@ -27,7 +28,7 @@ public class Utils {
             }
         }
     }
-
+    //despinta los circulos que ya fueron pintados anteriormente
     public static void unPaintCircles(GridPane grid, int columnToUnPaint) {
         Iterator circleToPaint = grid.getChildren().iterator();
 
