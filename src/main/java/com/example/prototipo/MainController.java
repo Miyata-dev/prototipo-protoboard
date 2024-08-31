@@ -38,8 +38,10 @@ public class MainController {
         matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
-        ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController);
-        clickLineMatrizUno.CircleAsignator();
+        DragLine pruebas = new DragLine(parent, matrizCirculosUnoController, matrizCirculosDosController);
+        //ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController);
+        //clickLineMatrizUno.CircleAsignator();
+        pruebas.DragginLine();
 
         Label basureroLabel = new Label("Activar");
         Basurero basurero = new Basurero(
@@ -61,22 +63,4 @@ public class MainController {
         parent.getChildren().add(switch1.getPrueba());
     }
 
-    //TODO eliminar los ultimos tres metodos.
-    public void usarEnergiaNegativa() {
-        GridPaneTrailController.setStateToUse(matrizCirculosUnoController, -1);
-        GridPaneTrailController.setStateToUse(matrizCirculosDosController, -1);
-        System.out.println("Usar energia negativa, state: " + state);
-    }
-
-    public void usarEnergiaPositiva() {
-        GridPaneTrailController.setStateToUse(matrizCirculosUnoController, 1);
-        GridPaneTrailController.setStateToUse(matrizCirculosDosController, 1);
-
-        System.out.println("Usar energia positiva, state: " + state);
-    }
-
-    //en este metodo activara el uso de los cables del protoboard.
-    public void toggleUsage() {
-        System.out.println("Activando uso de protoboard");
-    }
 }
