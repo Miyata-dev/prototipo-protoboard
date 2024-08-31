@@ -11,8 +11,8 @@ public class Switch {
     private AtomicReference<Double> startX = new AtomicReference<>((double) 0);
     private AtomicReference<Double> startY = new AtomicReference<>((double) 0);
     private Rectangle Square;//Se utiliza un rectangulo para hacer un cuadrado
-    //private CustomCircle pata1;
-    //private CustomCircle pata2;
+    private CustomCircle pata1;
+    private CustomCircle pata2;
     private Group prueba;
 
     //Una idea es la de ocupar los CustomCircle y tirar los cables dentro del GridPane(posible problemas por la factorización que tiene el ClickLine) o utilizar lineas que se muevan.(Seria basicamente crear otro Drag unicamente para estos cables que se usarian para el Switch y LED.
@@ -20,15 +20,20 @@ public class Switch {
     public Switch(boolean PasoDeCarga) {
         this.PasoDeCarga = PasoDeCarga;
         this.Square = CreateSquare();
-        //this.pata1= new CustomCircle(15, new ID(1,1, "gridVolt1"), 0);
-        //this.pata2= new CustomCircle(15, new ID(1,1, "gridVolt1"), 0);
+        ID id= new ID(0,0, "volt1");
+        this.pata1= new CustomCircle(5, id, 0);
+        this.pata2= new CustomCircle(5, id, 0);
+        this.pata1.setisTaken(true);
+        this.pata2.setisTaken(true);
+        this.pata1.setFill(Color.RED);
+        this.pata2.setFill(Color.RED);
 
-        this.prueba=new Group(this.Square); //this.pata1, this.pata2);//Igualmente funciona
+        this.prueba=new Group(this.Square, this.pata1, this.pata2); //this.pata1, this.pata2);//Igualmente funciona
         //Lo que hacian estas lineas de codigo era mover los CustomCircle a un lado del switch
-//        this.pata1.setTranslateX(710);
-//        this.pata1.setTranslateY(554);
-//        this.pata2.setTranslateY(554);
-//        this.pata2.setTranslateX(730);
+        this.pata1.setTranslateX(710);
+        this.pata1.setTranslateY(564);
+        this.pata2.setTranslateY(564);
+        this.pata2.setTranslateX(740);
         Utils.makeDraggableNode(this.prueba, startX, startY);//Llamamos a la clase Util para poder convertir el Switch en un nodo movible.
 
         this.prueba.setOnMouseClicked(e -> {

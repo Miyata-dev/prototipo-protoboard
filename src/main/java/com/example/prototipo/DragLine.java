@@ -12,7 +12,7 @@ public class DragLine {
     private Cable Wire1;
     private CustomCircle StartPoint;
     private CustomCircle EndPoint;
-    private ID[] ids;
+    private ID[] ids = new ID[2];
     private AnchorPane root;
     private GridPaneTrailController firstGridPane;
     private GridPaneTrailController secondGridPane;
@@ -22,7 +22,7 @@ public class DragLine {
         this.root=root;
         this.firstGridPane=firstGridPane;
         this.secondGridPane=secondGridPane;
-        this.ids=new ID[2];
+        //ids=new ID[2];
         this.Wire1= new Cable(new Line());
     }
 
@@ -36,8 +36,9 @@ public class DragLine {
                 CustomCircle custom = (CustomCircle) clicknode;
                 setStartPoint(custom);
                 Wire1.setTipodecarga(custom.getState());
-                ids[0]= new ID(custom.getId());
+                ids[0]= new ID(custom.getID().getGeneratedID());
 
+                LinePressed(root, event);
             }
         });
         root.setOnMouseDragged(event->{
@@ -65,7 +66,7 @@ public class DragLine {
         if(Wire1 != null){
             if(event.getPickResult().getIntersectedNode() instanceof CustomCircle){
                 CustomCircle custom = (CustomCircle) event.getPickResult().getIntersectedNode();
-                ids[1]= new ID(custom.getId());
+                ids[1]= new ID(custom.getID().getGeneratedID());
                 setEndPoint(custom);
                 if(!(ID.isSameID(ids[0], ids[1]))){
                     Wire1.getLine().setEndX(x);
