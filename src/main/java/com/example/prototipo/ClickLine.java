@@ -53,7 +53,7 @@ public class ClickLine {
         });
         root.setOnMouseReleased(e -> {
             if(!(e.getTarget() instanceof CustomCircle)) return;
-            RealizeLine();
+            RealizeLine(e);
         });
 
         root.setOnMouseClicked(e -> {
@@ -61,6 +61,7 @@ public class ClickLine {
             if (!canDelete) return;
             if (!(e.getTarget() instanceof Line)) return;
 
+            System.out.println("im ALSO here");
             Utils.deleteCable(e);
         });
     }
@@ -91,8 +92,14 @@ public class ClickLine {
         }
     }
 
-    private void RealizeLine() {
+    private void RealizeLine(MouseEvent e) {
+        System.out.println("END" + EndHandler);
+        System.out.println("START" + StartHandler);
         if (EndHandler == null || StartHandler == null) {  // REVISAR METODO, PORQUE AL PRESIONAR EL CIRCULO FINAL DE LA LINEA SE ELIMINA EL CABLE
+
+            CustomCircle circle = (CustomCircle) e.getTarget();
+            //si no esta tomado, se sale de la funcion, y por lo tanto no se elimina.
+            if (!circle.getIsTaken()) return;
 
             root.getChildren().remove(CurrentLine.getLine());
             CurrentLine = new Cable(new Line());
@@ -118,6 +125,7 @@ public class ClickLine {
                 Utils.paintCircles(secondGridPane.getGridPane(), ids[0].getIndexColumn(), EndHandler.getState());
             }
             EndHandler.setisTaken(true);
+            //StartHandler.setisTaken(true);
         } else {
         //recuperamos el nombre del gridName para ver en cuan gridpane pintar
             String endCircleGridName = new ID(EndHandler.getId()).getGridName();
@@ -127,6 +135,7 @@ public class ClickLine {
                 Utils.paintCircles(secondGridPane.getGridPane(), ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
             }
             EndHandler.setisTaken(true);
+            //StartHandler.setisTaken(true);
         }
         StartHandler = null;
         EndHandler = null;
