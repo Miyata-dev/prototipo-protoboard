@@ -20,21 +20,35 @@ public class Basurero extends ImageView {
         this.setImage(image);
         this.setFitHeight(50);
         this.setFitWidth(50);
+        this.setId("basurero");
 
         label.setId("basureroLabel");
         label.setTranslateY(60);
 
+        Popup popup = new Popup(
+                "Haz dado click al basurero",
+                "Al darle click",
+                "Este es el contenido del mensaje de alerta"
+        );
+
         this.setOnMouseClicked(e -> {
             if (!isActive) {
-                label.setText("desactivar");
+                popup.setHeader("Haz activado el basurero");
+                popup.setContent("Para desactivarlo debes darle click de nuevo");
+                label.setText("Desactivar");
             } else {
-                label.setText("activar");
+                popup.setHeader("Haz desactivado el basurero");
+                popup.setContent("Para activarlo debes darle click de nuevo");
+                label.setText("Activar");
             }
-
+            popup.show();
             this.isActive = !this.isActive;
         });
     }
 
+    public boolean getIsActive() {
+        return isActive;
+    }
     public void setActive(boolean active) {
         this.isActive = active;
     }

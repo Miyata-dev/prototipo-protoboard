@@ -38,9 +38,6 @@ public class MainController {
         matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
-        ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController);
-        clickLineMatrizUno.CircleAsignator();
-
         Label basureroLabel = new Label("Activar");
         Basurero basurero = new Basurero(
                 new Image(getClass().getResource("basurero.png").toExternalForm()),
@@ -48,7 +45,8 @@ public class MainController {
         );
         parent.getChildren().addAll(basurero, basureroLabel);
 
-        System.out.println("controller: " + basurero.getParent());
+        ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController, basurero);
+        clickLineMatrizUno.CircleAsignator();
     }
 
     public void crearLed() {

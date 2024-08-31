@@ -17,11 +17,13 @@ public class ClickLine {
     private GridPaneTrailController firstGridPane;
     private GridPaneTrailController secondGridPane;
     private ArrayList<Cable> cables = new ArrayList<>();
+    private Basurero basurero;
 
-    public ClickLine(AnchorPane root, GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane) {
+    public ClickLine(AnchorPane root, GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, Basurero basurero) {
         this.root = root;
         this.firstGridPane = firstGridPane;
         this.secondGridPane = secondGridPane;
+        this.basurero = basurero;
         ids = new ID[2];
         CurrentLine = new Cable(new Line());
     }
@@ -44,7 +46,11 @@ public class ClickLine {
             }
         });
         //elimina la linea que se presiona, TODO implementar quite de energia una vez el cable se va.
-        //root.setOnMouseClicked(Utils::deleteNode);
+        root.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (!(e.getTarget() instanceof Line)) return;
+            //mira el estado de utilidad del basurero, si esta inactivo no hace nada.
+            Utils.deleteCable(e, basurero.getIsActive());
+        });
 
         root.setOnMouseDragged(e -> {
             //se asegura que acabe en un circulo.
