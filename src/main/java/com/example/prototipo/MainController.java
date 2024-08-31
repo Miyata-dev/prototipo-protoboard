@@ -13,8 +13,6 @@ public class MainController {
     public GridPane Matriz2;
     public GridPane MatrizCarga2;
     public GridPane MatrizCarga1;
-    public Button energiaPositivaBtn;
-    public Button energiaNegativaBtn;
     public AnchorPane parent;
 
     public int state = -1; //tiene q ser estado local de cada matriz de alimentación.
@@ -60,22 +58,4 @@ public class MainController {
         parent.getChildren().add(switch1.GetSquare());
     }
 
-    //TODO eliminar los ultimos tres metodos.
-    public void usarEnergiaNegativa() {
-        GridPaneTrailController.setStateToUse(matrizCirculosUnoController, -1);
-        GridPaneTrailController.setStateToUse(matrizCirculosDosController, -1);
-        System.out.println("Usar energia negativa, state: " + state);
-    }
-
-    public void usarEnergiaPositiva() {
-        GridPaneTrailController.setStateToUse(matrizCirculosUnoController, 1);
-        GridPaneTrailController.setStateToUse(matrizCirculosDosController, 1);
-
-        System.out.println("Usar energia positiva, state: " + state);
-    }
-
-    //en este metodo activara el uso de los cables del protoboard.
-    public void toggleUsage() {
-        System.out.println("Activando uso de protoboard");
-    }
 }
