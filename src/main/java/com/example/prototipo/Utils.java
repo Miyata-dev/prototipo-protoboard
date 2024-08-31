@@ -44,7 +44,7 @@ public class Utils {
         }
     }
 
-    public static void deleteCable(MouseEvent e) {
+    public static void deleteNode(MouseEvent e) {
         Node pressedNode = (Node) e.getTarget();
 
         if (e.getTarget() instanceof Line) {
