@@ -16,11 +16,13 @@ public class ClickLine {
     private GridPaneTrailController firstGridPane;
     private GridPaneTrailController secondGridPane;
     private ArrayList<Cable> cables = new ArrayList<>();
+    private Basurero basurero;
 
-    public ClickLine(AnchorPane root, GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane) {
+    public ClickLine(AnchorPane root, GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, Basurero basurero) {
         this.root = root;
         this.firstGridPane = firstGridPane;
         this.secondGridPane = secondGridPane;
+        this.basurero = basurero;
         ids = new ID[2];
         CurrentLine = new Cable(new Line());
     }
@@ -40,7 +42,6 @@ public class ClickLine {
                 ids[0] = new ID(Circulo.getId());
 
                 LinePressed(root,event);
-
             }
         });
         // TODO implementar quite de energia una vez el cable se va.
@@ -53,6 +54,14 @@ public class ClickLine {
         root.setOnMouseReleased(e -> {
             if(!(e.getTarget() instanceof CustomCircle)) return;
             RealizeLine();
+        });
+
+        root.setOnMouseClicked(e -> {
+            boolean canDelete = basurero.getIsActive();
+            if (!canDelete) return;
+            if (!(e.getTarget() instanceof Line)) return;
+
+            Utils.deleteCable(e);
         });
     }
 

@@ -9,7 +9,7 @@ public class Cable {
     private Line line;
     private int tipodecarga;
     private ID[] ids;
-    private boolean isDeletable;
+    private boolean isDeletable; //TODO eliminar atributo, no se esta usando.
 
     public Cable(Line line) {
         this.line = line;
