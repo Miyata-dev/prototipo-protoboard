@@ -39,8 +39,4 @@ public class CustomCircle extends Circle {
         return this.id;
     }
 
-
-
-
-
 }

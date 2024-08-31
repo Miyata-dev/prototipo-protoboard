@@ -35,6 +35,10 @@ public class Cable {
         return null;
     }
 
+    public void RestoreEnergy(){
+        this.tipodecarga = 0;
+    }
+
     //Setters
     public void setTipodecarga(int tipodecarga) {
         //si el tipo de energia es neutra (0), no se asigna al cable.
