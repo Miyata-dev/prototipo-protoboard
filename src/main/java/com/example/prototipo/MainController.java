@@ -38,10 +38,10 @@ public class MainController {
         matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
-        DragLine pruebas = new DragLine(parent, matrizCirculosUnoController, matrizCirculosDosController);
-        //ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController);
+        //DragLine pruebas = new DragLine(parent, matrizCirculosUnoController, matrizCirculosDosController);
+        //ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController, );
         //clickLineMatrizUno.CircleAsignator();
-        pruebas.DragginLine();
+        //pruebas.DragginLine();
 
         Label basureroLabel = new Label("Activar");
         Basurero basurero = new Basurero(
@@ -49,7 +49,8 @@ public class MainController {
                 basureroLabel
         );
         parent.getChildren().addAll(basurero, basureroLabel);
-
+        ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController, basurero );
+        clickLineMatrizUno.CircleAsignator();
         System.out.println("controller: " + basurero.getParent());
     }
 

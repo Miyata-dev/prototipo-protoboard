@@ -6,66 +6,73 @@ import javafx.scene.shape.*;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Switch {
-    private boolean PasoDeCarga; // true= deja la carga pasar           false= la carga no pasa
+public class Switch extends Rectangle {//Se utiliza un rectangulo para hacer un cuadrado
+    private boolean PasoDeCarga; // true -> deja la carga pasar           false -> la carga no pasa
     private AtomicReference<Double> startX = new AtomicReference<>((double) 0);
     private AtomicReference<Double> startY = new AtomicReference<>((double) 0);
-    private Rectangle Square;//Se utiliza un rectangulo para hacer un cuadrado
     private CustomCircle pata1;
     private CustomCircle pata2;
-    private Group prueba;
+    private Group SwitchGroup;
 
-    //Una idea es la de ocupar los CustomCircle y tirar los cables dentro del GridPane(posible problemas por la factorización que tiene el ClickLine) o utilizar lineas que se muevan.(Seria basicamente crear otro Drag unicamente para estos cables que se usarian para el Switch y LED.
-    //Una idea es utilizar custom circle con ID unica, y utilizar una clase especial cuando se cree un customcircle que este fuera del gridpane
+
     public Switch(boolean PasoDeCarga) {
+        super();
         this.PasoDeCarga = PasoDeCarga;
-        this.Square = CreateSquare();
+
+        Rectangle square = CreateSquare();
+
+        this.SwitchGroup=new Group(square);
+
+        Utils.makeDraggableNode(this.SwitchGroup, startX, startY);//Llamamos a la clase Util para poder convertir el Switch en un nodo movible.
+
+        this.SwitchGroup.setOnMouseClicked(e -> {
+            Utils.makeUndraggableNode(this.SwitchGroup);
+            TranslatePatas(square);
+        });
+    }
+
+
+    public void TranslatePatas(Rectangle square){
+        double x = square.getX();
+        double y = square.getY();
         ID id= new ID(0,0, "volt1");
         this.pata1= new CustomCircle(5, id, 0);
         this.pata2= new CustomCircle(5, id, 0);
-        this.pata1.setisTaken(true);
-        this.pata2.setisTaken(true);
+        this.pata1.setisTaken(false);
+        this.pata2.setisTaken(false);
         this.pata1.setFill(Color.RED);
         this.pata2.setFill(Color.RED);
-
-        this.prueba=new Group(this.Square, this.pata1, this.pata2); //this.pata1, this.pata2);//Igualmente funciona
-        //Lo que hacian estas lineas de codigo era mover los CustomCircle a un lado del switch
-        this.pata1.setTranslateX(710);
-        this.pata1.setTranslateY(564);
-        this.pata2.setTranslateY(564);
-        this.pata2.setTranslateX(740);
-        Utils.makeDraggableNode(this.prueba, startX, startY);//Llamamos a la clase Util para poder convertir el Switch en un nodo movible.
-
-        this.prueba.setOnMouseClicked(e -> {
-            Utils.makeUndraggableNode(this.prueba);
-        });
-
-    }
-
-    public void setPasoDeCarga(boolean PasoDeCarga) {
-        this.PasoDeCarga = PasoDeCarga;
-    }
-
-    public boolean getPasoDeCarga() {
-        return PasoDeCarga;
-    }
-
-    public Rectangle GetSquare() {
-        return Square;
+        this.pata1.setTranslateX(x-5);
+        this.pata1.setTranslateY(y+15);
+        this.pata2.setTranslateX(x+35);
+        this.pata2.setTranslateY(y+15);
+        this.SwitchGroup.getChildren().add(this.pata1);
+        this.SwitchGroup.getChildren().add(this.pata2);
     }
 
     public Rectangle CreateSquare() { //Función que crea el Cuadrado en la posición x=720 e y=554
         Rectangle Square = new Rectangle(50, 50, 30, 30);
         Square.setFill(Color.WHITE);
-        Square.setStroke(Color.WHITE);
+        Square.setStroke(Color.BLACK);
         Square.setStrokeWidth(3);
         //Le añadimos la ubicacion en la que aparecera
         Square.setX(720);
         Square.setY(554);
         return Square;
     }
+
+    //Setters
+    public void setPasoDeCarga(boolean PasoDeCarga) {
+        this.PasoDeCarga = PasoDeCarga;
+    }
+
+
+    //Getters
+    public boolean getPasoDeCarga() {
+        return PasoDeCarga;
+    }
     public Group getPrueba(){
-        return this.prueba;
+        return this.SwitchGroup;
     }
 
 }

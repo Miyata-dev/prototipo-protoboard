@@ -11,7 +11,7 @@ public class ClickLine {
     private Cable CurrentLine;
     private CustomCircle StartHandler;//El circulo inicial al que estara vinculado el cable
     private CustomCircle EndHandler;//El circulo final al que estara vinculado el cable
-    private ID[] ids;
+    private ID[] ids= new ID[2];
     private AnchorPane root;
     private GridPaneTrailController firstGridPane;
     private GridPaneTrailController secondGridPane;
@@ -23,7 +23,6 @@ public class ClickLine {
         this.firstGridPane = firstGridPane;
         this.secondGridPane = secondGridPane;
         this.basurero = basurero;
-        ids = new ID[2];
         CurrentLine = new Cable(new Line());
     }
 
@@ -33,17 +32,14 @@ public class ClickLine {
             if(nodoclickeado instanceof CustomCircle && !((CustomCircle) nodoclickeado).getIsTaken()){
 
                 CustomCircle Circulo = (CustomCircle) nodoclickeado;
-
                 SetStartHandler(Circulo);
                 StartHandler.setisTaken(true);
-
                 CurrentLine.setTipodecarga(Circulo.getState()); //se pasa por el cable el tipo de carga que tiene el circulo
-
-                ids[0] = new ID(Circulo.getId());
-
+                ids[0] = new ID(Circulo.getID().getGeneratedID());//Esto hay que cambiar para que unicamente podamos mover una linea del Switch
                 LinePressed(root,event);
             }
         });
+
         // TODO implementar quite de energia una vez el cable se va.
         root.setOnMouseDragged(e -> {
             //se asegura que acabe en un circulo.
@@ -82,9 +78,9 @@ public class ClickLine {
             if(UltimateCircle.getIsTaken()){
                 return;
             }
-            ids[1] = new ID(UltimateCircle.getId());
+            ids[1] = new ID(UltimateCircle.getID().getGeneratedID());
             SetEndHandler(UltimateCircle);
-
+            //Error
             if(!(ID.isSameID(ids[0], ids[1]))){
                 CurrentLine.getLine().setEndX(x);
                 CurrentLine.getLine().setEndY(y);
@@ -100,6 +96,7 @@ public class ClickLine {
             CustomCircle circle = (CustomCircle) e.getTarget();
             //si no esta tomado, se sale de la funcion, y por lo tanto no se elimina.
             if (!circle.getIsTaken()) return;
+            if (StartHandler == null && circle.hasEnergy()) return;
 
             root.getChildren().remove(CurrentLine.getLine());
             CurrentLine = new Cable(new Line());
@@ -118,7 +115,7 @@ public class ClickLine {
         cables.add(current);
         //si el circulo inicial no tiene energia, se toma la energia del circulo final.
         if (!StartHandler.hasEnergy()) {
-            String startCircleGridName = new ID(StartHandler.getId()).getGridName();
+            String startCircleGridName = new ID(StartHandler.getID().getGeneratedID()).getGridName();
             if (startCircleGridName.equals(firstGridPane.getName())) {
                 Utils.paintCircles(firstGridPane.getGridPane(), ids[0].getIndexColumn(), EndHandler.getState());
             } else {
