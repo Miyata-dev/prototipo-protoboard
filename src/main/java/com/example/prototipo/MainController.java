@@ -15,6 +15,7 @@ public class MainController {
     public GridPane MatrizCarga1;
     public AnchorPane parent;
 
+
     public int state = -1; //tiene q ser estado local de cada matriz de alimentación.
 
     public GridPaneTrailController matrizCirculosUnoController;
@@ -36,16 +37,14 @@ public class MainController {
         matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
-        //ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController, );
-        //clickLineMatrizUno.CircleAsignator();
-        //pruebas.DragginLine();
-
+        Bateria bateria = new Bateria(new Image(getClass().getResource("bateria.png").toExternalForm()));
         Label basureroLabel = new Label("Activar");
         Basurero basurero = new Basurero(
                 new Image(getClass().getResource("basurero.png").toExternalForm()),
                 basureroLabel
         );
-        parent.getChildren().addAll(basurero, basureroLabel);
+
+        parent.getChildren().addAll(basurero, basureroLabel, bateria.getImage(), bateria.getPolos());
         ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController, basurero );
         clickLineMatrizUno.CircleAsignator();
         System.out.println("controller: " + basurero.getParent());

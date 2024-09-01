@@ -63,23 +63,6 @@ public class GridPaneTrailController {
         }
     }
 
-    //Agregamos el onMouseClicked a todos los circulos.
-    private void addClickEvent() {
-        for (Node circle : gridPane.getChildren()) {
-            String targetID  = circle.getId();
-            Circle targetedCircle = (Circle) circle;
-
-            targetedCircle.setOnMouseClicked(e -> {
-                CustomCircle circleClicked = (CustomCircle) e.getTarget();
-                ID circledClikedID = new ID(circleClicked.getId());
-                int indexColumn = circledClikedID.getIndexColumn();
-
-                Utils.paintCircles(gridPane, indexColumn, stateToUse);
-                System.out.println(circledClikedID.getGeneratedID() + " state: " + circleClicked.getState());
-            });
-        }
-    }
-
     //getters
     public GridPane getGridPane() {
         return gridPane;
