@@ -38,7 +38,6 @@ public class MainController {
         matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
-        //DragLine pruebas = new DragLine(parent, matrizCirculosUnoController, matrizCirculosDosController);
         //ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController, );
         //clickLineMatrizUno.CircleAsignator();
         //pruebas.DragginLine();

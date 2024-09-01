@@ -26,9 +26,11 @@ public class CustomCircle extends Circle {
         this.state = state;
 
         if (state == 1) {
-            this.setFill(Color.BLUE);
-        } else if (state == -1) {
             this.setFill(Color.ORANGE);
+        } else if (state == -1) {
+            this.setFill(Color.BLUE);
+        } else if (state == 0) {
+            this.setFill(Color.GRAY);
         }
     }
     public boolean getIsTaken(){return this.isTaken;}

@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class ClickLine {
     private Cable CurrentLine;
-    private CustomCircle StartHandler;//El circulo inicial al que estara vinculado el cable
-    private CustomCircle EndHandler;//El circulo final al que estara vinculado el cable
-    private ID[] ids= new ID[2];
+    private CustomCircle StartHandler;
+    private CustomCircle EndHandler;
+    private ID[] ids;
     private AnchorPane root;
     private GridPaneTrailController firstGridPane;
     private GridPaneTrailController secondGridPane;
@@ -23,7 +23,8 @@ public class ClickLine {
         this.firstGridPane = firstGridPane;
         this.secondGridPane = secondGridPane;
         this.basurero = basurero;
-        CurrentLine = new Cable(new Line());
+        ids = new ID[2];
+        CurrentLine = new Cable();
     }
 
     public void CircleAsignator(){
@@ -32,14 +33,16 @@ public class ClickLine {
             if(nodoclickeado instanceof CustomCircle && !((CustomCircle) nodoclickeado).getIsTaken()){
 
                 CustomCircle Circulo = (CustomCircle) nodoclickeado;
+
                 SetStartHandler(Circulo);
                 StartHandler.setisTaken(true);
+
                 CurrentLine.setTipodecarga(Circulo.getState()); //se pasa por el cable el tipo de carga que tiene el circulo
-                ids[0] = new ID(Circulo.getID().getGeneratedID());//Esto hay que cambiar para que unicamente podamos mover una linea del Switch
+                ids[0] = new ID(Circulo.getID().getGeneratedID());
+
                 LinePressed(root,event);
             }
         });
-
         // TODO implementar quite de energia una vez el cable se va.
         root.setOnMouseDragged(e -> {
             //se asegura que acabe en un circulo.
@@ -57,17 +60,19 @@ public class ClickLine {
             if (!canDelete) return;
             if (!(e.getTarget() instanceof Line)) return;
 
-            System.out.println("im ALSO here");
-            Utils.deleteCable(e);
+            Utils.deleteCable(e, firstGridPane, secondGridPane);
         });
     }
 
     private void LinePressed(AnchorPane root,MouseEvent Event){
         if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) {  //Verifica que empiece solo de los circulos
-            CurrentLine.setLine(new Line(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY()));
-            CurrentLine.getLine().setStrokeWidth(5);
+            //CurrentLine.setLine(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
+            int carga = CurrentLine.getTipodecarga();
+            CurrentLine = new Cable(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
+            CurrentLine.setTipodecarga(carga);
+            CurrentLine.setStrokeWidth(5);
             //TODO SE HACE UN CLICK Y SE CREA UN PUNTO EN LOS CIRCULOS
-            root.getChildren().add(CurrentLine.getLine());
+            root.getChildren().add(CurrentLine);
         }
     }
 
@@ -80,26 +85,24 @@ public class ClickLine {
             }
             ids[1] = new ID(UltimateCircle.getID().getGeneratedID());
             SetEndHandler(UltimateCircle);
-            //Error
+
             if(!(ID.isSameID(ids[0], ids[1]))){
-                CurrentLine.getLine().setEndX(x);
-                CurrentLine.getLine().setEndY(y);
+                CurrentLine.setEndX(x);
+                CurrentLine.setEndY(y);
             }
         }
     }
-
+    //TODO colocar setIsTaken en el deleteCable.
     private void RealizeLine(MouseEvent e) {
-        System.out.println("END" + EndHandler);
-        System.out.println("START" + StartHandler);
         if (EndHandler == null || StartHandler == null) {  // REVISAR METODO, PORQUE AL PRESIONAR EL CIRCULO FINAL DE LA LINEA SE ELIMINA EL CABLE
 
             CustomCircle circle = (CustomCircle) e.getTarget();
             //si no esta tomado, se sale de la funcion, y por lo tanto no se elimina.
+            System.out.println("state: " + circle.getState());
             if (!circle.getIsTaken()) return;
             if (StartHandler == null && circle.hasEnergy()) return;
 
-            root.getChildren().remove(CurrentLine.getLine());
-            CurrentLine = new Cable(new Line());
+            root.getChildren().remove(CurrentLine);
 
             if (StartHandler != null){
                 StartHandler.setisTaken(false);
@@ -109,13 +112,15 @@ public class ClickLine {
 
         CurrentLine.setIds(ids);
         //si no se hace esto, los cables de la coleccion terminan siendo iguales al ultimo cable.
-        Cable current = new Cable(CurrentLine.getLine());
+        Cable current = new Cable();
         current.setIds(CurrentLine.getIds());
         current.setTipodecarga(CurrentLine.getTipodecarga());
         cables.add(current);
+
+        System.out.println(CurrentLine.getTipodecarga());
         //si el circulo inicial no tiene energia, se toma la energia del circulo final.
         if (!StartHandler.hasEnergy()) {
-            String startCircleGridName = new ID(StartHandler.getID().getGeneratedID()).getGridName();
+            String startCircleGridName = StartHandler.getID().getGridName();
             if (startCircleGridName.equals(firstGridPane.getName())) {
                 Utils.paintCircles(firstGridPane.getGridPane(), ids[0].getIndexColumn(), EndHandler.getState());
             } else {
@@ -125,7 +130,7 @@ public class ClickLine {
             //StartHandler.setisTaken(true);
         } else {
         //recuperamos el nombre del gridName para ver en cuan gridpane pintar
-            String endCircleGridName = new ID(EndHandler.getId()).getGridName();
+            String endCircleGridName = EndHandler.getID().getGridName();
             if (endCircleGridName.equals(firstGridPane.getName())) {
             Utils.paintCircles(firstGridPane.getGridPane(), ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
             }else {

@@ -28,6 +28,7 @@ public class LED extends Rectangle {
     private void CreateLegsLed(Rectangle led){
         double x = led.getX();
         double y = led.getY();
+        //TODO invalidar este tipo de IDS para pintar
         ID id = new ID(1,1,"LedVolt1");
         this.Leg1 = new CustomCircle(5,id,0);
         this.Leg2 = new CustomCircle(5,id,0);
