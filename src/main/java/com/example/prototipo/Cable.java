@@ -5,21 +5,19 @@ import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
 
-public class Cable {
-    private Line line;
+public class Cable extends Line {
     private int tipodecarga;
     private ID[] ids;
-    private boolean isDeletable; //TODO eliminar atributo, no se esta usando.
 
-    public Cable(Line line) {
-        this.line = line;
+    public Cable() {
         this.tipodecarga = 0;
-        this.isDeletable = false;
-        //TODO implementar un basurero que permita eliminar el cable.
-        this.line.setOnMouseClicked(e -> {
-            if (!isDeletable) return;
-            ((AnchorPane) this.line.getParent()).getChildren().remove(this.line);
-        });
+    }
+
+    public Cable(double startX, double startY, double endX, double endY) {
+        setStartX(startX);
+        setStartY(startY);
+        setEndX(endX);
+        setEndY(endY);
     }
 
     public static boolean compareCables(Cable c1, Cable c2) {
@@ -50,8 +48,11 @@ public class Cable {
         this.ids = ids;
     }
 
-    public void setLine(Line line) {
-        this.line = line;
+    public void setLine(double startX, double startY, double endX, double endY) {
+        setStartX(startX);
+        setStartY(startY);
+        setEndX(endX);
+        setEndY(endY);
     }
 
     public ID[] getIds() {
@@ -60,9 +61,5 @@ public class Cable {
 
     public int getTipodecarga() {
         return tipodecarga;
-    }
-
-    public Line getLine() {
-        return line;
     }
 }

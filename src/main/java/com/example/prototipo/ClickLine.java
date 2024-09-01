@@ -24,7 +24,7 @@ public class ClickLine {
         this.secondGridPane = secondGridPane;
         this.basurero = basurero;
         ids = new ID[2];
-        CurrentLine = new Cable(new Line());
+        CurrentLine = new Cable();
     }
 
     public void CircleAsignator(){
@@ -38,7 +38,6 @@ public class ClickLine {
                 StartHandler.setisTaken(true);
 
                 CurrentLine.setTipodecarga(Circulo.getState()); //se pasa por el cable el tipo de carga que tiene el circulo
-
                 ids[0] = new ID(Circulo.getId());
 
                 LinePressed(root,event);
@@ -61,17 +60,19 @@ public class ClickLine {
             if (!canDelete) return;
             if (!(e.getTarget() instanceof Line)) return;
 
-            System.out.println("im ALSO here");
-            Utils.deleteCable(e);
+            Utils.deleteCable(e, firstGridPane, secondGridPane);
         });
     }
 
     private void LinePressed(AnchorPane root,MouseEvent Event){
         if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) {  //Verifica que empiece solo de los circulos
-            CurrentLine.setLine(new Line(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY()));
-            CurrentLine.getLine().setStrokeWidth(5);
+            //CurrentLine.setLine(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
+            int carga = CurrentLine.getTipodecarga();
+            CurrentLine = new Cable(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
+            CurrentLine.setTipodecarga(carga);
+            CurrentLine.setStrokeWidth(5);
             //TODO SE HACE UN CLICK Y SE CREA UN PUNTO EN LOS CIRCULOS
-            root.getChildren().add(CurrentLine.getLine());
+            root.getChildren().add(CurrentLine);
         }
     }
 
@@ -86,23 +87,22 @@ public class ClickLine {
             SetEndHandler(UltimateCircle);
 
             if(!(ID.isSameID(ids[0], ids[1]))){
-                CurrentLine.getLine().setEndX(x);
-                CurrentLine.getLine().setEndY(y);
+                CurrentLine.setEndX(x);
+                CurrentLine.setEndY(y);
             }
         }
     }
-
+    //TODO colocar setIsTaken en el deleteCable.
     private void RealizeLine(MouseEvent e) {
-        System.out.println("END" + EndHandler);
-        System.out.println("START" + StartHandler);
         if (EndHandler == null || StartHandler == null) {  // REVISAR METODO, PORQUE AL PRESIONAR EL CIRCULO FINAL DE LA LINEA SE ELIMINA EL CABLE
 
             CustomCircle circle = (CustomCircle) e.getTarget();
             //si no esta tomado, se sale de la funcion, y por lo tanto no se elimina.
+            System.out.println("state: " + circle.getState());
             if (!circle.getIsTaken()) return;
+            if (StartHandler == null && circle.hasEnergy()) return;
 
-            root.getChildren().remove(CurrentLine.getLine());
-            CurrentLine = new Cable(new Line());
+            root.getChildren().remove(CurrentLine);
 
             if (StartHandler != null){
                 StartHandler.setisTaken(false);
@@ -112,10 +112,12 @@ public class ClickLine {
 
         CurrentLine.setIds(ids);
         //si no se hace esto, los cables de la coleccion terminan siendo iguales al ultimo cable.
-        Cable current = new Cable(CurrentLine.getLine());
+        Cable current = new Cable();
         current.setIds(CurrentLine.getIds());
         current.setTipodecarga(CurrentLine.getTipodecarga());
         cables.add(current);
+
+        System.out.println(CurrentLine.getTipodecarga());
         //si el circulo inicial no tiene energia, se toma la energia del circulo final.
         if (!StartHandler.hasEnergy()) {
             String startCircleGridName = new ID(StartHandler.getId()).getGridName();
