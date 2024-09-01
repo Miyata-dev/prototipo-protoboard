@@ -49,7 +49,7 @@ public class Switch extends Rectangle {//Se utiliza un rectangulo para hacer un 
         this.SwitchGroup.getChildren().add(this.pata1);
         this.SwitchGroup.getChildren().add(this.pata2);
     }
-
+//prueba
     public Rectangle CreateSquare() { //Función que crea el Cuadrado en la posición x=720 e y=554
         Rectangle Square = new Rectangle(50, 50, 30, 30);
         Square.setFill(Color.WHITE);
