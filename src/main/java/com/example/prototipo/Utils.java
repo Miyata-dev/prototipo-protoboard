@@ -35,7 +35,13 @@ public class Utils {
     //TODO resolver bug cuando se contecta 2 cables en los grid de voltios. propuesta, debe tomar un gridpanetrail.
     //pinta una columna de un color dependiendo del estado que tenga (1 ¿ positivo, -1 negativo), pasar ID y calcular el
     // indice de columna, ver si la id es valida o no (a travez de su gridName)
-    public static void paintCircles(GridPane grid, int columnToPaint, int state) {
+    public static void paintCircles(GridPane grid, ID id, int state) {
+        int columnToPaint = id.getIndexColumn();
+
+        if (!id.getIsForGridpane()) return;
+
+        System.out.println(id.getIsForGridpane());
+
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(grid, columnToPaint);
 
         circles.forEach(circle -> {

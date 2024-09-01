@@ -4,6 +4,7 @@ public class ID {
     private int indexRow, indexColumn;
     private String gridName;
     private String generatedID;//La id generado se agregan como id a los CustomCircles
+    private boolean isForGridpane; //como se usan en los leds, en ese caso este atributo es falso.
 
     //se busca crear una ID con los indices separados y el nombre del GridPane con un gion ej: "indexRow-indexCol-gridName"
     public ID(int indexRow, int indexColumn, String gridName) {
@@ -11,6 +12,7 @@ public class ID {
         this.indexColumn = indexColumn;
         this.gridName = gridName;
         this.generatedID = indexRow + "-" + indexColumn + "-" + gridName;
+        this.isForGridpane = true;
     }
 
     //para que este constructor funcione se debe de separar los indices con - en el string computedID.
@@ -23,8 +25,12 @@ public class ID {
         this.indexColumn = Integer.parseInt(columnIndex);
         this.gridName = gridName;
         this.generatedID = rowIndex + "-" + columnIndex + "-" + gridName;
+        this.isForGridpane = true;
     }
-
+    //setters
+    public void setIsForGridpane(boolean isForGridpane) {
+        this.isForGridpane = isForGridpane;
+    }
     //Getters
     public String getGeneratedID() {
         return generatedID;
@@ -41,6 +47,7 @@ public class ID {
     public int getIndexColumn() {
         return indexColumn;
     }
+    public boolean getIsForGridpane(){ return this.isForGridpane; }
 
     //compara si dos Id son iguales o diferentes
     public static boolean isSameID(ID idUno, ID idDos) {

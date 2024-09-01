@@ -9,13 +9,11 @@ public class GridPaneTrailController {
     private GridPane gridPane;
     private String name;
     public int stateToUse; //controlla el flujo de energia que se pasa en los trails.
-    //private CustomCircle[][] customCircles; //esto es para monitorear
 
     public GridPaneTrailController(int rows, int columns, int stateToUse, String name) {
         this.gridPane = createGridPane(rows, columns);
         this.stateToUse = stateToUse;
         this.name = name;
-        //addClickEvent();
     }
 
     public GridPaneTrailController(GridPane gridPane, int stateToUse, String name) {
@@ -23,7 +21,6 @@ public class GridPaneTrailController {
         this.stateToUse = stateToUse;
         this.name = name;
         fillGridPaneWithCircles();
-        //addClickEvent();
     }
     //TODO pasarlo a no estatico.
     public static void setStateToUse(GridPaneTrailController gridpane, int stateToUse) {
@@ -60,23 +57,6 @@ public class GridPaneTrailController {
                 circle.setId(temporaryID.getGeneratedID());
                 gridPane.add(circle, j, i); //(column, row)
             }
-        }
-    }
-
-    //Agregamos el onMouseClicked a todos los circulos.
-    private void addClickEvent() {
-        for (Node circle : gridPane.getChildren()) {
-            String targetID  = circle.getId();
-            Circle targetedCircle = (Circle) circle;
-
-            targetedCircle.setOnMouseClicked(e -> {
-                CustomCircle circleClicked = (CustomCircle) e.getTarget();
-                ID circledClikedID = new ID(circleClicked.getId());
-                int indexColumn = circledClikedID.getIndexColumn();
-
-                Utils.paintCircles(gridPane, indexColumn, stateToUse);
-                System.out.println(circledClikedID.getGeneratedID() + " state: " + circleClicked.getState());
-            });
         }
     }
 

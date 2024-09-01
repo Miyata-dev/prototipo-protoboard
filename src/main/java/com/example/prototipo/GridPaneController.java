@@ -6,7 +6,6 @@ public class GridPaneController {
     private final String CSS_CLASS = "volt";
     private GridPane gridPane;
     private String name;
-    //private CustomCircle[][] customCircles; //esto es para monitorear
 
     public GridPaneController(int rows, int columns) {
         this.gridPane = createGridPane(rows, columns);

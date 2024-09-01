@@ -48,7 +48,7 @@ public class MainController {
                 basureroLabel
         );
         parent.getChildren().addAll(basurero, basureroLabel);
-        ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController, basurero );
+        ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController, basurero);
         clickLineMatrizUno.CircleAsignator();
         System.out.println("controller: " + basurero.getParent());
     }

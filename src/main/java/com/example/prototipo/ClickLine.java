@@ -119,12 +119,12 @@ public class ClickLine {
 
         System.out.println(CurrentLine.getTipodecarga());
         //si el circulo inicial no tiene energia, se toma la energia del circulo final.
-        if (!StartHandler.hasEnergy()) {
+        if (!StartHandler.hasEnergy() && StartHandler.getID().getIsForGridpane()) {
             String startCircleGridName = StartHandler.getID().getGridName();
             if (startCircleGridName.equals(firstGridPane.getName())) {
-                Utils.paintCircles(firstGridPane.getGridPane(), ids[0].getIndexColumn(), EndHandler.getState());
+                Utils.paintCircles(firstGridPane.getGridPane(), ids[0], EndHandler.getState());
             } else {
-                Utils.paintCircles(secondGridPane.getGridPane(), ids[0].getIndexColumn(), EndHandler.getState());
+                Utils.paintCircles(secondGridPane.getGridPane(), ids[0], EndHandler.getState());
             }
             EndHandler.setisTaken(true);
             //StartHandler.setisTaken(true);
@@ -132,9 +132,9 @@ public class ClickLine {
         //recuperamos el nombre del gridName para ver en cuan gridpane pintar
             String endCircleGridName = EndHandler.getID().getGridName();
             if (endCircleGridName.equals(firstGridPane.getName())) {
-            Utils.paintCircles(firstGridPane.getGridPane(), ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
+                Utils.paintCircles(firstGridPane.getGridPane(), ids[1], CurrentLine.getTipodecarga());
             }else {
-                Utils.paintCircles(secondGridPane.getGridPane(), ids[1].getIndexColumn(), CurrentLine.getTipodecarga());
+                Utils.paintCircles(secondGridPane.getGridPane(), ids[1], CurrentLine.getTipodecarga());
             }
             EndHandler.setisTaken(true);
             //StartHandler.setisTaken(true);
