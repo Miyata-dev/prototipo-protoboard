@@ -37,6 +37,7 @@ public class Switch extends Rectangle {//Se utiliza un rectangulo para hacer un 
         double y = square.getY();
         ID id= new ID(0,0, "volt1");
         id.setIsForGridpane(false);
+        System.out.println("is for gridPane?: " + id.getIsForGridpane());
         this.pata1= new CustomCircle(5, id, 0);
         this.pata2= new CustomCircle(5, id, 0);
         this.pata1.setisTaken(false);

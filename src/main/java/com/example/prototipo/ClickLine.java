@@ -130,14 +130,16 @@ public class ClickLine {
             //StartHandler.setisTaken(true);
         } else {
         //recuperamos el nombre del gridName para ver en cuan gridpane pintar
-            String endCircleGridName = EndHandler.getID().getGridName();
-            if (endCircleGridName.equals(firstGridPane.getName())) {
-                Utils.paintCircles(firstGridPane.getGridPane(), ids[1], CurrentLine.getTipodecarga());
-            }else {
-                Utils.paintCircles(secondGridPane.getGridPane(), ids[1], CurrentLine.getTipodecarga());
+            if (StartHandler.getID().getIsForGridpane()) {
+                String endCircleGridName = EndHandler.getID().getGridName();
+                if (endCircleGridName.equals(firstGridPane.getName())) {
+                    Utils.paintCircles(firstGridPane.getGridPane(), ids[1], CurrentLine.getTipodecarga());
+                }else {
+                    Utils.paintCircles(secondGridPane.getGridPane(), ids[1], CurrentLine.getTipodecarga());
+                }
+                EndHandler.setisTaken(true);
+                //StartHandler.setisTaken(true);
             }
-            EndHandler.setisTaken(true);
-            //StartHandler.setisTaken(true);
         }
         StartHandler = null;
         EndHandler = null;

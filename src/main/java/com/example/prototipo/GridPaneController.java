@@ -41,7 +41,7 @@ public class GridPaneController {
 
                 circle.setId(temporaryID.getGeneratedID());
                 circle.getStyleClass().add(CSS_CLASS);
-                //la fila es negativa
+
                 if (i == 0) {
                     circle.setState(-1);
                 } else if (i == 1) {
