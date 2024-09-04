@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
-
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -39,8 +39,6 @@ public class Utils {
         int columnToPaint = id.getIndexColumn();
 
         if (!id.getIsForGridpane()) return;
-
-        System.out.println(id.getIsForGridpane());
 
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(grid, columnToPaint);
 
@@ -136,6 +134,11 @@ public class Utils {
 
         ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
     }
+    //como los switches y los leds extienden rectangle, entonces solo aceptan clases que extiendan rectangle.
+    public static void deleteNode(Group nodeToDelete) {
+        System.out.println("deleting...");
+        ((AnchorPane) nodeToDelete.getParent()).getChildren().remove(nodeToDelete);
+    }
 
     //necesita el evento y el nodo para poder aplicar los calculos.
     private static void calculateOffSet(MouseEvent e, Node node, AtomicReference<Double> startX, AtomicReference<Double> startY) {
@@ -166,10 +169,6 @@ public class Utils {
                     startX,
                     startY
             );
-        });
-
-        node.setOnMouseReleased(e -> {
-            System.out.println(e.getTarget());
         });
     }
 

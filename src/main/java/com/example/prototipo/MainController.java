@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 
 public class MainController {
     @FXML
@@ -51,13 +52,15 @@ public class MainController {
     }
 
     public void crearLed() {
-        LED led = new LED(false);
-        parent.getChildren().add(led.getRectangle());
+        CustomShape customShape = new CustomShape(50, 50, 25, 15, Color.YELLOW);
+        LED led = new LED(false, customShape);
+        parent.getChildren().add(led);
     }
     public void CreateSwitch(){
-        Switch switch1 = new Switch(false);
-        //parent.getChildren().add(switch1.getPath());
-        parent.getChildren().add(switch1.getPrueba());
+        CustomShape customShape = new CustomShape(50, 50, 30, 30, Color.WHITE);
+
+        Switch switch1 = new Switch(false, customShape);
+        parent.getChildren().add(switch1);
     }
 
 }

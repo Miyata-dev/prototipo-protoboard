@@ -1,10 +1,12 @@
 package com.example.prototipo;
 
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 
 public class ClickLine {
@@ -56,11 +58,19 @@ public class ClickLine {
         });
 
         root.setOnMouseClicked(e -> {
+            System.out.println(e.getTarget() instanceof Group);
             boolean canDelete = basurero.getIsActive();
             if (!canDelete) return;
-            if (!(e.getTarget() instanceof Line)) return;
+            if (!(e.getTarget() instanceof Line || e.getTarget() instanceof Rectangle)) return;
 
-            Utils.deleteCable(e, firstGridPane, secondGridPane);
+            System.out.println(e.getTarget() instanceof Switch);
+
+            if (e.getTarget() instanceof Switch pressedNode) {
+                System.out.println("im method...");
+                //Utils.deleteNode(pressedNode);
+            } else {
+                Utils.deleteCable(e, firstGridPane, secondGridPane);
+            }
         });
     }
 

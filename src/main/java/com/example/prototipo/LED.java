@@ -5,27 +5,24 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class LED extends Rectangle {
+public class LED extends Group {
     private boolean state;  //false -> apagado      true-> encendido
     private AtomicReference<Double> startX = new AtomicReference<>((double) 0);
     private AtomicReference<Double> startY = new AtomicReference<>((double) 0);
     private CustomCircle Leg1;
     private CustomCircle Leg2;
-    private Group LedGroup;
 
-    public LED(boolean state) {
-        super();
+    public LED(boolean state, CustomShape customShape) {
+        super(customShape);
         this.state = state;
-        Rectangle led = createRectangle();
-        this.LedGroup = new Group(led);
 
-        Utils.makeDraggableNode(this.LedGroup, startX, startY);
-        this.LedGroup.setOnMouseClicked(e -> {
-            Utils.makeUndraggableNode(this.LedGroup);
-            CreateLegsLed(led);
+        Utils.makeDraggableNode(this, startX, startY);
+        this.setOnMouseClicked(e -> {
+            Utils.makeUndraggableNode(this);
+            CreateLegsLed(customShape);
         });
     }
-    private void CreateLegsLed(Rectangle led){
+    private void CreateLegsLed(CustomShape led){
         double x = led.getX();
         double y = led.getY();
         //TODO invalidar este tipo de IDS para pintar
@@ -41,8 +38,8 @@ public class LED extends Rectangle {
         this.Leg1.setTranslateY(y+7.5);
         this.Leg2.setTranslateX(x+30);
         this.Leg2.setTranslateY(y+7.5);
-        this.LedGroup.getChildren().add(Leg1);
-        this.LedGroup.getChildren().add(Leg2);
+        this.getChildren().add(Leg1);
+        this.getChildren().add(Leg2);
     }
 
     private Rectangle createRectangle() {
@@ -76,9 +73,5 @@ public class LED extends Rectangle {
 
     public AtomicReference<Double> getStartY() {
         return startY;
-    }
-
-    public Group getRectangle() {
-        return this.LedGroup;
     }
 }
