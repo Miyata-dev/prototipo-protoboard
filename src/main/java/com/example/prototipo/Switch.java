@@ -46,13 +46,4 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         this.getChildren().add(this.pata2);
     }
 
-    //Setters
-    public void setPasoDeCarga(boolean PasoDeCarga) {
-        this.PasoDeCarga = PasoDeCarga;
-    }
-
-    //Getters
-    public boolean getPasoDeCarga() {
-        return PasoDeCarga;
-    }
 }

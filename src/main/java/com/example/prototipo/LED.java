@@ -42,36 +42,4 @@ public class LED extends Group {
         this.getChildren().add(Leg2);
     }
 
-    private Rectangle createRectangle() {
-        Rectangle rectangle = new Rectangle(50, 50, 25, 15);
-
-        rectangle.setFill(Color.YELLOW);
-
-        rectangle.setStroke(Color.BLACK);
-        rectangle.setStrokeWidth(2);
-
-        rectangle.setY(300);
-        rectangle.setX(300);
-
-        return rectangle;
-    }
-
-
-    //Setters
-    public void setEstado(boolean state) {
-        this.state = state;
-    }
-
-    //Getters
-    public boolean getEstado() {
-        return state;
-    }
-
-    public AtomicReference<Double> getStartX() {
-        return startX;
-    }
-
-    public AtomicReference<Double> getStartY() {
-        return startY;
-    }
 }
