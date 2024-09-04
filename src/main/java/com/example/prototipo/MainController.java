@@ -52,12 +52,12 @@ public class MainController {
     }
 
     public void crearLed() {
-        CustomShape customShape = new CustomShape(50, 50, 25, 15, Color.YELLOW);
+        CustomShape customShape = new CustomShape(720, 504, 25, 15, Color.YELLOW);
         LED led = new LED(false, customShape);
         parent.getChildren().add(led);
     }
     public void CreateSwitch(){
-        CustomShape customShape = new CustomShape(50, 50, 30, 30, Color.WHITE);
+        CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE);
 
         Switch switch1 = new Switch(false, customShape);
         parent.getChildren().add(switch1);

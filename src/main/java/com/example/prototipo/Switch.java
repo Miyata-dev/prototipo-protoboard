@@ -45,17 +45,6 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         this.getChildren().add(this.pata1);
         this.getChildren().add(this.pata2);
     }
-//prueba
-    public Rectangle CreateSquare() { //Función que crea el Cuadrado en la posición x=720 e y=554
-        Rectangle Square = new Rectangle(50, 50, 30, 30);
-        Square.setFill(Color.WHITE);
-        Square.setStroke(Color.BLACK);
-        Square.setStrokeWidth(3);
-        //Le añadimos la ubicacion en la que aparecera
-        Square.setX(720);
-        Square.setY(554);
-        return Square;
-    }
 
     //Setters
     public void setPasoDeCarga(boolean PasoDeCarga) {
