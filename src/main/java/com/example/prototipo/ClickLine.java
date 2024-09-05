@@ -125,6 +125,12 @@ public class ClickLine {
         Cable current = new Cable();
         current.setIds(CurrentLine.getIds());
         current.setTipodecarga(CurrentLine.getTipodecarga());
+        StartHandler.setCable(current);
+        EndHandler.setCable(current);
+        System.out.println("EndHandler" + EndHandler.getID());
+        System.out.println("StartHandler" + StartHandler.getID());
+        System.out.println("id 1:" + StartHandler.getCable().getIds()[1] + "id2" + StartHandler.getCable().getIds()[0]);
+        System.out.println("id 1:" + EndHandler.getCable().getIds()[1] + "id2" + EndHandler.getCable().getIds()[0]);
         cables.add(current);
 
         System.out.println(CurrentLine.getTipodecarga());
