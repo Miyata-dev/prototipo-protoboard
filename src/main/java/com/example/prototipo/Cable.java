@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Cable extends Line {
     private int tipodecarga;
     private ID[] ids;
+    private String randomID; //esta id se da valor con un setter, no en el constructor.
 
     public Cable() {
         this.tipodecarga = 0;
@@ -48,11 +49,23 @@ public class Cable extends Line {
         this.ids = ids;
     }
 
+    public void setRandomID(String randomID) {
+        this.randomID = randomID;
+    }
+
+    public void setRandomID() {
+        this.randomID = Utils.createRandomID();
+    }
+
     public void setLine(double startX, double startY, double endX, double endY) {
         setStartX(startX);
         setStartY(startY);
         setEndX(endX);
         setEndY(endY);
+    }
+
+    public String getRandomID() {
+        return randomID;
     }
 
     public ID[] getIds() {

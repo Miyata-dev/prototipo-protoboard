@@ -16,13 +16,16 @@ public class MainController {
     public GridPane MatrizCarga1;
     public AnchorPane parent;
 
-
     public int state = -1; //tiene q ser estado local de cada matriz de alimentación.
 
     public GridPaneTrailController matrizCirculosUnoController;
     public GridPaneTrailController matrizCirculosDosController;
     public GridPaneController matrizCargaUno;
     public GridPaneController matrizCargaDos;
+    public Basurero basurero = new Basurero(
+            new Image(getClass().getResource("basurero.png").toExternalForm()),
+            new Label("Activar")
+    );
 
     public void initialize() {
         //nombres para cada grid para los identificadores unicos.
@@ -39,13 +42,8 @@ public class MainController {
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
         Bateria bateria = new Bateria(new Image(getClass().getResource("bateria.png").toExternalForm()));
-        Label basureroLabel = new Label("Activar");
-        Basurero basurero = new Basurero(
-                new Image(getClass().getResource("basurero.png").toExternalForm()),
-                basureroLabel
-        );
 
-        parent.getChildren().addAll(basurero, basureroLabel, bateria.getImage(), bateria.getPolos());
+        parent.getChildren().addAll(basurero, basurero.getLabel(), bateria.getImage(), bateria.getPolos());
         ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController, basurero );
         clickLineMatrizUno.CircleAsignator();
         System.out.println("controller: " + basurero.getParent());
@@ -53,9 +51,10 @@ public class MainController {
 
     public void crearLed() {
         CustomShape customShape = new CustomShape(720, 504, 25, 15, Color.YELLOW);
-        LED led = new LED(false, customShape);
+        LED led = new LED(false, customShape, basurero);
         parent.getChildren().add(led);
     }
+
     public void CreateSwitch(){
         CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE);
 

@@ -50,6 +50,11 @@ public class Basurero extends ImageView {
     public boolean getIsActive() {
         return isActive;
     }
+
+    public Label getLabel() {
+        return label;
+    }
+
     public void setActive(boolean active) {
         this.isActive = active;
     }

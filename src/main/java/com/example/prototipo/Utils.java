@@ -3,6 +3,7 @@ package com.example.prototipo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -176,5 +177,9 @@ public class Utils {
         //
         node.setOnMousePressed(null);
         node.setOnMouseDragged(null);
+    }
+
+    public static String createRandomID() {
+        return UUID.randomUUID().toString();
     }
 }
