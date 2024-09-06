@@ -4,6 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuadrado
@@ -29,7 +30,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
     public void TranslatePatas(Rectangle square){
         double x = square.getX();
         double y = square.getY();
-        ID id= new ID(0,0, "volt1");
+        ID id= new ID(0,0, "switchvolt1");
         id.setIsForGridpane(false);
         System.out.println("is for gridPane?: " + id.getIsForGridpane());
         this.pata1= new CustomCircle(5, id, 0);
@@ -45,5 +46,4 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         this.getChildren().add(this.pata1);
         this.getChildren().add(this.pata2);
     }
-
 }

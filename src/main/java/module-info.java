@@ -4,6 +4,7 @@ module com.example.prototipo {
     requires java.desktop;
     requires java.management;
     requires jdk.jshell;
+    requires java.sql;
 
 
     opens com.example.prototipo to javafx.fxml;

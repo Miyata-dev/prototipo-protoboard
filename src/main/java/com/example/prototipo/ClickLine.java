@@ -19,6 +19,7 @@ public class ClickLine {
     private GridPaneTrailController secondGridPane;
     private ArrayList<Cable> cables = new ArrayList<>();
     private Basurero basurero;
+    private CustomShape rec;
 
     public ClickLine(AnchorPane root, GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, Basurero basurero) {
         this.root = root;
@@ -52,13 +53,16 @@ public class ClickLine {
         });
         // TODO implementar quite de energia una vez el cable se va.
         root.setOnMouseDragged(e -> {
-            System.out.println("in event dragged: " + CurrentLine.getRandomID());
             //se asegura que acabe en un circulo.
             if (e.getTarget() instanceof Circle) {
                 DragLine(e.getX(), e.getY(),e );
             }
         });
         root.setOnMouseReleased(e -> {
+            if (e.getTarget() instanceof CustomShape shape) {
+                rec = shape;
+            }
+
             if(!(e.getTarget() instanceof CustomCircle)) return;
             RealizeLine(e);
         });
@@ -66,7 +70,7 @@ public class ClickLine {
         root.setOnMouseClicked(e -> {
             boolean canDelete = basurero.getIsActive();
             if (!canDelete) return;
-            if (!(e.getTarget() instanceof Line || e.getTarget() instanceof Rectangle)) return;
+            //if (!(e.getTarget() instanceof Line || e.getTarget() instanceof CustomShape)) return;
 
             Utils.deleteCable(e, firstGridPane, secondGridPane);
         });
@@ -95,15 +99,26 @@ public class ClickLine {
             }
             ids[1] = new ID(UltimateCircle.getID().getGeneratedID());
             SetEndHandler(UltimateCircle);
+            //se da valor del cable de nuevo, ya que el EndHandler se actualiza, y por ende pierdse el valor del cable.
+            StartHandler.setCable(CurrentLine);
+            EndHandler.setCable(CurrentLine);
+
             if(!(ID.isSameID(ids[0], ids[1]))){
                 CurrentLine.setEndX(x);
                 CurrentLine.setEndY(y);
             }
             System.out.println("in drag line: " + CurrentLine.getRandomID());
+            System.out.println("in custom: " + StartHandler.getCable().getRandomID());
         }
     }
     //TODO colocar setIsTaken en el deleteCable.
     private void RealizeLine(MouseEvent e) {
+        //
+        String[] gridNames = {
+                "switchvolt1",
+                "LedVolt1"
+        };
+
         if (EndHandler == null || StartHandler == null) {  // REVISAR METODO, PORQUE AL PRESIONAR EL CIRCULO FINAL DE LA LINEA SE ELIMINA EL CABLE
 
             CustomCircle circle = (CustomCircle) e.getTarget();
@@ -127,13 +142,40 @@ public class ClickLine {
         current.setTipodecarga(CurrentLine.getTipodecarga());
         current.setRandomID(CurrentLine.getRandomID());
 
-        System.out.println("in release line " + CurrentLine.getRandomID());
-
         StartHandler.setCable(current);
         EndHandler.setCable(current);
+
+        System.out.println("in release line " + StartHandler.getCable().getRandomID());
         cables.add(current);
 
         System.out.println(CurrentLine.getTipodecarga());
+
+        if (rec != null && !StartHandler.getID().getIsForGridpane()) {
+            System.out.println("pata 1 del led");
+
+            if (StartHandler.getID().getIndexRow() == 1) {
+                System.out.println("ID 1");
+                rec.setLeg1(StartHandler);
+                System.out.println(StartHandler.getCable());
+            } else if (StartHandler.getID().getIndexRow() == 2) {
+                System.out.println("ID 2");
+                rec.setLeg2(StartHandler);
+                System.out.println(StartHandler.getCable());
+            }
+
+        } else if (rec != null && !EndHandler.getID().getIsForGridpane()) {
+            System.out.println("pata 2 del led");
+            if (EndHandler.getID().getIndexRow() == 1) {
+                System.out.println("ID 1");
+                rec.setLeg1(EndHandler);
+                System.out.println(EndHandler.getCable());
+            } else if (EndHandler.getID().getIndexRow() == 2) {
+                System.out.println("ID 2");
+                rec.setLeg2(EndHandler);
+                System.out.println(EndHandler.getCable());
+            }
+        }
+
         //si el circulo inicial no tiene energia, se toma la energia del circulo final.
         if (!StartHandler.hasEnergy() && StartHandler.getID().getIsForGridpane()) {
             String startCircleGridName = StartHandler.getID().getGridName();
@@ -157,6 +199,7 @@ public class ClickLine {
                 //StartHandler.setisTaken(true);
             }
         }
+        //TODO revisar que hace.
         StartHandler = null;
         EndHandler = null;
     }
