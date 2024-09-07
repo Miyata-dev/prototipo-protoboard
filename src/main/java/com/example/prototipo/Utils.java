@@ -53,7 +53,6 @@ public class Utils {
 
         circles.forEach(circle -> {
             circle.setState(0);
-            System.out.println("state in paintCircles: " + circle.getState());
         });
     }
 
@@ -132,7 +131,7 @@ public class Utils {
             unPaintCircles(firstCircleGridPane, firstID.getIndexColumn());
             System.out.println("number of cables: " + numberOfCables(firstCircleGridPane, firstID.getIndexColumn()));
         }
-
+        System.out.println(pressedCable.getRandomID());
         ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
     }
     //como los switches y los leds extienden rectangle, entonces solo aceptan clases que extiendan rectangle.

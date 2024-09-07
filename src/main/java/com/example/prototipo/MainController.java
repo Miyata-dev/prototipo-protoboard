@@ -51,7 +51,7 @@ public class MainController {
 
     public void crearLed() {
         CustomShape customShape = new CustomShape(720, 504, 25, 15, Color.YELLOW);
-        LED led = new LED(false, customShape, basurero);
+        LED led = new LED(false, customShape, basurero, parent);
         parent.getChildren().add(led);
     }
 

@@ -1,12 +1,10 @@
 package com.example.prototipo;
 
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 
 public class ClickLine {
@@ -34,15 +32,10 @@ public class ClickLine {
         root.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             Node nodoclickeado = event.getPickResult().getIntersectedNode();
             if(nodoclickeado instanceof CustomCircle && !((CustomCircle) nodoclickeado).getIsTaken()){
-
                 CustomCircle Circulo = (CustomCircle) nodoclickeado;
 
                 SetStartHandler(Circulo);
                 StartHandler.setisTaken(true);
-
-                CurrentLine.setRandomID();
-
-                System.out.println("in mouse pressed: " + CurrentLine.getRandomID());
 
                 CurrentLine.setTipodecarga(Circulo.getState()); //se pasa por el cable el tipo de carga que tiene el circulo
 
@@ -70,22 +63,24 @@ public class ClickLine {
         root.setOnMouseClicked(e -> {
             boolean canDelete = basurero.getIsActive();
             if (!canDelete) return;
-            //if (!(e.getTarget() instanceof Line || e.getTarget() instanceof CustomShape)) return;
+            if (!(e.getTarget() instanceof Line || e.getTarget() instanceof CustomShape)) return;
 
             Utils.deleteCable(e, firstGridPane, secondGridPane);
         });
     }
-
+    //TODO: aca puede que ocurran los ids duplicados.
     private void LinePressed(AnchorPane root,MouseEvent Event){
         if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) {  //Verifica que empiece solo de los circulos
             //CurrentLine.setLine(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
             int carga = CurrentLine.getTipodecarga();
-            String previousID = CurrentLine.getRandomID();
+            //String previousID = CurrentLine.getRandomID();
             CurrentLine = new Cable(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
             CurrentLine.setTipodecarga(carga);
             CurrentLine.setStrokeWidth(5);
-            CurrentLine.setRandomID(previousID);
-            //TODO SE HACE UN CLICK Y SE CREA UN PUNTO EN LOS CIRCULOS
+            CurrentLine.setRandomID();
+
+            System.out.println("in line pressed: " + CurrentLine.getRandomID());
+
             root.getChildren().add(CurrentLine);
         }
     }
@@ -107,8 +102,6 @@ public class ClickLine {
                 CurrentLine.setEndX(x);
                 CurrentLine.setEndY(y);
             }
-            System.out.println("in drag line: " + CurrentLine.getRandomID());
-            System.out.println("in custom: " + StartHandler.getCable().getRandomID());
         }
     }
     //TODO colocar setIsTaken en el deleteCable.
@@ -123,7 +116,6 @@ public class ClickLine {
 
             CustomCircle circle = (CustomCircle) e.getTarget();
             //si no esta tomado, se sale de la funcion, y por lo tanto no se elimina.
-            System.out.println("state: " + circle.getState());
             if (!circle.getIsTaken()) return;
             if (StartHandler == null && circle.hasEnergy()) return;
 
@@ -145,20 +137,22 @@ public class ClickLine {
         StartHandler.setCable(current);
         EndHandler.setCable(current);
 
-        System.out.println("in release line " + StartHandler.getCable().getRandomID());
         cables.add(current);
 
         System.out.println(CurrentLine.getTipodecarga());
+
+        System.out.println("IN RELEASE: " + StartHandler.getCable().getRandomID());
+        System.out.println("IN RELEASE: " + EndHandler.getCable().getRandomID());
 
         if (rec != null && !StartHandler.getID().getIsForGridpane()) {
             System.out.println("pata 1 del led");
 
             if (StartHandler.getID().getIndexRow() == 1) {
-                System.out.println("ID 1");
+                System.out.println("ID 1 " + EndHandler.getCable().getRandomID());
                 rec.setLeg1(StartHandler);
                 System.out.println(StartHandler.getCable());
             } else if (StartHandler.getID().getIndexRow() == 2) {
-                System.out.println("ID 2");
+                System.out.println("ID 2 " + EndHandler.getCable().getRandomID());
                 rec.setLeg2(StartHandler);
                 System.out.println(StartHandler.getCable());
             }
@@ -166,11 +160,11 @@ public class ClickLine {
         } else if (rec != null && !EndHandler.getID().getIsForGridpane()) {
             System.out.println("pata 2 del led");
             if (EndHandler.getID().getIndexRow() == 1) {
-                System.out.println("ID 1");
+                System.out.println("ID 1 " + EndHandler.getCable().getRandomID());
                 rec.setLeg1(EndHandler);
                 System.out.println(EndHandler.getCable());
             } else if (EndHandler.getID().getIndexRow() == 2) {
-                System.out.println("ID 2");
+                System.out.println("ID 2: " + EndHandler.getCable().getRandomID());
                 rec.setLeg2(EndHandler);
                 System.out.println(EndHandler.getCable());
             }
@@ -199,6 +193,12 @@ public class ClickLine {
                 //StartHandler.setisTaken(true);
             }
         }
+        for (Node n : root.getChildren()) {
+            if (n instanceof Cable) {
+                System.out.println(((Cable) n).getRandomID());
+            }
+        }
+
         //TODO revisar que hace.
         StartHandler = null;
         EndHandler = null;
