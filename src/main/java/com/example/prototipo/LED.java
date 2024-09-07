@@ -8,29 +8,28 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class LED extends Group {
     private boolean state;  //false -> apagado      true-> encendido
-    private AtomicReference<Double> startX = new AtomicReference<>((double) 0);
-    private AtomicReference<Double> startY = new AtomicReference<>((double) 0);
     private Basurero basurero;
+
 
     public LED(boolean state, CustomShape customShape, Basurero basurero) {
         super(customShape);
-        //TODO invalidar este tipo de IDS para pintar
-
         this.state = state;
         this.basurero = basurero;
+        LedFunction(customShape);
 
-        Utils.makeDraggableNode(this, startX, startY);
+        Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());
         init(customShape);
 
         this.setOnMouseClicked(e -> {
+            //Al momento de soltar el LED se pueden crear Cables
             customShape.getLeg1().setisTaken(false);
             customShape.getLeg2().setisTaken(false);
             Utils.makeUndraggableNode(this);
-            //CreateLegsLed(customShape);
+
 
             if (basurero.getIsActive()) {
-                System.out.println(customShape.getLeg2().getCable());
-                System.out.println(customShape.getLeg1().getCable());
+                System.out.println(customShape.getLeg2().getCable().getRandomID());
+                System.out.println(customShape.getLeg1().getCable().getRandomID());
             }
         });
     }
@@ -47,14 +46,14 @@ public class LED extends Group {
 
         customShape.setLeg1(new CustomCircle(5,idUno,0));
         customShape.setLeg2(new CustomCircle(5,idDos,0));
-
+        //Creamos la primera pata del LED
         customShape.getLeg1().setisTaken(true);
-        customShape.getLeg1().setFill(Color.RED);
+        customShape.getLeg1().setFill(Color.ROYALBLUE);
         customShape.getLeg1().setTranslateX(x-5);
         customShape.getLeg1().setTranslateY(y+7.5);
-
+        //Creamos la segunda pata del LED
         customShape.getLeg2().setisTaken(true);
-        customShape.getLeg2().setFill(Color.RED);
+        customShape.getLeg2().setFill(Color.ROYALBLUE);
         customShape.getLeg2().setTranslateX(x+30);
         customShape.getLeg2().setTranslateY(y+7.5);
 
@@ -62,23 +61,13 @@ public class LED extends Group {
         this.getChildren().add(customShape.getLeg2());
     }
 
-    /*
-    private void CreateLegsLed(CustomShape led){
-        double x = led.getX();
-        double y = led.getY();
-        //TODO invalidar este tipo de IDS para pintar
-        ID id = new ID(1,1,"LedVolt1");
-        id.setIsForGridpane(false);
+    public void LedFunction(CustomShape customShape){
+        //false -> apagado      true-> encendido
+        if(this.state == true){
+            customShape.setFill(Color.GREEN);
+        } else{
+            customShape.setFill(Color.RED);
+        }
+    }
 
-        this.Leg1.setisTaken(false);
-        this.Leg2.setisTaken(false);
-        this.Leg1.setFill(Color.RED);
-        this.Leg2.setFill(Color.RED);
-        this.Leg1.setTranslateX(x-5);
-        this.Leg1.setTranslateY(y+7.5);
-        this.Leg2.setTranslateX(x+30);
-        this.Leg2.setTranslateY(y+7.5);
-        this.getChildren().add(Leg1);
-        this.getChildren().add(Leg2);
-    } */
 }
