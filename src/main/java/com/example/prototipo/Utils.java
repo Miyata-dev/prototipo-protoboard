@@ -33,20 +33,58 @@ public class Utils {
         return circles;
     }
 
+    public static ArrayList<CustomCircle> getRowOfCustomCircles(GridPane grid, int rowToGet) {
+        Iterator<Node> circleToPaint = grid.getChildren().iterator();
+        ArrayList<CustomCircle> circles = new ArrayList<>();
+
+        while(circleToPaint.hasNext()) {
+            Node circle = circleToPaint.next();
+            String targetID = circle.getId();
+            ID temporaryID = new ID(targetID);
+            CustomCircle targetedCircle = (CustomCircle) circle;
+
+            if (ID.isThisRow(temporaryID, rowToGet)) {
+                circles.add(targetedCircle);
+                System.out.println(targetedCircle.getID().getIndexRow());
+            }
+        }
+
+        return circles;
+    }
+
     //TODO resolver bug cuando se contecta 2 cables en los grid de voltios. propuesta, debe tomar un gridpanetrail.
     //pinta una columna de un color dependiendo del estado que tenga (1 ¿ positivo, -1 negativo), pasar ID y calcular el
     // indice de columna, ver si la id es valida o no (a travez de su gridName)
     public static void paintCircles(GridPane grid, ID id, int state) {
+        String[] validGridNames = {
+                "gridTrail1",
+                "gridTrail2"
+        };
         int columnToPaint = id.getIndexColumn();
-
         if (!id.getIsForGridpane()) return;
-
+        if (!Arrays.asList(validGridNames).contains(id.getGridName())) return;
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(grid, columnToPaint);
-
         circles.forEach(circle -> {
             circle.setState(state);
         });
     }
+    public static void paintCirclesVolt(GridPane grid, ID id, int state){
+        String[] validGridNames = {
+                "gridVolt1",
+                "gridVolt2"
+        };
+        int rowToPaint = id.getIndexRow();
+        if (!id.getIsForGridpane()) return;
+        if (!Arrays.asList(validGridNames).contains(id.getGridName())) return;
+        ArrayList<CustomCircle> circles = getRowOfCustomCircles(grid, rowToPaint);
+
+        circles.forEach(circle -> {
+            circle.setState(state);
+        });
+
+    }
+
+
 
     public static void unPaintCircles(GridPane grid, int columnToUnPaint) {
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(grid, columnToUnPaint);

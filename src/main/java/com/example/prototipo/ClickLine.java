@@ -1,13 +1,13 @@
 package com.example.prototipo;
 
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
+import jdk.jshell.execution.Util;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ClickLine {
     private Cable CurrentLine;
@@ -17,14 +17,18 @@ public class ClickLine {
     private AnchorPane root;
     private GridPaneTrailController firstGridPane;
     private GridPaneTrailController secondGridPane;
+    private GridPaneController firsGridPaneVolt;
+    private GridPaneController secondGridPaneVolt;
     private ArrayList<Cable> cables = new ArrayList<>();
     private Basurero basurero;
     private CustomShape rec;
 
-    public ClickLine(AnchorPane root, GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, Basurero basurero) {
+    public ClickLine(AnchorPane root, GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane,GridPaneController firsGridPaneVolt1,GridPaneController firsGridPaneVolt2, Basurero basurero) {
         this.root = root;
         this.firstGridPane = firstGridPane;
         this.secondGridPane = secondGridPane;
+        this.firsGridPaneVolt = firsGridPaneVolt1;
+        this.secondGridPaneVolt = firsGridPaneVolt2;
         this.basurero = basurero;
         ids = new ID[2];
         CurrentLine = new Cable();
@@ -40,7 +44,7 @@ public class ClickLine {
                 SetStartHandler(Circulo);
                 StartHandler.setisTaken(true);
 
-                CurrentLine.setRandomID();
+//                CurrentLine.setRandomID();
 
                 System.out.println("in mouse pressed: " + CurrentLine.getRandomID());
 
@@ -81,6 +85,7 @@ public class ClickLine {
             //CurrentLine.setLine(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
             int carga = CurrentLine.getTipodecarga();
             String previousID = CurrentLine.getRandomID();
+
             CurrentLine = new Cable(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
             CurrentLine.setTipodecarga(carga);
             CurrentLine.setStrokeWidth(5);
@@ -100,15 +105,12 @@ public class ClickLine {
             ids[1] = new ID(UltimateCircle.getID().getGeneratedID());
             SetEndHandler(UltimateCircle);
             //se da valor del cable de nuevo, ya que el EndHandler se actualiza, y por ende pierdse el valor del cable.
-            StartHandler.setCable(CurrentLine);
-            EndHandler.setCable(CurrentLine);
 
             if(!(ID.isSameID(ids[0], ids[1]))){
                 CurrentLine.setEndX(x);
                 CurrentLine.setEndY(y);
             }
-            System.out.println("in drag line: " + CurrentLine.getRandomID());
-            System.out.println("in custom: " + StartHandler.getCable().getRandomID());
+
         }
     }
     //TODO colocar setIsTaken en el deleteCable.
@@ -116,7 +118,13 @@ public class ClickLine {
         //
         String[] gridNames = {
                 "switchvolt1",
-                "LedVolt1"
+                "LedVolt1",
+                "BateryVolt"
+        };
+
+        String[] edgeCases = {
+                "gridVolt1",
+                "gridVolt2"
         };
 
         if (EndHandler == null || StartHandler == null) {  // REVISAR METODO, PORQUE AL PRESIONAR EL CIRCULO FINAL DE LA LINEA SE ELIMINA EL CABLE
@@ -175,25 +183,52 @@ public class ClickLine {
                 System.out.println(EndHandler.getCable());
             }
         }
+        System.out.println("GRIDPANE start SELECT: " + StartHandler.getID().getGridName());
+        System.out.println("GRIDPANE END SELECT: " + EndHandler.getID().getGridName());
+
+        //CASO BATERIA-GRIDPANEVOLT OR GRIDPANEVOLT-BATERIA
+        if (Arrays.asList(edgeCases).contains(StartHandler.getID().getGridName()) && Arrays.asList(gridNames).contains(EndHandler.getID().getGridName())){ //PREGUNTA SI DE DONDE EMPIEZA ES UN GRIDPANEVOLT Y SI TERMINA ES LA BATERIA (GRIDPANEVOLT --> BATERIA)
+            String startCircleGridnamevolt = StartHandler.getID().getGridName();
+            if(startCircleGridnamevolt.equals(firsGridPaneVolt.getName())){ // PREGUNTA SI DE DONDE EMPIEZA ES EL PRIMER GRIDPANEVOLT (GRIDPANEVOLT-->BATERIA)
+                Utils.paintCirclesVolt(firsGridPaneVolt.getGridPane(),ids[0],EndHandler.getState());
+            }  else{ // PARA EL CASO DEL SEGUNDO GRIDPANEVOLT (GRIDPANEVOLT --> BATERIA)
+                Utils.paintCirclesVolt(secondGridPaneVolt.getGridPane(),ids[0],EndHandler.getState());
+            }
+        }else if(Arrays.asList(edgeCases).contains(EndHandler.getID().getGridName()) && Arrays.asList(gridNames).contains(StartHandler.getID().getGridName())){ // PREGUNTA SI DE DONDE EMPIEZA ES UNA BATERIA Y SI TERMINA EN UN GRIDPANEVOLT (BATERIA --> GRIDPANEVOLT)
+            String FinalCircleGridnamevolt = EndHandler.getID().getGridName();
+            if(FinalCircleGridnamevolt.equals(firsGridPaneVolt.getName())){ // BATERIA --> PRIMER GRIDPANEVOLT
+                 Utils.paintCirclesVolt(firsGridPaneVolt.getGridPane(),ids[1],StartHandler.getState());
+            }else{ // BATERIA --> SEGUNDO GRIDPANEVOLT
+                Utils.paintCirclesVolt(secondGridPaneVolt.getGridPane(),ids[1],StartHandler.getState());
+            }
+        }
 
         //si el circulo inicial no tiene energia, se toma la energia del circulo final.
-        if (!StartHandler.hasEnergy() && StartHandler.getID().getIsForGridpane()) {
+        if ( ( !StartHandler.hasEnergy() && StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane() ) || (EndHandler.getID().getGridName()).equals(gridNames[2]) ) { // PREGUNTA SI DONDE EMPIEZA Y DONDE TERMINA ES PARA UN GRIDPANE, ADEMAS DE PREGUNTAR SI DONDE TERMINA ES UNA BATERIA
             String startCircleGridName = StartHandler.getID().getGridName();
             if (startCircleGridName.equals(firstGridPane.getName())) {
                 Utils.paintCircles(firstGridPane.getGridPane(), ids[0], EndHandler.getState());
-            } else {
+            } else if(startCircleGridName.equals(secondGridPane.getName())) {
                 Utils.paintCircles(secondGridPane.getGridPane(), ids[0], EndHandler.getState());
+            } else if (startCircleGridName.equals(firsGridPaneVolt.getName())) {
+                Utils.paintCirclesVolt(firsGridPaneVolt.getGridPane(),ids[0],EndHandler.getState());
+            } else if (startCircleGridName.equals(secondGridPaneVolt.getName())) {
+                Utils.paintCirclesVolt(secondGridPaneVolt.getGridPane(),ids[0],EndHandler.getState());
             }
             EndHandler.setisTaken(true);
             //StartHandler.setisTaken(true);
         } else {
-        //recuperamos el nombre del gridName para ver en cuan gridpane pintar
-            if (StartHandler.getID().getIsForGridpane()) {
+        //recuperamos el nombre del gridName para ver en cual gridpane pintar
+            if ( (StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane()) || (StartHandler.getID().getGridName()).equals(gridNames[2]) ) { // Pregunta si el gridname es igual al gridname de la bateria
                 String endCircleGridName = EndHandler.getID().getGridName();
                 if (endCircleGridName.equals(firstGridPane.getName())) {
                     Utils.paintCircles(firstGridPane.getGridPane(), ids[1], CurrentLine.getTipodecarga());
-                }else {
+                }else if(endCircleGridName.equals(secondGridPane.getName())){
                     Utils.paintCircles(secondGridPane.getGridPane(), ids[1], CurrentLine.getTipodecarga());
+                } else if (endCircleGridName.equals(firsGridPaneVolt.getName())) {
+                    Utils.paintCirclesVolt(firsGridPaneVolt.getGridPane(),ids[1],CurrentLine.getTipodecarga());
+                } else if(endCircleGridName.equals(secondGridPaneVolt.getName())){
+                    Utils.paintCirclesVolt(secondGridPaneVolt.getGridPane(),ids[1],CurrentLine.getTipodecarga());
                 }
                 EndHandler.setisTaken(true);
                 //StartHandler.setisTaken(true);
@@ -203,12 +238,6 @@ public class ClickLine {
         StartHandler = null;
         EndHandler = null;
     }
-
-    public void SetStartHandler(CustomCircle startHandler){
-        this.StartHandler = startHandler;
-
-    }
-    public void SetEndHandler(CustomCircle endHandler){
-        this.EndHandler = endHandler;
-    }
+    public void SetStartHandler(CustomCircle startHandler){this.StartHandler = startHandler;}
+    public void SetEndHandler(CustomCircle endHandler){this.EndHandler = endHandler;}
 }

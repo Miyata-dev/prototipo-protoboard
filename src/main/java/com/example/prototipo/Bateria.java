@@ -3,30 +3,36 @@ package com.example.prototipo;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
 public class Bateria {
     private Image image;
-    private CustomCircle PoloNegativo,PoloPositivo;
+    private CustomCircle NegativePole, PositivePole;
     private Group Polos;
 
     public Bateria(Image image) {
         this.image = image;
-        PoloNegativo = new CustomCircle(5,new ID(0,0,"volt1"),-1);
-        PoloPositivo = new CustomCircle(5,new ID(0,0,"volt1"),1);
 
-        Polos = new Group(this.PoloNegativo,this.PoloPositivo);
+        ID IdForNegative = new ID(2,1,"BateryVolt");
+        ID IdForPositive = new ID(1,1,"BateryVolt");
+        IdForNegative.setIsForGridpane(false);
+        IdForPositive.setIsForGridpane(false);
 
-        this.PoloNegativo.setCenterX(750);
-        this.PoloNegativo.setCenterY(350);
+        NegativePole = new CustomCircle(5,IdForNegative,-1);
+        PositivePole = new CustomCircle(5,IdForPositive,1);
 
-        this.PoloPositivo.setCenterX(750);
-        this.PoloPositivo.setCenterY(250);
+        Polos = new Group(this.NegativePole,this.PositivePole);
 
-        PoloPositivo.setFill(Color.ORANGE);
-        PoloNegativo.setFill(Color.BLUE);
+        this.NegativePole.setCenterX(750);
+        this.NegativePole.setCenterY(350);
+
+        this.PositivePole.setCenterX(750);
+        this.PositivePole.setCenterY(250);
+
+        PositivePole.setFill(Color.ORANGE);
+        NegativePole.setFill(Color.BLUE);
     }
+
     public ImageView getImage() {
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(100);
