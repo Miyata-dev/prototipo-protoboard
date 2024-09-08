@@ -28,39 +28,8 @@ public class LED extends Group {
             Utils.makeUndraggableNode(this);
 
             if (basurero.getIsActive()) {
-                System.out.println("this: " + this);
-
-                System.out.println(customShape.getLeg2().getCable() + " has cable: " + customShape.getLeg2().hasCable());
-                System.out.println(customShape.getLeg1().getCable() + " has cable: " + customShape.getLeg1().hasCable());
-
-                Node node = (Node) e.getTarget();
-
-                System.out.println(node);
-
-                if (customShape.getLeg2().hasCable()) {
-                    System.out.println("im here");
-                    Cable cableToRemove = customShape.getLeg2().getCable();
-                    System.out.println(cableToRemove.getRandomID());
-
-                    System.out.println(node.getParent().getParent());
-                    root.getChildren().removeIf(element -> {
-                        return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
-                    });
-                }
-
-                if (customShape.getLeg1().hasCable()) {
-                    System.out.println("im here");
-                    Cable cableToRemove = customShape.getLeg1().getCable();
-                    System.out.println(cableToRemove.getRandomID());
-                    System.out.println("hola" + node.getParent());
-
-                    root.getChildren().removeIf(element -> {
-                        return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
-                    });
-                }
-
+                basurero.EliminateElements(customShape, e, root);
                 //como node es Rectangle, el getParent devuelve LED, y no AnchorPane, por lo cual hay que obtener el Parent de LED, por eso está el método getparent 2 veces.
-
                 root.getChildren().remove(this);
             }
         });

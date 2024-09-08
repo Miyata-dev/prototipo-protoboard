@@ -1,9 +1,12 @@
 
 package com.example.prototipo;
 
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 
 public class Basurero extends ImageView {
     private Image image;
@@ -45,6 +48,40 @@ public class Basurero extends ImageView {
             popup.show();
             this.isActive = !this.isActive;
         });
+    }
+
+    public void EliminateElements(CustomShape customShape, MouseEvent e, AnchorPane root){
+        System.out.println("this: " + this);
+
+        System.out.println(customShape.getLeg2().getCable() + " has cable: " + customShape.getLeg2().hasCable());
+        System.out.println(customShape.getLeg1().getCable() + " has cable: " + customShape.getLeg1().hasCable());
+
+        Node node = (Node) e.getTarget();
+
+        System.out.println(node);
+
+        if (customShape.getLeg2().hasCable()) {
+            System.out.println("im here");
+            Cable cableToRemove = customShape.getLeg2().getCable();
+            System.out.println(cableToRemove.getRandomID());
+
+            System.out.println(node.getParent().getParent());
+            root.getChildren().removeIf(element -> {
+                return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
+            });
+        }
+
+        if (customShape.getLeg1().hasCable()) {
+            System.out.println("im here");
+            Cable cableToRemove = customShape.getLeg1().getCable();
+            System.out.println(cableToRemove.getRandomID());
+            System.out.println("hola" + node.getParent());
+
+            root.getChildren().removeIf(element -> {
+                return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
+            });
+        }
+
     }
 
     public boolean getIsActive() {
