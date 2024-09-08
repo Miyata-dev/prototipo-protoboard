@@ -29,6 +29,7 @@ public class Basurero extends ImageView {
         label.setId("basureroLabel");
         label.setTranslateY(60);
 
+        //Lo que hacemos es Mostrar un mensaje de alerta que muestra cuando el Basurero esta activo o Desactivado al Usuario
         Popup popup = new Popup(
                 "Haz dado click al basurero",
                 "Al darle click",
@@ -50,38 +51,27 @@ public class Basurero extends ImageView {
         });
     }
 
+    //Este metodo lo que hace es eliminar los cables que pertenecen a un elemento del Protoboard que puede ser un Switch o un LED
     public void EliminateElements(CustomShape customShape, MouseEvent e, AnchorPane root){
-        System.out.println("this: " + this);
-
-        System.out.println(customShape.getLeg2().getCable() + " has cable: " + customShape.getLeg2().hasCable());
-        System.out.println(customShape.getLeg1().getCable() + " has cable: " + customShape.getLeg1().hasCable());
-
         Node node = (Node) e.getTarget();
 
-        System.out.println(node);
-
         if (customShape.getLeg2().hasCable()) {
-            System.out.println("im here");
             Cable cableToRemove = customShape.getLeg2().getCable();
-            System.out.println(cableToRemove.getRandomID());
 
-            System.out.println(node.getParent().getParent());
+            //Se realiza un eliminacion si el elemento es un cable y ademas las ID son iguales al cable a remover del Elemento Correspondiente
             root.getChildren().removeIf(element -> {
                 return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
             });
-        }
 
-        if (customShape.getLeg1().hasCable()) {
-            System.out.println("im here");
+        }else if (customShape.getLeg1().hasCable()) {
             Cable cableToRemove = customShape.getLeg1().getCable();
-            System.out.println(cableToRemove.getRandomID());
-            System.out.println("hola" + node.getParent());
 
+            //Se realiza un eliminacion si el elemento es un cable y ademas las ID son iguales al cable a remover del Elemento Correspondiente
             root.getChildren().removeIf(element -> {
                 return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
             });
-        }
 
+        }
     }
 
     public boolean getIsActive() {

@@ -1,7 +1,6 @@
 package com.example.prototipo;
 
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
@@ -28,8 +27,8 @@ public class LED extends Group {
             Utils.makeUndraggableNode(this);
 
             if (basurero.getIsActive()) {
+                //Llamamos al metodo del Basurero para borrar los cables que pueden tener el LED y despues borrar este mismo
                 basurero.EliminateElements(customShape, e, root);
-                //como node es Rectangle, el getParent devuelve LED, y no AnchorPane, por lo cual hay que obtener el Parent de LED, por eso está el método getparent 2 veces.
                 root.getChildren().remove(this);
             }
         });
@@ -37,6 +36,7 @@ public class LED extends Group {
 
     //Este metodo crea las patas del LED de manera ordenada
     public void init(CustomShape customShape) {
+        //Las ID del LED son unicas para futuras verificaciones
         ID idUno = new ID(1, 1, "LedVolt1");
         idUno.setIsForGridpane(false);
 
@@ -59,31 +59,34 @@ public class LED extends Group {
         customShape.getLeg2().setTranslateX(x + 30);
         customShape.getLeg2().setTranslateY(y + 7.5);
 
+        //Se añaden al Grupo del LED
         this.getChildren().add(customShape.getLeg1());
         this.getChildren().add(customShape.getLeg2());
     }
 
+
     //Este metodo lo que hace es cambiar el color del LED cuando Cambia su estado
     public void LedFunction(CustomShape customShape) {
         //false -> apagado      true-> encendido
-        if (this.state == true) {
+        if (this.state) {
+            //Cuando el LED esta encendido el relleno se mostrara Verde y si esta apagado sera Rojo
             customShape.setFill(Color.GREEN);
         } else {
             customShape.setFill(Color.RED);
         }
     }
 
-
-    //TODO confirmar que se este cumpliendo la condicion
+    //Metodo para mostrar si el LED esta encendido o Apagado
     public void ONorOFF(CustomShape customShape) {
         //Preguntamos si las dos patas tienen energía y ademas la energia que tienen es distinta entre si
         if ((customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasEnergy()) && (customShape.getLeg2().getState() != customShape.getLeg1().getState())) {
-            System.out.println("hola");
+            //al ser distintas actualizamos el estado a true que es igual a encendido
             this.state=true;
+            //Y lo cambiamos para que se vea graficamente
             LedFunction(customShape);
         } else {
+            //en el caso que la condicion sea false se cambiara el state a false que es igual a apagado y se cambiara graficamente el LED a apagado
             this.state=false;
-            System.out.println("hola");
             LedFunction(customShape);
         }
     }

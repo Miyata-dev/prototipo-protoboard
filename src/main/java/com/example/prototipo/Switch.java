@@ -1,7 +1,6 @@
 package com.example.prototipo;
 
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
@@ -30,6 +29,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
             customShape.getLeg2().setisTaken(false);
 
             if (basurero.getIsActive()) {
+                //Llamamos al metodo para eliminar los cables que pueden pertenecer al Switch y despues borrar este mismo
                 basurero.EliminateElements(customShape, e, root);
                 root.getChildren().remove(this);
             }
@@ -65,7 +65,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
     }
 
 
-    //TODO refactorizar el codigo
+    //TODO refactorizar el codigo, ya que son muchos if else y ver manera de simplificarlo
     public void ChargePass(CustomShape customShape, GridPaneController grid1, GridPaneController grid2){
         //Preguntamos si es que el paso de carga del Switch esta activado o no
         if(this.PasoDeCarga == true){
