@@ -263,6 +263,22 @@ public class Utils {
         node.setOnMouseDragged(null);
     }
 
+    //Metodo que realiza la funcion que corresponde a un Switch o un LED
+    public static void IdentifiedFunction(CustomCircle StartHandler, CustomCircle EndHandler, CustomShape customShape){
+        String[] GridNames = {
+                "LedVolt1",
+                "switchvolt1"
+        };
+        //Esta condicion comprueba si uno de los dos CustomCircle son del LED
+        if (StartHandler.getID().getGridName().equals(GridNames[0]) || (EndHandler.getID().getGridName().equals(GridNames[0]))){
+            LED.ONorOFF(customShape);
+            //Esta condicion comprueba si uno de los CustomCircle pertenece al Switch
+        } else if (StartHandler.getID().getGridName().equals(GridNames[1]) || (EndHandler.getID().getGridName().equals(GridNames[1]))) {
+            Switch.ChargePass(customShape);
+        }
+    }
+
+
     public static String createRandomID() {
         return UUID.randomUUID().toString();
     }

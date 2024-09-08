@@ -4,15 +4,17 @@ import javafx.scene.Group;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
+import java.util.Set;
+
 public class LED extends Group {
-    private boolean state;  //false -> apagado      true-> encendido
+    public static boolean state;  //false -> apagado      true-> encendido
     private Basurero basurero;
     private AnchorPane root;
 
 
     public LED(boolean state, CustomShape customShape, Basurero basurero, AnchorPane root) {
         super(customShape);
-        this.state = state;
+        LED.state = state;
         this.basurero = basurero;
         this.root = root;
         LedFunction(customShape);
@@ -66,9 +68,9 @@ public class LED extends Group {
 
 
     //Este metodo lo que hace es cambiar el color del LED cuando Cambia su estado
-    public void LedFunction(CustomShape customShape) {
+    public static void LedFunction(CustomShape customShape) {
         //false -> apagado      true-> encendido
-        if (this.state) {
+        if (GetState()) {
             //Cuando el LED esta encendido el relleno se mostrara Verde y si esta apagado sera Rojo
             customShape.setFill(Color.GREEN);
         } else {
@@ -77,17 +79,24 @@ public class LED extends Group {
     }
 
     //Metodo para mostrar si el LED esta encendido o Apagado
-    public void ONorOFF(CustomShape customShape) {
+    public static void ONorOFF(CustomShape customShape) {
         //Preguntamos si las dos patas tienen energía y ademas la energia que tienen es distinta entre si
         if ((customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasEnergy()) && (customShape.getLeg2().getState() != customShape.getLeg1().getState())) {
             //al ser distintas actualizamos el estado a true que es igual a encendido
-            this.state=true;
+            SetState(true);
             //Y lo cambiamos para que se vea graficamente
             LedFunction(customShape);
         } else {
             //en el caso que la condicion sea false se cambiara el state a false que es igual a apagado y se cambiara graficamente el LED a apagado
-            this.state=false;
+            SetState(false );
             LedFunction(customShape);
         }
+    }
+
+    public static void SetState(boolean states){
+        state = states;
+    }
+    public static boolean GetState(){
+        return state;
     }
 }

@@ -5,18 +5,18 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
 public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuadrado
-    private boolean PasoDeCarga;// true -> deja la carga pasar           false -> la carga no pasa
-    private GridPaneController gridPane1;
-    private GridPaneController gridPane2;
+    private static boolean PasoDeCarga;// true -> deja la carga pasar           false -> la carga no pasa
+    private static  GridPaneController gridPane1;
+    private static GridPaneController gridPane2;
     private Basurero basurero;
     private AnchorPane root;
 
 
     public Switch(boolean PasoDeCarga, CustomShape customShape, GridPaneController grid1, GridPaneController grid2, Basurero basurero, AnchorPane root) {
         super(customShape);
-        this.PasoDeCarga = PasoDeCarga;
-        this.gridPane1 = grid1;
-        this.gridPane2 = grid2;
+        //Switch.PasoDeCarga = PasoDeCarga;
+        Switch.gridPane1 = grid1;
+        Switch.gridPane2 = grid2;
         this.basurero= basurero;
         this.root = root;
 
@@ -28,6 +28,9 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
             customShape.getLeg1().setisTaken(false);
             customShape.getLeg2().setisTaken(false);
 
+            Switch.PasoDeCarga= !Switch.PasoDeCarga;
+
+            System.out.println("el paso de carga" + Switch.PasoDeCarga);
             if (basurero.getIsActive()) {
                 //Llamamos al metodo para eliminar los cables que pueden pertenecer al Switch y despues borrar este mismo
                 basurero.EliminateElements(customShape, e, root);
@@ -66,30 +69,30 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
 
     //TODO refactorizar el codigo, ya que son muchos if else y ver manera de simplificarlo
-    public void ChargePass(CustomShape customShape, GridPaneController grid1, GridPaneController grid2){
+    public static void ChargePass(CustomShape customShape){
         //Preguntamos si es que el paso de carga del Switch esta activado o no
-        if(this.PasoDeCarga == true){
+        if(PasoDeCarga){
             if(customShape.getLeg1().hasEnergy()){
                 //preguntamos si una de las dos ID que tiene el cable es igual al id de una de las patas
                 if(ID.isSameID(customShape.getLeg1().getID(), customShape.getLeg1().getCable().getIds()[0])){
                     //Sabremos que al CustomCircle al que hay que pasarle la carga es el contrario a la condición ya que no es igual al de la pata
                     ID id = customShape.getLeg1().getCable().getIds()[1];
-                    if(id.getGridName().equals(grid1.getName())){
+                    if(id.getGridName().equals(gridPane1.getName())){
                         //Llama a la funcion de pintar
-                        Utils.paintCircles(grid1.getGridPane(), id, customShape.getLeg1().getState());
-                    } else if (id.getGridName().equals(grid2.getName())) {
-                        Utils.paintCircles(grid2.getGridPane(), id , customShape.getLeg1().getState());
-                    } else{return;}
+                        Utils.paintCircles(gridPane1.getGridPane(), id, customShape.getLeg1().getState());
+                    } else if (id.getGridName().equals(gridPane2.getName())) {
+                        Utils.paintCircles(gridPane2.getGridPane(), id , customShape.getLeg1().getState());
+                    }
                     //Llamamos a la funcion de pintar
                 } else if(ID.isSameID(customShape.getLeg1().getID(), customShape.getLeg1().getCable().getIds()[1])){
                     //Sabremos que los id son distintos de los CustomCircle por lo que no entrara
                     ID id = customShape.getLeg1().getCable().getIds()[0];
                     //Preguntamos a cual de los dos gridPane tiene que pintar el switch.
-                    if(id.getGridName().equals(grid1.getName())){
+                    if(id.getGridName().equals(gridPane1.getName())){
                         //Llama a la funcion de pintar
-                        Utils.paintCircles(grid1.getGridPane(), id, customShape.getLeg1().getState());
-                    } else if (id.getGridName().equals(grid2.getName())) {
-                        Utils.paintCircles(grid2.getGridPane(), id , customShape.getLeg1().getState());
+                        Utils.paintCircles(gridPane1.getGridPane(), id, customShape.getLeg1().getState());
+                    } else if (id.getGridName().equals(gridPane2.getName())) {
+                        Utils.paintCircles(gridPane2.getGridPane(), id , customShape.getLeg1().getState());
                     }
 
                 }
@@ -98,11 +101,11 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
                     //Sabremos que al CustomCircle al que hay que pasarle la carga es el contrario a la condición ya que no es igual al de la pata
                     ID id = customShape.getLeg2().getCable().getIds()[1];
                     //Preguntamos a cual de los dos gridPane tiene que pintar el switch.
-                    if(id.getGridName().equals(grid1.getName())){
+                    if(id.getGridName().equals(gridPane1.getName())){
                         //Llama a la funcion de pintar
-                        Utils.paintCircles(grid1.getGridPane(), id, customShape.getLeg2().getState());
-                    } else if (id.getGridName().equals(grid2.getName())) {
-                        Utils.paintCircles(grid2.getGridPane(), id , customShape.getLeg2().getState());
+                        Utils.paintCircles(gridPane1.getGridPane(), id, customShape.getLeg2().getState());
+                    } else if (id.getGridName().equals(gridPane2.getName())) {
+                        Utils.paintCircles(gridPane2.getGridPane(), id , customShape.getLeg2().getState());
                     }
                     //Llamamos a la funcion de pintar
 
@@ -111,17 +114,21 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
                     //Sabremos que los id son distintos de los CustomCircle por lo que no entrara
                     ID id = customShape.getLeg2().getCable().getIds()[0];
                     //Preguntamos a cual de los dos gridPane tiene que pintar el switch.
-                    if(id.getGridName().equals(grid1.getName())){
+                    if(id.getGridName().equals(gridPane1.getName())){
                         //Llama a la funcion de pintar
-                        Utils.paintCircles(grid1.getGridPane(), id, customShape.getLeg2().getState());
-                    } else if (id.getGridName().equals(grid2.getName())) {
-                        Utils.paintCircles(grid2.getGridPane(), id , customShape.getLeg2().getState());
+                        Utils.paintCircles(gridPane1.getGridPane(), id, customShape.getLeg2().getState());
+                    } else if (id.getGridName().equals(gridPane2.getName())) {
+                        Utils.paintCircles(gridPane2.getGridPane(), id , customShape.getLeg2().getState());
                     }
                 }
 
-            } else{ return;}
+            }
 
-        } else{return;}
+        }
+    }
+
+    public static void SetPasoDeCarga(boolean state){
+        Switch.PasoDeCarga = state;
     }
 
 }
