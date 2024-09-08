@@ -57,8 +57,7 @@ public class MainController {
 
     public void CreateSwitch(){
         CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE);
-
-        Switch switch1 = new Switch(false, customShape);
+        Switch switch1 = new Switch(false, customShape, matrizCargaUno, matrizCargaUno);
         parent.getChildren().add(switch1);
     }
 

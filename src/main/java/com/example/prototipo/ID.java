@@ -49,6 +49,7 @@ public class ID {
     }
     public boolean getIsForGridpane(){ return this.isForGridpane; }
 
+
     //compara si dos Id son iguales o diferentes
     public static boolean isSameID(ID idUno, ID idDos) {
         return idUno.generatedID.compareTo(idDos.generatedID) == 0;
