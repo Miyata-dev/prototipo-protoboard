@@ -45,8 +45,6 @@ public class ClickLine {
 
 //                CurrentLine.setRandomID();
 
-                System.out.println("in mouse pressed: " + CurrentLine.getRandomID());
-
                 CurrentLine.setTipodecarga(Circulo.getState()); //se pasa por el cable el tipo de carga que tiene el circulo
 
                 ids[0] = new ID(Circulo.getID().getGeneratedID());
@@ -75,7 +73,7 @@ public class ClickLine {
             if (!canDelete) return;
             //if (!(e.getTarget() instanceof Line || e.getTarget() instanceof CustomShape)) return;
 
-            Utils.deleteCable(e, firstGridPane, secondGridPane, cables);
+            Utils.deleteCable(e, firstGridPane, secondGridPane, firsGridPaneVolt, secondGridPaneVolt, cables);
         });
     }
     //TODO: aca puede que ocurran los ids duplicados.
@@ -88,8 +86,6 @@ public class ClickLine {
             CurrentLine.setTipodecarga(carga);
             CurrentLine.setStrokeWidth(5);
             CurrentLine.setRandomID();
-
-            System.out.println("in line pressed: " + CurrentLine.getRandomID());
 
             root.getChildren().add(CurrentLine);
         }
@@ -179,9 +175,6 @@ public class ClickLine {
                 System.out.println(EndHandler.getCable());
             }
         }
-        System.out.println("GRIDPANE start SELECT: " + StartHandler.getID().getGridName());
-        System.out.println("GRIDPANE END SELECT: " + EndHandler.getID().getGridName());
-
         //CASO BATERIA-GRIDPANEVOLT OR GRIDPANEVOLT-BATERIA
         if (Arrays.asList(edgeCases).contains(StartHandler.getID().getGridName()) && Arrays.asList(gridNames).contains(EndHandler.getID().getGridName())){ //PREGUNTA SI DE DONDE EMPIEZA ES UN GRIDPANEVOLT Y SI TERMINA ES LA BATERIA (GRIDPANEVOLT --> BATERIA)
             String startCircleGridnamevolt = StartHandler.getID().getGridName();
