@@ -1,6 +1,5 @@
 package com.example.prototipo;
 
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 
 import java.util.ArrayList;

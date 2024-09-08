@@ -3,7 +3,7 @@ package com.example.prototipo;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
+
 import javafx.scene.paint.Color;
 
 public class Bateria {

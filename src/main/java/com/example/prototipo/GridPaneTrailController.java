@@ -1,8 +1,8 @@
 package com.example.prototipo;
 
-import javafx.scene.Node;
+
 import javafx.scene.layout.GridPane;
-import javafx.scene.shape.Circle;
+
 
 public class GridPaneTrailController {
     final private static String CSS_CLASS = "custom-content";

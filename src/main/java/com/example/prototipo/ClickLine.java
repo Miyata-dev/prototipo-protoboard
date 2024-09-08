@@ -1,12 +1,9 @@
 package com.example.prototipo;
 
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 
 public class ClickLine {

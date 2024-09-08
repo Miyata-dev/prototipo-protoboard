@@ -1,7 +1,7 @@
 package com.example.prototipo;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -51,13 +51,13 @@ public class MainController {
 
     public void crearLed() {
         CustomShape customShape = new CustomShape(720, 504, 25, 15, Color.YELLOW);
-        LED led = new LED(false, customShape, basurero);
+        LED led = new LED(false, customShape, basurero, parent);
         parent.getChildren().add(led);
     }
 
     public void CreateSwitch(){
         CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE);
-        Switch switch1 = new Switch(false, customShape, matrizCargaUno, matrizCargaUno);
+        Switch switch1 = new Switch(false, customShape, matrizCargaUno, matrizCargaUno, basurero, parent);
         parent.getChildren().add(switch1);
     }
 

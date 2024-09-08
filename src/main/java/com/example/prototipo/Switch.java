@@ -1,24 +1,25 @@
 package com.example.prototipo;
 
 import javafx.scene.Group;
-import javafx.scene.layout.GridPane;
+import javafx.scene.Node;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
-
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuadrado
     private boolean PasoDeCarga;// true -> deja la carga pasar           false -> la carga no pasa
     private GridPaneController gridPane1;
     private GridPaneController gridPane2;
+    private Basurero basurero;
+    private AnchorPane root;
 
 
-    public Switch(boolean PasoDeCarga, CustomShape customShape, GridPaneController grid1, GridPaneController grid2) {
+    public Switch(boolean PasoDeCarga, CustomShape customShape, GridPaneController grid1, GridPaneController grid2, Basurero basurero, AnchorPane root) {
         super(customShape);
         this.PasoDeCarga = PasoDeCarga;
         this.gridPane1 = grid1;
         this.gridPane2 = grid2;
+        this.basurero= basurero;
+        this.root = root;
 
         Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());//Llamamos a la clase Util para poder convertir el Switch en un nodo movible.
         Init(customShape);
@@ -27,6 +28,43 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
             Utils.makeUndraggableNode(this);
             customShape.getLeg1().setisTaken(false);
             customShape.getLeg2().setisTaken(false);
+
+            if (basurero.getIsActive()) {
+                System.out.println("this: " + this);
+
+                System.out.println(customShape.getLeg2().getCable() + " has cable: " + customShape.getLeg2().hasCable());
+                System.out.println(customShape.getLeg1().getCable() + " has cable: " + customShape.getLeg1().hasCable());
+
+                Node node = (Node) e.getTarget();
+
+                System.out.println(node);
+
+                if (customShape.getLeg2().hasCable()) {
+                    System.out.println("im here");
+                    Cable cableToRemove = customShape.getLeg2().getCable();
+                    System.out.println(cableToRemove.getRandomID());
+
+                    System.out.println(node.getParent().getParent());
+                    root.getChildren().removeIf(element -> {
+                        return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
+                    });
+                }
+
+                if (customShape.getLeg1().hasCable()) {
+                    System.out.println("im here");
+                    Cable cableToRemove = customShape.getLeg1().getCable();
+                    System.out.println(cableToRemove.getRandomID());
+                    System.out.println("hola" + node.getParent());
+
+                    root.getChildren().removeIf(element -> {
+                        return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
+                    });
+                }
+
+                //como node es Rectangle, el getParent devuelve LED, y no AnchorPane, por lo cual hay que obtener el Parent de LED, por eso está el método getparent 2 veces.
+
+                root.getChildren().remove(this);
+            }
         });
     }
 
