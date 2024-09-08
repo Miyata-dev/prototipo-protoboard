@@ -75,7 +75,7 @@ public class ClickLine {
             if (!canDelete) return;
             //if (!(e.getTarget() instanceof Line || e.getTarget() instanceof CustomShape)) return;
 
-            Utils.deleteCable(e, firstGridPane, secondGridPane);
+            Utils.deleteCable(e, firstGridPane, secondGridPane, cables);
         });
     }
     //TODO: aca puede que ocurran los ids duplicados.

@@ -1,5 +1,6 @@
 package com.example.prototipo;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -92,9 +93,9 @@ public class Utils {
     }
 
     //retorna null si no encuentra el nodo.
-    public static CustomCircle getCustomCircleByID(GridPaneTrailController grid, ID id) {
+    public static CustomCircle getCustomCircleByID(GridPane grid, ID id) {
         CustomCircle foundCircle = null;
-        Iterator<Node> circleToPaint = grid.getGridPane().getChildren().iterator();
+        Iterator<Node> circleToPaint = grid.getChildren().iterator();
 
         while(circleToPaint.hasNext()) {
             Node circle = (Node) circleToPaint.next();
@@ -123,50 +124,99 @@ public class Utils {
         return count;
     }
 
-    public static void deleteCable(MouseEvent e, GridPaneTrailController gridOne, GridPaneTrailController gridTwo) {
+    public static ArrayList<Cable> getConnectedCables(ArrayList<Cable> cables, Cable cableToConnect) {
+        ArrayList<Cable> connectedCables = new ArrayList<>();
+
+        Cable previousCable = cableToConnect; //para la iteracion, queremos ver si el cable por parametro es el cable anterior.
+
+        //TODO revisar.
+        for (Cable cable : cables) {
+            if (connectedCables.isEmpty()) {
+                if (Cable.areConnected(cable, cableToConnect)) {
+                    connectedCables.add(cable);
+                }
+            } else {
+                //se obtiene el ultimo cable de la coleccion para poder comparar la conectivida con el siguiente.
+                previousCable = connectedCables.get(connectedCables.size() - 1);
+
+                if (Cable.areConnected(cable, previousCable)) {
+                    connectedCables.add(cable);
+                }
+            }
+        }
+
+        return connectedCables;
+    }
+
+    public static void deleteCable(MouseEvent e, GridPaneTrailController gridOne, GridPaneTrailController gridTwo, ArrayList<Cable> cables) {
         //estos son los nombres que usa internamente las ID de los circulos pertenecientes al centro.
         String[] validGridNames = {
                 "gridTrail1",
                 "gridTrail2"
         };
+        //si una de las ids provienen de los volts (buses), entonces se realiza una eliminación de energía en cadena.
+        //en caso de que el cable sea el único proveedoor se pierde la energia.
+        String[] voltNames = {
+                "gridVolt1",
+                "gridVolt2"
+        };
 
+        //se recupera el nodo que se preciona.
         Node pressedNode = (Node) e.getTarget();
         if (!(e.getTarget() instanceof Cable pressedCable)) return;
 
+        //se recupera las ids del cable para poder ver donde pasar la energia.
         ID firstID = pressedCable.getIds()[0];
         ID secondID = pressedCable.getIds()[1];
 
-        //se revisa que la id esté en uno de los gridpanes del medio, ya que ahi es donde se desconectara, si pertenece a los volts, no se realizarán las operaciones.
-        boolean isFirstIdValid = Arrays.asList(validGridNames).contains(firstID.getGridName());
-        boolean isSecondIdValid = Arrays.asList(validGridNames).contains(secondID.getGridName());
+        //TODO revisar.
+        //si el primer ID pertenece a los volts, se extrae el Gridpane del segundo para despintarlo.
+        if (Arrays.asList(voltNames).contains(firstID.getGridName())) {
 
-        //Obtener el gridpane en donde esta el circulo con la id[1] (secondID), solo se buscan si son validas
-        GridPane firstCircleGridPane = null;
-        GridPane secondCircleGridPane = null;
+            //se obtiene la coleccion de cables conectados al primer cable.
+            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable);
 
-        if (isSecondIdValid && secondID.getGridName().equals(gridTwo.getName())) {
-            secondCircleGridPane = gridTwo.getGridPane();
-        } else if (isSecondIdValid && secondID.getGridName().equals(gridOne.getName())) {
-            secondCircleGridPane = gridOne.getGridPane();
+            for (Cable cable : connectedCables) {
+                GridPane secondCircleGridPane = null;
+
+                if (cable.getIds()[1].getGridName().equals(gridTwo.getName())) {
+                    secondCircleGridPane = gridTwo.getGridPane();
+                } else if (cable.getIds()[1].getGridName().equals(gridOne.getName())) {
+                    secondCircleGridPane = gridOne.getGridPane();
+                }
+
+                System.out.println(cable.getIds()[1].getGridName());
+
+                unPaintCircles(secondCircleGridPane, cable.getIds()[1].getIndexColumn());
+                unPaintCircles(secondCircleGridPane, cable.getIds()[0].getIndexColumn());
+            }
+
+            ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
+            return;
+        } else if (Arrays.asList(voltNames).contains(secondID.getGridName())) {
+
+            //se obtiene la coleccion de cables conectados al primer cable.
+            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable);
+
+            for (Cable cable : connectedCables) {
+                GridPane secondCircleGridPane = null;
+
+                if (cable.getIds()[0].getGridName().equals(gridTwo.getName())) {
+                    secondCircleGridPane = gridTwo.getGridPane();
+                } else if (cable.getIds()[0].getGridName().equals(gridOne.getName())) {
+                    secondCircleGridPane = gridOne.getGridPane();
+                }
+                System.out.println(cable.getIds()[0].getGridName());
+
+                unPaintCircles(secondCircleGridPane, cable.getIds()[1].getIndexColumn());
+                unPaintCircles(secondCircleGridPane, cable.getIds()[0].getIndexColumn());
+                //System.out.println(cable.getIds()[1].getIndexColumn());
+            }
+
+            ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
+            return;
         }
 
-        //solo si tiene un cable, se quita la energia, TODO mejorar la condicion, es defectuoza en edge cases.
-        if (secondCircleGridPane != null && numberOfCables(secondCircleGridPane, secondID.getIndexColumn()) <= 1) {
-            unPaintCircles(secondCircleGridPane, secondID.getIndexColumn());
-            System.out.println("number of cables: " + numberOfCables(secondCircleGridPane, secondID.getIndexColumn()));
-        }
-
-        if (isFirstIdValid && firstID.getGridName().equals(gridTwo.getName())) {
-            firstCircleGridPane = gridTwo.getGridPane();
-        } else if (isFirstIdValid && firstID.getGridName().equals(gridOne.getName())) {
-            firstCircleGridPane = gridOne.getGridPane();
-        }
-
-        if (firstCircleGridPane != null && numberOfCables(firstCircleGridPane, firstID.getIndexColumn()) <= 1) {
-            unPaintCircles(firstCircleGridPane, firstID.getIndexColumn());
-            System.out.println("number of cables: " + numberOfCables(firstCircleGridPane, firstID.getIndexColumn()));
-        }
-        System.out.println(pressedCable.getRandomID());
         ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
     }
     //como los switches y los leds extienden rectangle, entonces solo aceptan clases que extiendan rectangle.
