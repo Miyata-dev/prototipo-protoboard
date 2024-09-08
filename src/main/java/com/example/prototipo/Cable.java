@@ -1,13 +1,12 @@
 package com.example.prototipo;
 
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
 
 public class Cable extends Line {
     private int tipodecarga;
-    private ID[] ids;
+    private ID[] ids; //Contiene las id que tienen los CustomCircle a los que se conectan
     private String randomID; //esta id se da valor con un setter, no en el constructor.
 
     public Cable() {
@@ -20,6 +19,7 @@ public class Cable extends Line {
         setEndX(endX);
         setEndY(endY);
     }
+
 
     public static boolean compareCables(Cable c1, Cable c2) {
         return ID.isSameID(c1.ids[0], c2.ids[0]) && ID.isSameID(c1.ids[1], c2.ids[1]);

@@ -2,9 +2,10 @@ package com.example.prototipo;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-//1 = positivo, -1 = negativo, neutro = 0
+
+
 public class CustomCircle extends Circle {
-    private int state = 0;
+    private int state = 0;// state = 0 -> Neutro    state=1 -> Positivo,    state=-1 ->Negativo
     private ID id;
     private boolean isTaken;//Este atributo revisa si el circulo tiene un cable
     private Cable Wire;
@@ -33,6 +34,7 @@ public class CustomCircle extends Circle {
     public boolean hasEnergy() {
         return state != 0;
     }
+
     //TODO implementar energia para los leds.
     public void setState(int state) {
         this.state = state;

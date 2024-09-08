@@ -4,117 +4,87 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class LED extends Group {
     private boolean state;  //false -> apagado      true-> encendido
-    private AtomicReference<Double> startX = new AtomicReference<>((double) 0);
-    private AtomicReference<Double> startY = new AtomicReference<>((double) 0);
     private Basurero basurero;
     private AnchorPane root;
 
+
     public LED(boolean state, CustomShape customShape, Basurero basurero, AnchorPane root) {
         super(customShape);
-        //TODO invalidar este tipo de IDS para pintar
-
         this.state = state;
         this.basurero = basurero;
         this.root = root;
+        LedFunction(customShape);
 
-        Utils.makeDraggableNode(this, startX, startY);
+        Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());
         init(customShape);
 
-        this.setOnMouseReleased(e -> {
+        this.setOnMouseClicked(e -> {
+            //Al momento de soltar el LED se pueden crear Cables
             customShape.getLeg1().setisTaken(false);
             customShape.getLeg2().setisTaken(false);
             Utils.makeUndraggableNode(this);
-            //CreateLegsLed(customShape);
 
             if (basurero.getIsActive()) {
-                System.out.println("this: " + this);
-
-                System.out.println(customShape.getLeg2().getCable() + " has cable: " + customShape.getLeg2().hasCable());
-                System.out.println(customShape.getLeg1().getCable() + " has cable: " + customShape.getLeg1().hasCable());
-
-                Node node = (Node) e.getTarget();
-
-                System.out.println(node);
-
-                if (customShape.getLeg2().hasCable()) {
-                    System.out.println("im here");
-                    Cable cableToRemove = customShape.getLeg2().getCable();
-                    System.out.println(cableToRemove.getRandomID());
-
-                    System.out.println(node.getParent().getParent());
-                    root.getChildren().removeIf(element -> {
-                        return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
-                    });
-                }
-
-                if (customShape.getLeg1().hasCable()) {
-                    System.out.println("im here");
-                    Cable cableToRemove = customShape.getLeg1().getCable();
-                    System.out.println(cableToRemove.getRandomID());
-                    System.out.println("hola" + node.getParent());
-
-                    root.getChildren().removeIf(element -> {
-                        return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
-                    });
-                }
-
+                basurero.EliminateElements(customShape, e, root);
                 //como node es Rectangle, el getParent devuelve LED, y no AnchorPane, por lo cual hay que obtener el Parent de LED, por eso está el método getparent 2 veces.
-
                 root.getChildren().remove(this);
             }
         });
     }
 
+    //Este metodo crea las patas del LED de manera ordenada
     public void init(CustomShape customShape) {
-        ID idUno = new ID(1,1,"LedVolt1");
+        ID idUno = new ID(1, 1, "LedVolt1");
         idUno.setIsForGridpane(false);
 
-        ID idDos = new ID(2,1,"LedVolt1");
+        ID idDos = new ID(2, 1, "LedVolt1");
         idDos.setIsForGridpane(false);
 
         double x = customShape.getX();
         double y = customShape.getY();
 
-        customShape.setLeg1(new CustomCircle(5,idUno,0));
-        customShape.setLeg2(new CustomCircle(5,idDos,0));
-
+        customShape.setLeg1(new CustomCircle(5, idUno, 0));
+        customShape.setLeg2(new CustomCircle(5, idDos, 0));
+        //Creamos la primera pata del LED
         customShape.getLeg1().setisTaken(true);
-        customShape.getLeg1().setFill(Color.RED);
-        customShape.getLeg1().setTranslateX(x-5);
-        customShape.getLeg1().setTranslateY(y+7.5);
-
+        customShape.getLeg1().setFill(Color.ROYALBLUE);
+        customShape.getLeg1().setTranslateX(x - 5);
+        customShape.getLeg1().setTranslateY(y + 7.5);
+        //Creamos la segunda pata del LED
         customShape.getLeg2().setisTaken(true);
-        customShape.getLeg2().setFill(Color.RED);
-        customShape.getLeg2().setTranslateX(x+30);
-        customShape.getLeg2().setTranslateY(y+7.5);
+        customShape.getLeg2().setFill(Color.ROYALBLUE);
+        customShape.getLeg2().setTranslateX(x + 30);
+        customShape.getLeg2().setTranslateY(y + 7.5);
 
         this.getChildren().add(customShape.getLeg1());
         this.getChildren().add(customShape.getLeg2());
     }
 
-    /*
-    private void CreateLegsLed(CustomShape led){
-        double x = led.getX();
-        double y = led.getY();
-        //TODO invalidar este tipo de IDS para pintar
-        ID id = new ID(1,1,"LedVolt1");
-        id.setIsForGridpane(false);
+    //Este metodo lo que hace es cambiar el color del LED cuando Cambia su estado
+    public void LedFunction(CustomShape customShape) {
+        //false -> apagado      true-> encendido
+        if (this.state == true) {
+            customShape.setFill(Color.GREEN);
+        } else {
+            customShape.setFill(Color.RED);
+        }
+    }
 
-        this.Leg1.setisTaken(false);
-        this.Leg2.setisTaken(false);
-        this.Leg1.setFill(Color.RED);
-        this.Leg2.setFill(Color.RED);
-        this.Leg1.setTranslateX(x-5);
-        this.Leg1.setTranslateY(y+7.5);
-        this.Leg2.setTranslateX(x+30);
-        this.Leg2.setTranslateY(y+7.5);
-        this.getChildren().add(Leg1);
-        this.getChildren().add(Leg2);
-    } */
+
+    //TODO confirmar que se este cumpliendo la condicion
+    public void ONorOFF(CustomShape customShape) {
+        //Preguntamos si las dos patas tienen energía y ademas la energia que tienen es distinta entre si
+        if ((customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasEnergy()) && (customShape.getLeg2().getState() != customShape.getLeg1().getState())) {
+            System.out.println("hola");
+            this.state=true;
+            LedFunction(customShape);
+        } else {
+            this.state=false;
+            System.out.println("hola");
+            LedFunction(customShape);
+        }
+    }
 }

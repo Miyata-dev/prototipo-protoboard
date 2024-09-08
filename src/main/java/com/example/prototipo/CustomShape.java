@@ -3,9 +3,13 @@ package com.example.prototipo;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class CustomShape extends Rectangle {
     private CustomCircle Leg1;
     private CustomCircle Leg2;
+    private AtomicReference<Double> startX = new AtomicReference<>((double) 0);
+    private AtomicReference<Double> startY = new AtomicReference<>((double) 0);
 
     public CustomShape(int x, int y, int width, int height, Color color) {
         super(x, y, width, height);
@@ -30,4 +34,7 @@ public class CustomShape extends Rectangle {
     public CustomCircle getLeg2() {
         return Leg2;
     }
+    public AtomicReference<Double> getStartX(){return this.startX;}
+
+    public AtomicReference<Double> getStartY(){return this.startY;}
 }
