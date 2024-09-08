@@ -3,7 +3,7 @@ package com.example.prototipo;
 import javafx.scene.layout.GridPane;
 
 public class GridPaneController {
-    private final String CSS_CLASS = "volt";
+    private final String CSS_CLASS = "custom-content";
     private GridPane gridPane;
     private String name;
 
@@ -42,11 +42,11 @@ public class GridPaneController {
                 circle.setId(temporaryID.getGeneratedID());
                 circle.getStyleClass().add(CSS_CLASS);
 
-                if (i == 0) {
-                    circle.setState(-1);
-                } else if (i == 1) {
-                    circle.setState(1);
-                }
+//                if (i == 0) {
+//                    circle.setState(-1);
+//                } else if (i == 1) {
+//                    circle.setState(1);
+//                }
 
                 gridPane.add(circle, j, i); //(column, row)
             }

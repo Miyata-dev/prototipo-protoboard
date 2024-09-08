@@ -54,6 +54,11 @@ public class ID {
         return idUno.generatedID.compareTo(idDos.generatedID) == 0;
     }
 
+
+    public static boolean isThisRow(ID id, int desiredRow) {
+        return id.getIndexRow() == desiredRow;
+    }
+
     public static boolean isSameColumn(ID idUno, ID idDos) {
         int firstIDcolumnIndex = idUno.getIndexColumn();
         int secondIDcolumnIndex = idDos.getIndexColumn();

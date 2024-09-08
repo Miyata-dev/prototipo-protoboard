@@ -18,7 +18,7 @@ public class CustomCircle extends Circle {
     }
 
     public void setCable(Cable cable){
-        this.Wire=cable;
+        this.Wire = cable;
     }
     public Cable getCable(){
         return this.Wire;
