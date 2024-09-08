@@ -45,7 +45,6 @@ public class Utils {
 
             if (ID.isThisRow(temporaryID, rowToGet)) {
                 circles.add(targetedCircle);
-                System.out.println(targetedCircle.getID().getIndexRow());
             }
         }
 
@@ -83,8 +82,6 @@ public class Utils {
         });
 
     }
-
-
 
     public static void unPaintCircles(GridPane grid, int columnToUnPaint) {
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(grid, columnToUnPaint);

@@ -75,4 +75,11 @@ public class Cable extends Line {
     public int getTipodecarga() {
         return tipodecarga;
     }
+
+    public static boolean areConnected(Cable one, Cable two) {
+        boolean firstAtt = one.getIds()[0].getIndexColumn() == two.getIds()[1].getIndexColumn();
+        boolean secondAtt = one.getIds()[1].getIndexColumn() == two.getIds()[0].getIndexColumn();
+
+        return firstAtt || secondAtt;
+    }
 }

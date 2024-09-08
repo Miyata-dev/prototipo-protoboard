@@ -1,12 +1,9 @@
 package com.example.prototipo;
 
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -39,6 +36,7 @@ public class ClickLine {
         root.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             Node nodoclickeado = event.getPickResult().getIntersectedNode();
             if(nodoclickeado instanceof CustomCircle && !((CustomCircle) nodoclickeado).getIsTaken()){
+                ids = new ID[2]; //se asegura de que el cable tome la referencia del objeto actual y no el anterior.
 
                 CustomCircle Circulo = (CustomCircle) nodoclickeado;
 
@@ -154,10 +152,7 @@ public class ClickLine {
         StartHandler.setCable(current);
         EndHandler.setCable(current);
 
-        System.out.println("in release line " + StartHandler.getCable().getRandomID());
         cables.add(current);
-
-        System.out.println(CurrentLine.getTipodecarga());
 
         if (rec != null && !StartHandler.getID().getIsForGridpane()) {
             System.out.println("pata 1 del led");
