@@ -149,8 +149,12 @@ public class ClickLine {
         current.setTipodecarga(CurrentLine.getTipodecarga());
         current.setRandomID(CurrentLine.getRandomID());
 
+        current.SetCircles(new CustomCircle[] {StartHandler, EndHandler });
+
         StartHandler.setCable(current);
         EndHandler.setCable(current);
+
+
 
         cables.add(current);
 
@@ -231,7 +235,7 @@ public class ClickLine {
             }
         }
 
-        UpdateState(StartHandler, EndHandler);
+        UpdateState(StartHandler, EndHandler, current);
         Utils.IdentifiedFunction(StartHandler, EndHandler, rec);
         System.out.println(StartHandler.getState());
         System.out.println(EndHandler.getState());
@@ -242,16 +246,22 @@ public class ClickLine {
     }
 
     //Este metodo lo que hace es actualizar el estado a los CustomCircle que no son para un GridPane
-    public void UpdateState(CustomCircle StartHandler, CustomCircle EndHandler){
+    public void UpdateState(CustomCircle StartHandler, CustomCircle EndHandler, Cable current){
         //Preguntamos si el StartHandler es para gridPane y si el EndHandler no es para GridPane
         if(StartHandler.getID().getIsForGridpane() && !(EndHandler.getID().getIsForGridpane())){
             //Actualizamos el estado del que no es para GridPane
             EndHandler.setState(StartHandler.getState());
+            //Actualizamos que el StartHandler y el EndHandler estan tomados para que no se conecten mas de un cable en el mismo CustomCircle
+            EndHandler.setisTaken(true);
+            StartHandler.setisTaken(true);
 
-            //Preguntamos si el EndHanlder es para GridPane y el StartHandler no es para GridPane
+            //Preguntamos si el EndHandler es para GridPane y el StartHandler no es para GridPane
         } else if(EndHandler.getID().getIsForGridpane() && !(StartHandler.getID().getIsForGridpane())){
             //Actualizamos el estado del que no es para GridPane
             StartHandler.setState(EndHandler.getState());
+            //Actualizamos que el StartHandler y el EndHandler estan tomados para que no se conecten mas de un cable en el mismo CustomCircle
+            EndHandler.setisTaken(true);
+            StartHandler.setisTaken(true);
         }
     }
 
