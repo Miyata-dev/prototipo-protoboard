@@ -280,7 +280,12 @@ public class Utils {
             return;
         }
 
-        //TODO revisar.
+        //ver si esta en volts
+        if (Arrays.asList(voltNames).contains(firstID.getGridName()) && Arrays.asList(voltNames).contains(secondID.getGridName())) {
+            ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
+            return;
+        }
+
         //si el primer ID pertenece a los volts, se extrae el Gridpane del segundo para despintarlo.
         if (Arrays.asList(voltNames).contains(firstID.getGridName())) {
             //se obtiene la coleccion de cables conectados al primer cable.

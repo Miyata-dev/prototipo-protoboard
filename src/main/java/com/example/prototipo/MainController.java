@@ -15,9 +15,6 @@ public class MainController {
     public GridPane MatrizCarga2;
     public GridPane MatrizCarga1;
     public AnchorPane parent;
-
-    public int state = -1; //tiene q ser estado local de cada matriz de alimentación.
-
     public GridPaneTrailController matrizCirculosUnoController;
     public GridPaneTrailController matrizCirculosDosController;
     public GridPaneController matrizCargaUno;
@@ -36,8 +33,8 @@ public class MainController {
                 "gridVolt2",
         };
 
-        matrizCirculosUnoController = new GridPaneTrailController(Matriz1, state, gridNames[0]);
-        matrizCirculosDosController = new GridPaneTrailController(Matriz2, state, gridNames[1]);
+        matrizCirculosUnoController = new GridPaneTrailController(Matriz1,gridNames[0]);
+        matrizCirculosDosController = new GridPaneTrailController(Matriz2,gridNames[1]);
         matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 

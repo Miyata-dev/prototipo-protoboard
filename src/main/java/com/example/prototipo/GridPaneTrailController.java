@@ -8,26 +8,13 @@ public class GridPaneTrailController {
     final private static String CSS_CLASS = "custom-content";
     private GridPane gridPane;
     private String name;
-    public int stateToUse; //controlla el flujo de energia que se pasa en los trails.
 
-    public GridPaneTrailController(int rows, int columns, int stateToUse, String name) {
-        this.gridPane = createGridPane(rows, columns);
-        this.stateToUse = stateToUse;
-        this.name = name;
-    }
-
-    public GridPaneTrailController(GridPane gridPane, int stateToUse, String name) {
+    public GridPaneTrailController(GridPane gridPane, String name) {
         this.gridPane = gridPane;
-        this.stateToUse = stateToUse;
+
         this.name = name;
         fillGridPaneWithCircles();
     }
-    //TODO pasarlo a no estatico.
-    public static void setStateToUse(GridPaneTrailController gridpane, int stateToUse) {
-        System.out.println("Changing state to " + stateToUse);
-        gridpane.stateToUse = stateToUse;
-    }
-
     //to improve readability
     private GridPane createGridPane(int rows, int columns) {
         GridPane grid = new GridPane();
