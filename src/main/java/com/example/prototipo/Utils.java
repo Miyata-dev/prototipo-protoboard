@@ -245,39 +245,67 @@ public class Utils {
         ID secondID = pressedCable.getIds()[1];
 
         System.out.println("col uno: " + pressedCable.getIds()[0].getIndexColumn() + " col dos: " + pressedCable.getIds()[1].getIndexColumn());
-
-        //mira que provenga de una bateria.
+        System.out.println("gridname uno: " + firstID.getGridName() + " gridName 2: " + secondID.getGridName());
+        //mira que provenga de una bateria, en ese caso se opera de manera diferente.
         if (firstID.getGridName().equals("BateryVolt")) {
             System.out.println("deleting cable in batery.");
 
             GridPane gridpane = null;
 
-            if (secondID.getGridName().equals(voltNames[0])) {
-                gridpane = gridVoltOne.getGridPane();
-            } else if (secondID.getGridName().equals(voltNames[1])) {
-                gridpane = gridVoltTwo.getGridPane();
+            if (Arrays.asList(validGridNames).contains(secondID.getGridName())) {
+
+                if (firstID.getGridName().equals(validGridNames[0])) {
+                    gridpane = gridOne.getGridPane();
+                } else if (firstID.getGridName().equals(validGridNames[1])) {
+                    gridpane = gridOne.getGridPane();
+                }
+
+                ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
+                return;
+            } else if (Arrays.asList(voltNames).contains(secondID.getGridName())) {
+                if (secondID.getGridName().equals(voltNames[0])) {
+                    gridpane = gridVoltOne.getGridPane();
+                } else if (secondID.getGridName().equals(voltNames[1])) {
+                    gridpane = gridVoltTwo.getGridPane();
+                }
+
+                unPaintCirclesVolt(gridpane, secondID.getIndexRow());
+                System.out.println(secondID.getGridName());
+
+                ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
+                return;
             }
 
-            unPaintCirclesVolt(gridpane, secondID.getIndexRow());
-            System.out.println(secondID.getGridName());
-
-            ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
-            return;
         } else if (secondID.getGridName().equals("BateryVolt")) {
             System.out.println("deleting cable in batery.");
 
             GridPane gridpane = null;
 
-            if (firstID.getGridName().equals(voltNames[0])) {
-                gridpane = gridVoltOne.getGridPane();
-            } else if (firstID.getGridName().equals(voltNames[1])) {
-                gridpane = gridVoltTwo.getGridPane();
-            }
-            unPaintCirclesVolt(gridpane, firstID.getIndexRow());
+            //si el id pertenece a uno de los gridpanes de pistas, entonces entra en este condicional.
+            if (Arrays.asList(validGridNames).contains(firstID.getGridName())) {
 
-            ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
-            System.out.println(firstID.getGridName());
-            return;
+                if (firstID.getGridName().equals(validGridNames[0])) {
+                    gridpane = gridOne.getGridPane();
+                } else if (firstID.getGridName().equals(validGridNames[1])) {
+                    gridpane = gridOne.getGridPane();
+                }
+
+                ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
+                return;
+
+            } else if (Arrays.asList(voltNames).contains(firstID.getGridName())) {
+                //se obtiene el gridPane para hacerle los cambios
+                if (firstID.getGridName().equals(voltNames[0])) {
+                    gridpane = gridVoltOne.getGridPane();
+                } else if (firstID.getGridName().equals(voltNames[1])) {
+                    gridpane = gridVoltTwo.getGridPane();
+                }
+                unPaintCirclesVolt(gridpane, firstID.getIndexRow());
+
+                ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
+                System.out.println(firstID.getGridName());
+                return;
+            }
         }
 
         //ver si esta en volts
