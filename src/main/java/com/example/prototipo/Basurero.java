@@ -63,7 +63,8 @@ public class Basurero extends ImageView {
                 return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
             });
 
-        }else if (customShape.getLeg1().hasCable()) {
+        }
+        if (customShape.getLeg1().hasCable()) {
             Cable cableToRemove = customShape.getLeg1().getCable();
 
             //Se realiza un eliminacion si el elemento es un cable y ademas las ID son iguales al cable a remover del Elemento Correspondiente
@@ -72,6 +73,7 @@ public class Basurero extends ImageView {
             });
 
         }
+
     }
 
     public boolean getIsActive() {

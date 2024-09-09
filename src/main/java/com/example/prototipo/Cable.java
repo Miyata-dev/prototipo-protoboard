@@ -8,6 +8,7 @@ public class Cable extends Line {
     private int tipodecarga;
     private ID[] ids; //Contiene las id que tienen los CustomCircle a los que se conectan
     private String randomID; //esta id se da valor con un setter, no en el constructor.
+    private CustomCircle[] circles;
 
     public Cable() {
         this.tipodecarga = 0;
@@ -87,5 +88,13 @@ public class Cable extends Line {
             one.getIds()[1].getIndexColumn() == two.getIds()[1].getIndexColumn();
 
         return firstAtt || secondAtt;
+    }
+
+    public void SetCircles(CustomCircle[] circles){
+        this.circles = circles;
+    }
+
+    public CustomCircle[] Getcircles(){
+        return this.circles;
     }
 }

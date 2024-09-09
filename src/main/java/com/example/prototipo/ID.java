@@ -4,7 +4,7 @@ public class ID {
     private int indexRow, indexColumn;
     private String gridName;
     private String generatedID;//La id generado se agregan como id a los CustomCircles
-    private boolean isForGridpane; //como se usan en los leds, en ese caso este atributo es falso.
+    private boolean isForGridpane;//true->Es para un GridPane       false->No es para un GridPane
 
     //se busca crear una ID con los indices separados y el nombre del GridPane con un gion ej: "indexRow-indexCol-gridName"
     public ID(int indexRow, int indexColumn, String gridName) {

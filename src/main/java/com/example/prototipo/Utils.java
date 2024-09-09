@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+
+import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -84,7 +86,7 @@ public class Utils {
                 "gridTrail2"
         };
         int columnToPaint = id.getIndexColumn();
-        if (!id.getIsForGridpane()) return;
+        //if (!id.getIsForGridpane()) return;
         if (!Arrays.asList(validGridNames).contains(id.getGridName())) return;
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(grid, columnToPaint);
         circles.forEach(circle -> {
@@ -441,6 +443,21 @@ public class Utils {
         //
         node.setOnMousePressed(null);
         node.setOnMouseDragged(null);
+    }
+
+    //Metodo que realiza la funcion que corresponde a un Switch o un LED
+    public static void IdentifiedFunction(CustomCircle StartHandler, CustomCircle EndHandler, CustomShape customShape){
+        String[] GridNames = {
+                "LedVolt1",
+                "switchvolt1"
+        };
+        //Esta condicion comprueba si uno de los dos CustomCircle son del LED
+        if (StartHandler.getID().getGridName().equals(GridNames[0]) || (EndHandler.getID().getGridName().equals(GridNames[0]))){
+            LED.ONorOFF(customShape);
+            //Esta condicion comprueba si uno de los CustomCircle pertenece al Switch
+        } else if (StartHandler.getID().getGridName().equals(GridNames[1]) || (EndHandler.getID().getGridName().equals(GridNames[1]))) {
+            Switch.ChargePass(customShape);
+        }
     }
 
     public static String createRandomID() {
