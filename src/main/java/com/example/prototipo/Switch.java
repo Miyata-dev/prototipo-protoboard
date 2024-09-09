@@ -133,29 +133,6 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
             }
         }
 
-    public static void UnPaintSwitch(ID id, CustomShape customShape, CustomCircle Leg) {
-        System.out.println(id.getGridName());
-        if ("gridTrail1".equals(id.getGridName())) {
-            // Llamamos a la función de Despintar
-            System.out.println("despintando");
-            Utils.unPaintCircles(gridPane1.getGridPane(), id.getIndexColumn());
-            System.out.println("despintando");
-        } else if ("gridTrail2".equals(id.getGridName())) {
-            System.out.println("Despintando2");
-            Utils.unPaintCircles(gridPane2.getGridPane(), id.getIndexColumn());
-            System.out.println("Despintando2");
-        } else if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
-            // En el caso que el nombre del Grid no es de ninguno de los Gridpane entonces debe ser de Automaticamente del una bateria, LED o Switch.
-            if (ID.isSameID(Leg.getID(), Leg.getCable().Getcircles()[0].getID())) {
-                Leg.getCable().Getcircles()[1].setState(0);
-            } else {
-                Leg.getCable().Getcircles()[0].setState(0);
-            }
-        }
-    }
-
-    //TODO refactorizar el codigo, ya que son muchos if else y ver manera de simplificarlo
-
     public static void SetPasoDeCarga(boolean state){
         Switch.PasoDeCarga = state;
     }
