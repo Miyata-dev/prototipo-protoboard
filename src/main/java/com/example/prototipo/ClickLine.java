@@ -17,17 +17,19 @@ public class ClickLine {
     private GridPaneTrailController secondGridPane;
     private GridPaneController firsGridPaneVolt;
     private GridPaneController secondGridPaneVolt;
+    private Bateria bateria;
     private ArrayList<Cable> cables = new ArrayList<>();
     private Basurero basurero;
     private CustomShape rec;
 
-    public ClickLine(AnchorPane root, GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane,GridPaneController firsGridPaneVolt1,GridPaneController firsGridPaneVolt2, Basurero basurero) {
+    public ClickLine(AnchorPane root, GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane,GridPaneController firsGridPaneVolt1,GridPaneController firsGridPaneVolt2, Basurero basurero, Bateria bateria) {
         this.root = root;
         this.firstGridPane = firstGridPane;
         this.secondGridPane = secondGridPane;
         this.firsGridPaneVolt = firsGridPaneVolt1;
         this.secondGridPaneVolt = firsGridPaneVolt2;
         this.basurero = basurero;
+        this.bateria = bateria;
         ids = new ID[2];
         CurrentLine = new Cable();
     }
@@ -73,7 +75,7 @@ public class ClickLine {
             if (!canDelete) return;
             //if (!(e.getTarget() instanceof Line || e.getTarget() instanceof CustomShape)) return;
 
-            Utils.deleteCable(e, firstGridPane, secondGridPane, firsGridPaneVolt, secondGridPaneVolt, cables);
+            Utils.deleteCable(e, firstGridPane, secondGridPane, firsGridPaneVolt, secondGridPaneVolt, bateria, cables);
         });
     }
     //TODO: aca puede que ocurran los ids duplicados.

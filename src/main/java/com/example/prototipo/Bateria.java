@@ -12,7 +12,7 @@ public class Bateria {
 
     public Bateria(Image image) {
         this.image = image;
-
+        //indexRow = 2 es el polo negativo, si es indexRow = 1 es positivo
         ID IdForNegative = new ID(2,1,"BateryVolt");
         ID IdForPositive = new ID(1,1,"BateryVolt");
         IdForNegative.setIsForGridpane(false);
@@ -40,6 +40,26 @@ public class Bateria {
         imageView.setX(700);
         imageView.setY(250);
         return imageView;
+    }
+
+    public CustomCircle getNegativePole() {
+        return NegativePole;
+    }
+
+    public CustomCircle getPositivePole() {
+        return PositivePole;
+    }
+
+    public CustomCircle getPoloByIndexRow(int index) {
+        System.out.println("outside of if's index: " + index);
+
+        if (index == 1) {
+            return PositivePole;
+        } else if (index == 2) {
+            return NegativePole;
+        } else {
+            throw new Error("invalid index row");
+        }
     }
 
     public Group getPolos() {return Polos;}

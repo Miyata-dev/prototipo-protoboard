@@ -41,7 +41,7 @@ public class MainController {
         Bateria bateria = new Bateria(new Image(getClass().getResource("bateria.png").toExternalForm()));
 
         parent.getChildren().addAll(basurero, basurero.getLabel(), bateria.getImage(), bateria.getPolos());
-        ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController,matrizCargaUno,matrizCargaDos, basurero);
+        ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController,matrizCargaUno,matrizCargaDos, basurero, bateria);
         clickLineMatrizUno.CircleAsignator();
         System.out.println("controller: " + basurero.getParent());
     }
