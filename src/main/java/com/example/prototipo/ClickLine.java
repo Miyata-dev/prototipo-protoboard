@@ -96,7 +96,7 @@ public class ClickLine {
     }
 
     private void DragLine(double x, double y, MouseEvent event){
-        if(CurrentLine != null && (event.getPickResult().getIntersectedNode() instanceof CustomCircle) && !((CustomCircle) event.getTarget()).hasCable() ) {
+        if(CurrentLine != null && (event.getPickResult().getIntersectedNode() instanceof CustomCircle) /*&& !((CustomCircle) event.getTarget()).hasCable()*/ ) {
             CustomCircle UltimateCircle = (CustomCircle) event.getPickResult().getIntersectedNode();
 
             if(UltimateCircle.getIsTaken()){
