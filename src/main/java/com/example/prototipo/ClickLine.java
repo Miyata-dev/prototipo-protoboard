@@ -39,9 +39,7 @@ public class ClickLine {
             Node nodoclickeado = event.getPickResult().getIntersectedNode();
             if(nodoclickeado instanceof CustomCircle && !((CustomCircle) nodoclickeado).getIsTaken()){
                 ids = new ID[2]; //se asegura de que el cable tome la referencia del objeto actual y no el anterior.
-
                 CustomCircle Circulo = (CustomCircle) nodoclickeado;
-
                 SetStartHandler(Circulo);
                 StartHandler.setisTaken(true);
 
@@ -94,12 +92,9 @@ public class ClickLine {
     }
 
     private void DragLine(double x, double y, MouseEvent event){
-        if(CurrentLine != null && (event.getPickResult().getIntersectedNode() instanceof CustomCircle) ) {
+        if(CurrentLine != null && (event.getPickResult().getIntersectedNode() instanceof CustomCircle) && !((CustomCircle) event.getTarget()).hasCable() ) { //Es para asegurarse de que "currentLine" no sea nulo, que sea un circulo donde se haga el drag y tambien se asegura que no se pueda volver a realizar el drag si clikeamos un circulo que ya tenga un cable
             CustomCircle UltimateCircle = (CustomCircle) event.getPickResult().getIntersectedNode();
-
-            if(UltimateCircle.getIsTaken()){
-                return;
-            }
+            if(UltimateCircle.getIsTaken()){return;}
             ids[1] = new ID(UltimateCircle.getID().getGeneratedID());
             SetEndHandler(UltimateCircle);
             //se da valor del cable de nuevo, ya que el EndHandler se actualiza, y por ende pierdse el valor del cable.
@@ -113,30 +108,24 @@ public class ClickLine {
     }
     //TODO colocar setIsTaken en el deleteCable.
     private void RealizeLine(MouseEvent e) {
-        //
         String[] gridNames = {
                 "switchvolt1",
                 "LedVolt1",
                 "BateryVolt"
         };
-
         String[] edgeCases = {
                 "gridVolt1",
                 "gridVolt2"
         };
 
         if (EndHandler == null || StartHandler == null) {  // REVISAR METODO, PORQUE AL PRESIONAR EL CIRCULO FINAL DE LA LINEA SE ELIMINA EL CABLE
-
             CustomCircle circle = (CustomCircle) e.getTarget();
             //si no esta tomado, se sale de la funcion, y por lo tanto no se elimina.
             if (!circle.getIsTaken()) return;
             if (StartHandler == null && circle.hasEnergy()) return;
-
-            root.getChildren().remove(CurrentLine);
-
-            if (StartHandler != null){
-                StartHandler.setisTaken(false);
-            }
+            //Evita que cuando se clickee un circulo con un cable no se elimine el cable que se creo antes de clickear un circulo con cable
+            if( ! (( (CustomCircle) e.getTarget() ).hasCable()) ){root.getChildren().remove(CurrentLine);}
+            if (StartHandler != null){StartHandler.setisTaken(false);}
             return;
         }
 
@@ -151,7 +140,6 @@ public class ClickLine {
 
         StartHandler.setCable(current);
         EndHandler.setCable(current);
-
 
 
         cables.add(current);
@@ -234,6 +222,7 @@ public class ClickLine {
         Utils.IdentifiedFunction(StartHandler, EndHandler, rec);
         System.out.println(StartHandler.getState());
         System.out.println(EndHandler.getState());
+
 
         //TODO revisar que hace.
         StartHandler = null;
