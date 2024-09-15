@@ -1,3 +1,4 @@
+
 package com.example.prototipo;
 
 import java.lang.reflect.Array;
@@ -66,10 +67,9 @@ public class Utils {
         for (CustomCircle circle : circles) {
             if (circle.hasCable()) {
                 if (
-                    Arrays.asList(voltNames).contains(circle.getCable().getIds()[1].getGridName()) ||
-                    Arrays.asList(voltNames).contains(circle.getCable().getIds()[0].getGridName())
+                        Arrays.asList(voltNames).contains(circle.getCable().getIds()[1].getGridName()) ||
+                                Arrays.asList(voltNames).contains(circle.getCable().getIds()[0].getGridName())
                 ) {
-                    System.out.println("has volt cable");
                     value = true;
                 }
             }
@@ -81,7 +81,7 @@ public class Utils {
     //TODO resolver bug cuando se contecta 2 cables en los grid de voltios. propuesta, debe tomar un gridpanetrail.
     //pinta una columna de un color dependiendo del estado que tenga (1 ¿ positivo, -1 negativo), pasar ID y calcular el
     // indice de columna, ver si la id es valida o no (a travez de su gridName)
-    public static void paintCircles(GridPane grid, ID id, int state) {
+    public static void paintCircles(GridPane grid, ID id, int state, ArrayList<Cable> cables) {
         String[] validGridNames = {
                 "gridTrail1",
                 "gridTrail2"
@@ -90,9 +90,68 @@ public class Utils {
         //if (!id.getIsForGridpane()) return;
         if (!Arrays.asList(validGridNames).contains(id.getGridName())) return;
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(grid, columnToPaint);
+
+        Cable cableFound = null;
+
+        //se obtiene un los cables que tienen los circulos de la coleccion.
+        for (CustomCircle circle : circles) {
+            if (circle.hasCable()) {
+                System.out.println("has cable");
+                System.out.println(circle.getCable().getRandomID());
+                cableFound = circle.getCable();
+            }
+        }
+
+        if (cableFound == null) {
+            circles.forEach(circle -> {
+                circle.setState(state);
+            });
+            return;
+        }
+
+        System.out.println("paso de energia en cadena.");
+
+        ID indexOne = cableFound.getIds()[0];
+        ID indexTwo = cableFound.getIds()[1];
+
+        System.out.println("index one: " + indexOne.getIndexColumn() + " gridpane: " + indexOne.getGridName());
+        System.out.println("index two: " + indexTwo.getIndexColumn() + " gridpane: " + indexTwo.getGridName());
+
+        //si son iguales solo se pinta una vez.
+        if (!indexOne.getGridName().equals(indexTwo.getGridName())) {
+
+            circles.forEach(circle -> {
+                circle.setState(state);
+            });
+
+            return;
+        }
+
+        //mira que la primera id sea valida, es decir, esté dentro de los nombres del gridpane.
+        if (Arrays.asList(validGridNames).contains(indexOne.getGridName())) {
+            ArrayList<CustomCircle> firstColumn = getColumnOfCustomCircles(grid, indexOne.getIndexColumn());
+
+            firstColumn.forEach(circle -> {
+                System.out.println("circle gridpane: " + circle.getID().getGridName());
+                System.out.println("index id: " + indexTwo.getGridName());
+                circle.setState(state);
+            });
+        }
+
+        if (Arrays.asList(validGridNames).contains(indexTwo.getGridName())) {
+            ArrayList<CustomCircle> secondColumn = getColumnOfCustomCircles(grid, indexTwo.getIndexColumn());
+
+            secondColumn.forEach(circle -> {
+                System.out.println("circle gridpane: " + circle.getID().getGridName());
+                System.out.println("index id: " + indexTwo.getGridName());
+                circle.setState(state);
+            });
+        }
+        /*
         circles.forEach(circle -> {
             circle.setState(state);
-        });
+        }); */
+
     }
     public static void paintCirclesVolt(GridPane grid, ID id, int state){
         String[] validGridNames = {
@@ -203,7 +262,6 @@ public class Utils {
                 }
             }
 
-            System.out.println("not in volt");
             return connectedCables;
         }
 
@@ -231,6 +289,7 @@ public class Utils {
                 "gridTrail1",
                 "gridTrail2"
         };
+        System.out.println("gridname is: " + GridName);
 
         GridPane gridpane = null;
 
@@ -281,16 +340,12 @@ public class Utils {
         ID firstID = pressedCable.getIds()[0];
         ID secondID = pressedCable.getIds()[1];
 
-        System.out.println("col uno: " + pressedCable.getIds()[0].getIndexColumn() + " col dos: " + pressedCable.getIds()[1].getIndexColumn());
-        System.out.println("gridname uno: " + firstID.getGridName() + " gridName 2: " + secondID.getGridName());
         //mira que provenga de una bateria, en ese caso se opera de manera diferente.
         if (firstID.getGridName().equals("BateryVolt")) {
-            System.out.println("deleting cable in batery.");
 
             GridPane gridpane = null;
             //obtiene el indice del polo para poder obtener el circulo para .
             int index = firstID.getIndexRow();
-            System.out.println("index: " + firstID.getIndexRow());
             CustomCircle circle = bateria.getPoloByIndexRow(index);
             circle.setisTaken(false);
 
@@ -315,23 +370,15 @@ public class Utils {
                 gridpane = getGridpaneByGridName(secondID.getGridName(), gridVoltOne, gridVoltTwo);
 
                 unPaintCirclesVolt(gridpane, secondID.getIndexRow());
-                System.out.println(secondID.getGridName());
-
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
                 return;
             }
 
         } else if (secondID.getGridName().equals("BateryVolt")) {
-            System.out.println("deleting cable in batery.");
-
-            System.out.println("first " + firstID.getGridName());
-            System.out.println("second " + secondID.getGridName());
-
             GridPane gridpane = null;
 
             //obtiene el indice del circulo que pertenece a la bateria, si es 1, devuelve el polo positivo, si es 2 pasa el polo negativo.
             int index = secondID.getIndexRow();
-            System.out.println("index: " + secondID.getIndexRow());
             CustomCircle circle = bateria.getPoloByIndexRow(index);
             circle.setisTaken(false);
 
@@ -344,14 +391,10 @@ public class Utils {
 
             } else if (Arrays.asList(voltNames).contains(firstID.getGridName())) {
 
-                System.out.println("first " + firstID.getGridName());
-                System.out.println("second " + secondID.getGridName());
-
                 gridpane = getGridpaneByGridName(firstID.getGridName(), gridVoltOne, gridVoltTwo);
                 unPaintCirclesVolt(gridpane, firstID.getIndexRow());
 
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
-                System.out.println(firstID.getGridName());
                 return;
             }
         }
@@ -372,9 +415,9 @@ public class Utils {
                 GridPane secondCircleGridPane = null;
 
                 secondCircleGridPane = getGridpaneByGridName(
-                    cable.getIds()[1].getGridName(),
-                    gridOne,
-                    gridTwo
+                        cable.getIds()[1].getGridName(),
+                        gridOne,
+                        gridTwo
                 );
 
                 if (cable.getIds()[0].getGridName().equals(gridTwo.getName())) {
@@ -388,9 +431,6 @@ public class Utils {
                     gridOne,
                     gridTwo
                 ); */
-
-                System.out.println(cable.getIds()[1].getGridName());
-                System.out.println(cable.getIds()[0].getGridName());
 
                 unPaintCircles(secondCircleGridPane, cable.getIds()[1].getIndexColumn(), false);
                 //unPaintCircles(firstCircleGridPane, cable.getIds()[1].getIndexColumn(), false);
@@ -409,12 +449,10 @@ public class Utils {
                 GridPane secondCircleGridPane = null;
 
                 secondCircleGridPane = getGridpaneByGridName(
-                    cable.getIds()[0].getGridName(),
-                    gridOne,
-                    gridTwo
+                        cable.getIds()[0].getGridName(),
+                        gridOne,
+                        gridTwo
                 );
-
-                System.out.println(cable.getIds()[0].getGridName());
 
                 unPaintCircles(secondCircleGridPane, cable.getIds()[1].getIndexColumn(), false);
                 unPaintCircles(secondCircleGridPane, cable.getIds()[0].getIndexColumn(), false);
@@ -425,25 +463,15 @@ public class Utils {
             return;
         }
 
-        System.out.println("im here");
         ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable);
-
-        connectedCables.forEach(cable -> {
-            System.out.println("id uno: " + cable.getIds()[0] + " id dos: " + cable.getIds()[1] + " ");
-        });
 
         for (Cable cable : connectedCables) {
             GridPane secondCircleGridPane = null;
 
-            System.out.println("id 1: " + cable.getIds()[0] + " gridname: " + cable.getIds()[0].getGridName());
-            System.out.println("id 2: " + cable.getIds()[1] + " " + cable.getIds()[1].getGridName());
-
-            System.out.println(cable.getIds()[0].getGridName());
-
             secondCircleGridPane = getGridpaneByGridName(
-                cable.getIds()[0].getGridName(),
-                gridOne,
-                gridTwo
+                    cable.getIds()[0].getGridName(),
+                    gridOne,
+                    gridTwo
             );
 
             ArrayList<CustomCircle> column = getColumnOfCustomCircles(secondCircleGridPane, cable.getIds()[0].getIndexColumn());
@@ -457,7 +485,6 @@ public class Utils {
     }
     //como los switches y los leds extienden rectangle, entonces solo aceptan clases que extiendan rectangle.
     public static void deleteNode(Group nodeToDelete) {
-        System.out.println("deleting...");
         ((AnchorPane) nodeToDelete.getParent()).getChildren().remove(nodeToDelete);
     }
 
@@ -500,7 +527,7 @@ public class Utils {
     }
 
     //Metodo que realiza la funcion que corresponde a un Switch o un LED
-    public static void IdentifiedFunction(CustomCircle StartHandler, CustomCircle EndHandler, CustomShape customShape){
+    public static void IdentifiedFunction(CustomCircle StartHandler, CustomCircle EndHandler, CustomShape customShape, ArrayList<Cable> cables){
         String[] GridNames = {
                 "LedVolt1",
                 "switchvolt1"
@@ -510,7 +537,7 @@ public class Utils {
             LED.ONorOFF(customShape);
             //Esta condicion comprueba si uno de los CustomCircle pertenece al Switch
         } else if (StartHandler.getID().getGridName().equals(GridNames[1]) || (EndHandler.getID().getGridName().equals(GridNames[1]))) {
-            Switch.ChargePass(customShape);
+            Switch.ChargePass(customShape, cables);
         }
     }
 

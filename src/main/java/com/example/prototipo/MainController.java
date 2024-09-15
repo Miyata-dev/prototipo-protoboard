@@ -8,6 +8,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+
 public class MainController {
     @FXML
     public GridPane Matriz1;
@@ -23,6 +25,8 @@ public class MainController {
             new Image(getClass().getResource("basurero.png").toExternalForm()),
             new Label("Activar")
     );
+    //se coloca esta variable en el controlador par poder darle acceso los switches y leds.
+    public ArrayList<Cable> cables = new ArrayList<>();
 
     public void initialize() {
         //nombres para cada grid para los identificadores unicos.
@@ -41,7 +45,7 @@ public class MainController {
         Bateria bateria = new Bateria(new Image(getClass().getResource("bateria.png").toExternalForm()));
 
         parent.getChildren().addAll(basurero, basurero.getLabel(), bateria.getImage(), bateria.getPolos());
-        ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController,matrizCargaUno,matrizCargaDos, basurero, bateria);
+        ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController,matrizCargaUno,matrizCargaDos, basurero, bateria, cables);
         clickLineMatrizUno.CircleAsignator();
         System.out.println("controller: " + basurero.getParent());
     }
@@ -54,7 +58,7 @@ public class MainController {
 
     public void CreateSwitch(){
         CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE);
-        Switch switch1 = new Switch(false, customShape, matrizCirculosUnoController, matrizCirculosDosController, basurero, parent);
+        Switch switch1 = new Switch(false, customShape, matrizCirculosUnoController, matrizCirculosDosController, basurero, parent, cables);
         parent.getChildren().add(switch1);
     }
 
