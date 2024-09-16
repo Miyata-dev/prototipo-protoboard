@@ -12,23 +12,17 @@ public class ClickLine {
     private Cable CurrentLine;
     private CustomCircle StartHandler;
     private CustomCircle EndHandler;
+    private GridPaneObserver gridPaneObserver;
     private ID[] ids;
     private AnchorPane root;
-    private GridPaneTrailController firstGridPane;
-    private GridPaneTrailController secondGridPane;
-    private GridPaneController firsGridPaneVolt;
-    private GridPaneController secondGridPaneVolt;
     private Bateria bateria;
     private ArrayList<Cable> cables;
     private Basurero basurero;
     private CustomShape rec;
 
-    public ClickLine(AnchorPane root, GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane,GridPaneController firsGridPaneVolt1,GridPaneController firsGridPaneVolt2, Basurero basurero, Bateria bateria, ArrayList<Cable> cables) {
+    public ClickLine(AnchorPane root, GridPaneObserver gridPaneObserver, Basurero basurero, Bateria bateria, ArrayList<Cable> cables) {
         this.root = root;
-        this.firstGridPane = firstGridPane;
-        this.secondGridPane = secondGridPane;
-        this.firsGridPaneVolt = firsGridPaneVolt1;
-        this.secondGridPaneVolt = firsGridPaneVolt2;
+        this.gridPaneObserver = gridPaneObserver;
         this.basurero = basurero;
         this.bateria = bateria;
         this.cables = cables;
@@ -77,7 +71,14 @@ public class ClickLine {
             if (!canDelete) return;
             //if (!(e.getTarget() instanceof Line || e.getTarget() instanceof CustomShape)) return;
 
-            Utils.deleteCable(e, firstGridPane, secondGridPane, firsGridPaneVolt, secondGridPaneVolt, bateria, cables);
+            Utils.deleteCable(e,
+                gridPaneObserver.getFirstGridPaneTrail(),
+                gridPaneObserver.getSecondGridPaneTrail(),
+                gridPaneObserver.getFirsGridPaneVolt(),
+                gridPaneObserver.getSecondGridPaneVolt(),
+                bateria,
+                cables
+            );
         });
     }
     //TODO: aca puede que ocurran los ids duplicados.
@@ -188,31 +189,31 @@ public class ClickLine {
         //CASO BATERIA-GRIDPANEVOLT OR GRIDPANEVOLT-BATERIA
         if (Arrays.asList(edgeCases).contains(StartHandler.getID().getGridName()) && Arrays.asList(gridNames).contains(EndHandler.getID().getGridName())){ //PREGUNTA SI DE DONDE EMPIEZA ES UN GRIDPANEVOLT Y SI TERMINA ES LA BATERIA (GRIDPANEVOLT --> BATERIA)
             String startCircleGridnamevolt = StartHandler.getID().getGridName();
-            if(startCircleGridnamevolt.equals(firsGridPaneVolt.getName())){ // PREGUNTA SI DE DONDE EMPIEZA ES EL PRIMER GRIDPANEVOLT (GRIDPANEVOLT-->BATERIA)
-                Utils.paintCirclesVolt(firsGridPaneVolt.getGridPane(),ids[0],EndHandler.getState());
+            if(startCircleGridnamevolt.equals(gridPaneObserver.getFirsGridPaneVolt().getName())){ // PREGUNTA SI DE DONDE EMPIEZA ES EL PRIMER GRIDPANEVOLT (GRIDPANEVOLT-->BATERIA)
+                Utils.paintCirclesVolt(gridPaneObserver.getFirsGridPaneVolt().getGridPane(),ids[0],EndHandler.getState());
             }  else{ // PARA EL CASO DEL SEGUNDO GRIDPANEVOLT (GRIDPANEVOLT --> BATERIA)
-                Utils.paintCirclesVolt(secondGridPaneVolt.getGridPane(),ids[0],EndHandler.getState());
+                Utils.paintCirclesVolt(gridPaneObserver.getSecondGridPaneVolt().getGridPane(),ids[0],EndHandler.getState());
             }
         }else if(Arrays.asList(edgeCases).contains(EndHandler.getID().getGridName()) && Arrays.asList(gridNames).contains(StartHandler.getID().getGridName())){ // PREGUNTA SI DE DONDE EMPIEZA ES UNA BATERIA Y SI TERMINA EN UN GRIDPANEVOLT (BATERIA --> GRIDPANEVOLT)
             String FinalCircleGridnamevolt = EndHandler.getID().getGridName();
-            if(FinalCircleGridnamevolt.equals(firsGridPaneVolt.getName())){ // BATERIA --> PRIMER GRIDPANEVOLT
-                Utils.paintCirclesVolt(firsGridPaneVolt.getGridPane(),ids[1],StartHandler.getState());
+            if(FinalCircleGridnamevolt.equals(gridPaneObserver.getFirsGridPaneVolt().getName())){ // BATERIA --> PRIMER GRIDPANEVOLT
+                Utils.paintCirclesVolt(gridPaneObserver.getFirsGridPaneVolt().getGridPane(),ids[1],StartHandler.getState());
             }else{ // BATERIA --> SEGUNDO GRIDPANEVOLT
-                Utils.paintCirclesVolt(secondGridPaneVolt.getGridPane(),ids[1],StartHandler.getState());
+                Utils.paintCirclesVolt(gridPaneObserver.getSecondGridPaneVolt().getGridPane(),ids[1],StartHandler.getState());
             }
         }
 
         //si el circulo inicial no tiene energia, se toma la energia del circulo final.
         if ( ( !StartHandler.hasEnergy() && StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane() ) || (EndHandler.getID().getGridName()).equals(gridNames[2]) ) { // PREGUNTA SI DONDE EMPIEZA Y DONDE TERMINA ES PARA UN GRIDPANE, ADEMAS DE PREGUNTAR SI DONDE TERMINA ES UNA BATERIA
             String startCircleGridName = StartHandler.getID().getGridName();
-            if (startCircleGridName.equals(firstGridPane.getName())) {
-                Utils.paintCircles(firstGridPane.getGridPane(), ids[0], EndHandler.getState(), cables);
-            } else if(startCircleGridName.equals(secondGridPane.getName())) {
-                Utils.paintCircles(secondGridPane.getGridPane(), ids[0], EndHandler.getState(), cables);
-            } else if (startCircleGridName.equals(firsGridPaneVolt.getName())) {
-                Utils.paintCirclesVolt(firsGridPaneVolt.getGridPane(),ids[0],EndHandler.getState());
-            } else if (startCircleGridName.equals(secondGridPaneVolt.getName())) {
-                Utils.paintCirclesVolt(secondGridPaneVolt.getGridPane(),ids[0],EndHandler.getState());
+            if (startCircleGridName.equals(gridPaneObserver.getFirstGridPaneTrail().getName())) {
+                Utils.paintCircles(gridPaneObserver.getFirstGridPaneTrail().getGridPane(), ids[0], EndHandler.getState(), cables);
+            } else if(startCircleGridName.equals(gridPaneObserver.getSecondGridPaneTrail().getName())) {
+                Utils.paintCircles(gridPaneObserver.getSecondGridPaneTrail().getGridPane(), ids[0], EndHandler.getState(), cables);
+            } else if (startCircleGridName.equals(gridPaneObserver.getFirsGridPaneVolt().getName())) {
+                Utils.paintCirclesVolt(gridPaneObserver.getFirsGridPaneVolt().getGridPane(),ids[0],EndHandler.getState());
+            } else if (startCircleGridName.equals(gridPaneObserver.getSecondGridPaneVolt().getName())) {
+                Utils.paintCirclesVolt(gridPaneObserver.getSecondGridPaneVolt().getGridPane(),ids[0],EndHandler.getState());
             }
             EndHandler.setisTaken(true);
             //StartHandler.setisTaken(true);
@@ -220,14 +221,14 @@ public class ClickLine {
             //recuperamos el nombre del gridName para ver en cual gridpane pintar
             if ( (StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane()) || (StartHandler.getID().getGridName()).equals(gridNames[2]) ) { // Pregunta si el gridname es igual al gridname de la bateria
                 String endCircleGridName = EndHandler.getID().getGridName();
-                if (endCircleGridName.equals(firstGridPane.getName())) {
-                    Utils.paintCircles(firstGridPane.getGridPane(), ids[1], CurrentLine.getTipodecarga(), cables);
-                }else if(endCircleGridName.equals(secondGridPane.getName())){
-                    Utils.paintCircles(secondGridPane.getGridPane(), ids[1], CurrentLine.getTipodecarga(), cables);
-                } else if (endCircleGridName.equals(firsGridPaneVolt.getName())) {
-                    Utils.paintCirclesVolt(firsGridPaneVolt.getGridPane(),ids[1],CurrentLine.getTipodecarga());
-                } else if(endCircleGridName.equals(secondGridPaneVolt.getName())){
-                    Utils.paintCirclesVolt(secondGridPaneVolt.getGridPane(),ids[1],CurrentLine.getTipodecarga());
+                if (endCircleGridName.equals(gridPaneObserver.getFirstGridPaneTrail().getName())) {
+                    Utils.paintCircles(gridPaneObserver.getFirstGridPaneTrail().getGridPane(), ids[1], CurrentLine.getTipodecarga(), cables);
+                }else if(endCircleGridName.equals(gridPaneObserver.getSecondGridPaneTrail().getName())){
+                    Utils.paintCircles(gridPaneObserver.getSecondGridPaneTrail().getGridPane(), ids[1], CurrentLine.getTipodecarga(), cables);
+                } else if (endCircleGridName.equals(gridPaneObserver.getFirsGridPaneVolt().getName())) {
+                    Utils.paintCirclesVolt(gridPaneObserver.getFirsGridPaneVolt().getGridPane(),ids[1],CurrentLine.getTipodecarga());
+                } else if(endCircleGridName.equals(gridPaneObserver.getSecondGridPaneVolt().getName())){
+                    Utils.paintCirclesVolt(gridPaneObserver.getSecondGridPaneVolt().getGridPane(),ids[1],CurrentLine.getTipodecarga());
                 }
                 EndHandler.setisTaken(true);
                 //StartHandler.setisTaken(true);

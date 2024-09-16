@@ -42,10 +42,23 @@ public class MainController {
         matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
+        GridPaneObserver gridPaneObserver = new GridPaneObserver(
+            new GridPaneTrailController(Matriz1,gridNames[0]),
+            new GridPaneTrailController(Matriz2,gridNames[1]),
+            new GridPaneController(MatrizCarga1, gridNames[2]),
+            new GridPaneController(MatrizCarga2, gridNames[3])
+        );
+
         Bateria bateria = new Bateria(new Image(getClass().getResource("bateria.png").toExternalForm()));
 
         parent.getChildren().addAll(basurero, basurero.getLabel(), bateria.getImage(), bateria.getPolos());
-        ClickLine clickLineMatrizUno = new ClickLine(parent, matrizCirculosUnoController, matrizCirculosDosController,matrizCargaUno,matrizCargaDos, basurero, bateria, cables);
+        ClickLine clickLineMatrizUno = new ClickLine(
+            parent,
+            gridPaneObserver,
+            basurero,
+            bateria,
+            cables
+        );
         clickLineMatrizUno.CircleAsignator();
         System.out.println("controller: " + basurero.getParent());
     }
