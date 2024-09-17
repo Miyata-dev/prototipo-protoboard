@@ -348,7 +348,13 @@ public class Utils {
         return gridpane;
     }
     //TODO pasarle el gridPaneObserevr para dsp calcular los grids.
-    public static void deleteCable(MouseEvent e, GridPaneTrailController gridOne, GridPaneTrailController gridTwo, GridPaneController gridVoltOne, GridPaneController gridVoltTwo, Bateria bateria, ArrayList<Cable> cables) {
+    public static void deleteCable(MouseEvent e, GridPaneObserver gridPaneObserver, Bateria bateria, ArrayList<Cable> cables) {
+        //se obtienen los gridpanes del gridpaneobserver.
+        GridPaneTrailController gridOne = gridPaneObserver.getFirstGridPaneTrail();
+        GridPaneTrailController gridTwo = gridPaneObserver.getSecondGridPaneTrail();
+        GridPaneController gridVoltOne = gridPaneObserver.getFirsGridPaneVolt();
+        GridPaneController gridVoltTwo = gridPaneObserver.getSecondGridPaneVolt();
+
         //estos son los nombres que usa internamente las ID de los circulos pertenecientes al centro.
         String[] validGridNames = {
                 "gridTrail1",
@@ -387,7 +393,7 @@ public class Utils {
                     gridpane = gridTwo.getGridPane();
                 } */
 
-                gridpane = getGridpaneByGridName(secondID.getGridName(), gridOne, gridTwo);
+                gridpane = getGridpaneByGridName(secondID.getGridName(), gridOne, gridTwo); //gridOne, gridTwo type is = gridPaneTarilController.
                 unPaintCircles(gridpane, secondID.getIndexColumn(), false);
                 resetState = getCustomCircleByID(gridpane,secondID); // Para reiniciar el estado del circulo que esta tomando el cable cuando se elimina
                 resetState.setisTaken(false);
@@ -401,7 +407,7 @@ public class Utils {
                     gridpane = gridVoltTwo.getGridPane();
                 } */
 
-                gridpane = getGridpaneByGridName(secondID.getGridName(), gridVoltOne, gridVoltTwo);
+                gridpane = getGridpaneByGridName(secondID.getGridName(), gridVoltOne, gridVoltTwo); //estos grid son del tipo gridPaneController (volts)
                 unPaintCirclesVolt(gridpane, secondID.getIndexRow());
                 resetState = getCustomCircleByID(gridpane,secondID); // Para reiniciar el estado del circulo que esta tomando el cable cuando se elimina
                 resetState.setisTaken(false);
@@ -420,7 +426,7 @@ public class Utils {
             //si el id pertenece a uno de los gridpanes de pistas, entonces entra en este condicional.
             if (Arrays.asList(validGridNames).contains(firstID.getGridName())) { // GridTrails 1 o 2 -->  BateryVolt
 
-                gridpane = getGridpaneByGridName(firstID.getGridName(), gridOne, gridTwo);
+                gridpane = getGridpaneByGridName(firstID.getGridName(), gridOne, gridTwo); //son del tipo GridPaneTrailController.
                 unPaintCircles(gridpane, firstID.getIndexColumn(), false);
                 resetState = getCustomCircleByID(gridpane,firstID); // Para reiniciar el estado del circulo que esta tomando el cable cuando se elimina
                 resetState.setisTaken(false);
@@ -429,7 +435,7 @@ public class Utils {
 
             } else if (Arrays.asList(voltNames).contains(firstID.getGridName())) {
 
-                gridpane = getGridpaneByGridName(firstID.getGridName(), gridVoltOne, gridVoltTwo);
+                gridpane = getGridpaneByGridName(firstID.getGridName(), gridVoltOne, gridVoltTwo); //son del tipo GridPaneController (volts)
                 unPaintCirclesVolt(gridpane, firstID.getIndexRow());
                 resetState = getCustomCircleByID(gridpane,firstID); // Para reiniciar el estado del circulo que esta tomando el cable cuando se elimina
                 resetState.setisTaken(false);
@@ -454,7 +460,7 @@ public class Utils {
                     secondID.getGridName(),
                     gridOne,
                     gridTwo
-                );
+                ); // son del tipo de gridPaneTrailController.
 
                 unPaintCircles(gridPane, secondID.getIndexColumn(), false);
 
@@ -470,7 +476,7 @@ public class Utils {
                     cable.getIds()[1].getGridName(),
                     gridOne,
                     gridTwo
-                );
+                ); //son del tipo de gridPaneTrailController.
 
                 if (cable.getIds()[0].getGridName().equals(gridTwo.getName())) {
                     firstCircleGridPane = gridTwo.getGridPane();
@@ -496,7 +502,7 @@ public class Utils {
                         firstID.getGridName(),
                         gridOne,
                         gridTwo
-                );
+                ); //del tipo gridPaneTrailController.
 
                 unPaintCircles(gridPane, firstID.getIndexColumn(), false);
 
@@ -512,7 +518,7 @@ public class Utils {
                         cable.getIds()[0].getGridName(),
                         gridOne,
                         gridTwo
-                );
+                ); //del tipo gridPaneTrailController.
 
                 unPaintCircles(secondCircleGridPane, cable.getIds()[1].getIndexColumn(), false);
                 unPaintCircles(secondCircleGridPane, cable.getIds()[0].getIndexColumn(), false);
@@ -532,7 +538,7 @@ public class Utils {
                     cable.getIds()[0].getGridName(),
                     gridOne,
                     gridTwo
-            );
+            ); //del tipo gridPaneTrailController.
 
             ArrayList<CustomCircle> column = getColumnOfCustomCircles(secondCircleGridPane, cable.getIds()[0].getIndexColumn());
             hasVoltCable(column);

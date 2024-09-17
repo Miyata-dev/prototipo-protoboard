@@ -72,10 +72,7 @@ public class ClickLine {
             //if (!(e.getTarget() instanceof Line || e.getTarget() instanceof CustomShape)) return;
 
             Utils.deleteCable(e,
-                gridPaneObserver.getFirstGridPaneTrail(),
-                gridPaneObserver.getSecondGridPaneTrail(),
-                gridPaneObserver.getFirsGridPaneVolt(),
-                gridPaneObserver.getSecondGridPaneVolt(),
+                gridPaneObserver,
                 bateria,
                 cables
             );
