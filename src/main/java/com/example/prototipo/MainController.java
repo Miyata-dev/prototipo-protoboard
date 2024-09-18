@@ -17,6 +17,9 @@ public class MainController {
     public GridPane MatrizCarga2;
     public GridPane MatrizCarga1;
     public AnchorPane parent;
+
+    public int state = -1; //tiene q ser estado local de cada matriz de alimentación.
+
     public GridPaneTrailController matrizCirculosUnoController;
     public GridPaneTrailController matrizCirculosDosController;
     public GridPaneController matrizCargaUno;
@@ -71,7 +74,7 @@ public class MainController {
 
     public void CreateSwitch(){
         CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE);
-        Switch switch1 = new Switch(false, customShape, matrizCirculosUnoController, matrizCirculosDosController, basurero, parent, cables);
+        Switch switch1 = new Switch(true, customShape, matrizCirculosUnoController, matrizCirculosDosController, basurero, parent);
         parent.getChildren().add(switch1);
     }
 
