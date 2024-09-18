@@ -37,16 +37,22 @@ public class CustomCircle extends Circle {
 
     //TODO implementar energia para los leds.
     public void setState(int state) {
+        if (state == 0) return;
+
         this.state = state;
 
         if (state == 1) {
             this.setFill(Color.ORANGE);
         } else if (state == -1) {
             this.setFill(Color.BLUE);
-        } else if (state == 0) {
-            this.setFill(Color.GRAY);
         }
     }
+
+    public void removeEnergy() {
+        this.state = 0;
+        this.setFill(Color.GRAY);
+    }
+
     public boolean getIsTaken(){return this.isTaken;}
     public int getState() {
         return this.state;

@@ -10,19 +10,19 @@ import java.util.ArrayList;
 
 public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuadrado
     private static boolean PasoDeCarga;// true -> deja la carga pasar           false -> la carga no pasa
-    private static  GridPaneTrailController gridPane1;
-    private static  GridPaneTrailController gridPane2;
+    private static GridPaneObserver gridPaneObserver;
     private Basurero basurero;
     private static AnchorPane root;
     private static CustomCircle EndLeg;
     private static ArrayList<Cable> cables;
 
 
-    public Switch(boolean PasoDeCarga, CustomShape customShape, GridPaneTrailController grid1, GridPaneTrailController grid2, Basurero basurero, AnchorPane root, ArrayList<Cable> cables) {
+    public Switch(boolean PasoDeCarga, CustomShape customShape, GridPaneObserver gridPaneObserver, Basurero basurero, AnchorPane root, ArrayList<Cable> cables) {
         super(customShape);
         //Switch.PasoDeCarga = PasoDeCarga;
-        Switch.gridPane1 = grid1;
-        Switch.gridPane2 = grid2;
+        //Switch.gridPane1 = gridPaneObserver.getFirstGridPaneTrail();
+        //Switch.gridPane2 = gridPaneObserver.getSecondGridPaneTrail();
+        Switch.gridPaneObserver = gridPaneObserver;
         this.basurero= basurero;
         Switch.root = root;
         Switch.cables= cables;
@@ -176,9 +176,9 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         System.out.println(id.getGridName());
         if ("gridTrail1".equals(id.getGridName())) {
             //Llamamos a la funcion de Pintar
-            Utils.paintCircles(gridPane1.getGridPane(), id, Leg.getState(), cables);
+            Utils.paintCircles(gridPaneObserver, id, Leg.getState(), cables);
         } else if ("gridTrail2".equals(id.getGridName())) {
-            Utils.paintCircles(gridPane2.getGridPane(), id, Leg.getState(), cables);
+            Utils.paintCircles(gridPaneObserver, id, Leg.getState(), cables);
         } else if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
             //En el caso que el nombre del Grid no es de ninguno de los Gridpane entonces debe ser de Automaticamente del una bateria, LED o Switch.
             if (ID.isSameID(Leg.getID(), Leg.getCable().Getcircles()[0].getID())) {

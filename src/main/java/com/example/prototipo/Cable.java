@@ -79,6 +79,7 @@ public class Cable extends Line {
 
     //TODO mejorar la logica de esta comparacion.
     public static boolean areConnected(Cable one, Cable two) {
+        //en estás condiciones (la primera y la segunda) se mira que el indice de los cículos de los cables se conecten entre si.
         boolean firstAtt =
             one.getIds()[0].getIndexColumn() == two.getIds()[1].getIndexColumn() ||
             one.getIds()[0].getIndexColumn() == two.getIds()[0].getIndexColumn();
@@ -86,8 +87,16 @@ public class Cable extends Line {
         boolean secondAtt =
             one.getIds()[1].getIndexColumn() == two.getIds()[0].getIndexColumn() ||
             one.getIds()[1].getIndexColumn() == two.getIds()[1].getIndexColumn();
+        //
+        boolean firstGridNameNameID =
+            one.getIds()[0].getGridName().equals(two.getIds()[1].getGridName()) ||
+            one.getIds()[0].getGridName().equals(two.getIds()[0].getGridName());
 
-        return firstAtt || secondAtt;
+        boolean secondGridNameID =
+            one.getIds()[1].getGridName().equals(two.getIds()[0].getGridName()) ||
+            one.getIds()[1].getGridName().equals(two.getIds()[1].getGridName());
+
+        return (firstAtt || secondAtt) && (firstGridNameNameID || secondGridNameID);
     }
 
     public void SetCircles(CustomCircle[] circles){

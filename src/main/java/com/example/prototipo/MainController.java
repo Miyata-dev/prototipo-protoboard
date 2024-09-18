@@ -28,6 +28,7 @@ public class MainController {
             new Image(getClass().getResource("basurero.png").toExternalForm()),
             new Label("Activar")
     );
+    GridPaneObserver gridPaneObserver;
     //se coloca esta variable en el controlador par poder darle acceso los switches y leds.
     public ArrayList<Cable> cables = new ArrayList<>();
 
@@ -45,7 +46,7 @@ public class MainController {
         matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
-        GridPaneObserver gridPaneObserver = new GridPaneObserver(
+        gridPaneObserver = new GridPaneObserver(
             new GridPaneTrailController(Matriz1,gridNames[0]),
             new GridPaneTrailController(Matriz2,gridNames[1]),
             new GridPaneController(MatrizCarga1, gridNames[2]),
@@ -74,7 +75,7 @@ public class MainController {
 
     public void CreateSwitch(){
         CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE);
-        Switch switch1 = new Switch(true, customShape, matrizCirculosUnoController, matrizCirculosDosController, basurero, parent, cables);
+        Switch switch1 = new Switch(true, customShape, gridPaneObserver, basurero, parent, cables);
         parent.getChildren().add(switch1);
     }
 

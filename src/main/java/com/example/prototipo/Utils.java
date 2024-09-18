@@ -4,8 +4,6 @@ package com.example.prototipo;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-
-import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -22,19 +20,34 @@ public class Utils {
             circle.setState(state);
         });
     }
-
+    //TODO implementar el recibimiento de un gridpaneObserver y obtener el gridPane correcto de acuerdo al gridName.
     //se obtiene una coleccion de CustomCircles a partir de la columna en comun.
-    public static ArrayList<CustomCircle> getColumnOfCustomCircles(GridPane grid, int columnToGet) {
-        Iterator<Node> circleToPaint = grid.getChildren().iterator();
-        ArrayList<CustomCircle> circles = new ArrayList<>();
+    public static ArrayList<CustomCircle> getColumnOfCustomCircles(GridPaneObserver gridPaneObserver, ID id) {
+        Iterator<Node> fristCircleToPaint = gridPaneObserver.getFirstGridPaneTrail().getGridPane().getChildren().iterator();
+        Iterator<Node> secondCircleToPaint = gridPaneObserver.getSecondGridPaneTrail().getGridPane().getChildren().iterator();
 
-        while(circleToPaint.hasNext()) {
-            Node circle = circleToPaint.next();
+        ArrayList<CustomCircle> circles = new ArrayList<>();
+        //recorre el primer arreglo que tiene el gridPane.
+        while(fristCircleToPaint.hasNext()) {
+            Node circle = fristCircleToPaint.next();
             String targetID = circle.getId();
             ID temporaryID = new ID(targetID);
             CustomCircle targetedCircle = (CustomCircle) circle;
+            int columnToGet = id.getIndexColumn();
 
-            if (ID.isThisColumn(temporaryID, columnToGet)) {
+            if (ID.isThisColumn(temporaryID, columnToGet) && temporaryID.getGridName().equals(id.getGridName())) {
+                circles.add(targetedCircle);
+            }
+        }
+        //recorre el segundo arreglo de gridpane para ver si pertenece.
+        while(secondCircleToPaint.hasNext()) {
+            Node circle = secondCircleToPaint.next();
+            String targetID = circle.getId();
+            ID temporaryID = new ID(targetID);
+            CustomCircle targetedCircle = (CustomCircle) circle;
+            int columnToGet = id.getIndexColumn();
+
+            if (ID.isThisColumn(temporaryID, columnToGet) && temporaryID.getGridName().equals(id.getGridName())) {
                 circles.add(targetedCircle);
             }
         }
@@ -85,15 +98,15 @@ public class Utils {
     //TODO resolver bug cuando se contecta 2 cables en los grid de voltios. propuesta, debe tomar un gridpanetrail.
     //pinta una columna de un color dependiendo del estado que tenga (1 ¿ positivo, -1 negativo), pasar ID y calcular el
     // indice de columna, ver si la id es valida o no (a travez de su gridName)
-    public static void paintCircles(GridPane grid, ID id, int state, ArrayList<Cable> cables) {
+    public static void paintCircles(GridPaneObserver gridPaneObserver, ID id, int state, ArrayList<Cable> cables) {
         String[] validGridNames = {
-                "gridTrail1",
-                "gridTrail2"
+            gridPaneObserver.getFirstGridPaneTrail().getName(),
+            gridPaneObserver.getSecondGridPaneTrail().getName()
         };
-        int columnToPaint = id.getIndexColumn();
+        //int columnToPaint = id.getIndexColumn();
         //if (!id.getIsForGridpane()) return;
         if (!Arrays.asList(validGridNames).contains(id.getGridName())) return;
-        ArrayList<CustomCircle> circles = getColumnOfCustomCircles(grid, columnToPaint);
+        ArrayList<CustomCircle> circles = getColumnOfCustomCircles(gridPaneObserver, id);
 
         Cable cableFound = null;
 
@@ -113,17 +126,6 @@ public class Utils {
         //se obtienen las IDs de los circulos que el cable conecta.
         ID indexOne = cableFound.getIds()[0];
         ID indexTwo = cableFound.getIds()[1];
-
-        //si pertenecen a gridpanes diferentes, entonces se realiza el pintado con el arreglo que se obtuvo anteriormente.
-        /*
-        ArrayList<Cable> connectedCables = getConnectedCables(cables, cableFound);
-
-        connectedCables.forEach(cab -> {
-            System.out.println("column id_cero: " + cab.getIds()[0].getIndexColumn() + " gridname id_cero: " + cab.getIds()[0].getGridName());
-            System.out.println("column id_uno: " + cab.getIds()[1].getIndexColumn() + " gridname id_uno: " + cab.getIds()[1].getGridName());
-        });
-
-        System.out.println("-----------------------"); */
 
         if (!indexOne.getGridName().equals(indexTwo.getGridName())) {
             paintColumn(circles, state);
@@ -146,19 +148,11 @@ public class Utils {
                 ID elementOneID = element.getIds()[1];
                 ID elementTwoID = element.getIds()[0];
 
-                ArrayList<CustomCircle> firstColumn = getColumnOfCustomCircles(grid, elementOneID.getIndexColumn());
-                ArrayList<CustomCircle> secondColumn = getColumnOfCustomCircles(grid, elementTwoID.getIndexColumn());
+                ArrayList<CustomCircle> firstColumn = getColumnOfCustomCircles(gridPaneObserver, elementOneID);
+                ArrayList<CustomCircle> secondColumn = getColumnOfCustomCircles(gridPaneObserver, elementTwoID);
 
                 paintColumn(firstColumn, state);
                 paintColumn(secondColumn, state);
-                /*
-                firstColumn.forEach(circle -> {
-                    circle.setState(state);
-                });
-
-                secondColumn.forEach(circle -> {
-                    circle.setState(state);
-                }); */
             });
         }
 
@@ -175,24 +169,15 @@ public class Utils {
                 ID elementOneID = element.getIds()[0];
                 ID elementTwoID = element.getIds()[1];
 
-                ArrayList<CustomCircle> secondColumn = getColumnOfCustomCircles(grid, elementOneID.getIndexColumn());
-                ArrayList<CustomCircle> firstColumn = getColumnOfCustomCircles(grid, elementTwoID.getIndexColumn());
+                ArrayList<CustomCircle> secondColumn = getColumnOfCustomCircles(gridPaneObserver, elementOneID);
+                ArrayList<CustomCircle> firstColumn = getColumnOfCustomCircles(gridPaneObserver, elementTwoID);
 
                 paintColumn(firstColumn, state);
                 paintColumn(secondColumn, state);
-                /*
-                secondColumn.forEach(circle -> {
-                    circle.setState(state);
-                });
-
-                firstColumn.forEach(circle -> {
-                    circle.setState(state);
-                }); */
-
             });
         }
     }
-    public static void paintCirclesVolt(GridPane grid, ID id, int state){
+    public static void paintCirclesVolt(GridPane gridPaneObserver, ID id, int state){
         String[] validGridNames = {
                 "gridVolt1",
                 "gridVolt2"
@@ -200,22 +185,20 @@ public class Utils {
         int rowToPaint = id.getIndexRow();
         if (!id.getIsForGridpane()) return;
         if (!Arrays.asList(validGridNames).contains(id.getGridName())) return;
-        ArrayList<CustomCircle> circles = getRowOfCustomCircles(grid, rowToPaint);
+        ArrayList<CustomCircle> circles = getRowOfCustomCircles(gridPaneObserver, rowToPaint);
 
         circles.forEach(circle -> {
             circle.setState(state);
         });
 
     }
-
-    public static void unPaintCircles(GridPane grid, int columnToUnPaint, boolean ignoreVoltCables) {
-        ArrayList<CustomCircle> circles = getColumnOfCustomCircles(grid, columnToUnPaint);
+    //TODO se tiene que ver que la columna sea proveniente de un volt (la energia que recibe)
+    public static void unPaintCircles(GridPaneObserver gridPaneObserver, ID id, boolean ignoreVoltCables) {
+        ArrayList<CustomCircle> circles = getColumnOfCustomCircles(gridPaneObserver, id);
 
         if (hasVoltCable(circles) && ignoreVoltCables) return;
 
-        circles.forEach(circle -> {
-            circle.setState(0);
-        });
+        circles.forEach(CustomCircle::removeEnergy);
     }
 
     public static void unPaintCirclesVolt(GridPane grid, int rowToUnPaint) {
@@ -244,9 +227,9 @@ public class Utils {
         return foundCircle;
     }
     //devuelve el numero de cables que tiene una columna.
-    public static int numberOfCables(GridPane grid, int columnToInspect) {
+    public static int numberOfCablesConnectedToVolts(GridPaneObserver gridPaneObserver, ID id) {
         int count = 0;
-        ArrayList<CustomCircle> circles = getColumnOfCustomCircles(grid, columnToInspect);
+        ArrayList<CustomCircle> circles = getColumnOfCustomCircles(gridPaneObserver, id);
 
         for (CustomCircle circle : circles) {
             if (circle.getIsTaken()) {
@@ -394,7 +377,7 @@ public class Utils {
                 } */
 
                 gridpane = getGridpaneByGridName(secondID.getGridName(), gridOne, gridTwo); //gridOne, gridTwo type is = gridPaneTarilController.
-                unPaintCircles(gridpane, secondID.getIndexColumn(), false);
+                unPaintCircles(gridPaneObserver, secondID, false);
                 resetState = getCustomCircleByID(gridpane,secondID); // Para reiniciar el estado del circulo que esta tomando el cable cuando se elimina
                 resetState.setisTaken(false);
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
@@ -427,7 +410,7 @@ public class Utils {
             if (Arrays.asList(validGridNames).contains(firstID.getGridName())) { // GridTrails 1 o 2 -->  BateryVolt
 
                 gridpane = getGridpaneByGridName(firstID.getGridName(), gridOne, gridTwo); //son del tipo GridPaneTrailController.
-                unPaintCircles(gridpane, firstID.getIndexColumn(), false);
+                unPaintCircles(gridPaneObserver, firstID, false);
                 resetState = getCustomCircleByID(gridpane,firstID); // Para reiniciar el estado del circulo que esta tomando el cable cuando se elimina
                 resetState.setisTaken(false);
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
@@ -462,7 +445,7 @@ public class Utils {
                     gridTwo
                 ); // son del tipo de gridPaneTrailController.
 
-                unPaintCircles(gridPane, secondID.getIndexColumn(), false);
+                unPaintCircles(gridPaneObserver, secondID, false);
 
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
                 return;
@@ -484,10 +467,10 @@ public class Utils {
                     firstCircleGridPane = gridOne.getGridPane();
                 }
 
-                unPaintCircles(secondCircleGridPane, cable.getIds()[1].getIndexColumn(), false);
+                unPaintCircles(gridPaneObserver, cable.getIds()[1], false);
                 //unPaintCircles(firstCircleGridPane, cable.getIds()[1].getIndexColumn(), false);
 
-                unPaintCircles(secondCircleGridPane, cable.getIds()[0].getIndexColumn(), false);
+                unPaintCircles(gridPaneObserver, cable.getIds()[0], false);
                 //unPaintCircles(firstCircleGridPane, cable.getIds()[0].getIndexColumn(), false);
             }
 
@@ -504,7 +487,7 @@ public class Utils {
                         gridTwo
                 ); //del tipo gridPaneTrailController.
 
-                unPaintCircles(gridPane, firstID.getIndexColumn(), false);
+                unPaintCircles(gridPaneObserver, firstID, false);
 
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
                 return;
@@ -520,8 +503,8 @@ public class Utils {
                         gridTwo
                 ); //del tipo gridPaneTrailController.
 
-                unPaintCircles(secondCircleGridPane, cable.getIds()[1].getIndexColumn(), false);
-                unPaintCircles(secondCircleGridPane, cable.getIds()[0].getIndexColumn(), false);
+                unPaintCircles(gridPaneObserver, cable.getIds()[1], false);
+                unPaintCircles(gridPaneObserver, cable.getIds()[0], false);
                 //System.out.println(cable.getIds()[1].getIndexColumn());
             }
 
@@ -540,11 +523,11 @@ public class Utils {
                     gridTwo
             ); //del tipo gridPaneTrailController.
 
-            ArrayList<CustomCircle> column = getColumnOfCustomCircles(secondCircleGridPane, cable.getIds()[0].getIndexColumn());
+            ArrayList<CustomCircle> column = getColumnOfCustomCircles(gridPaneObserver, cable.getIds()[0]);
             hasVoltCable(column);
 
-            unPaintCircles(secondCircleGridPane, cable.getIds()[1].getIndexColumn(), true);
-            unPaintCircles(secondCircleGridPane, cable.getIds()[0].getIndexColumn(), true);
+            unPaintCircles(gridPaneObserver, cable.getIds()[1], true);
+            unPaintCircles(gridPaneObserver, cable.getIds()[0], true);
         }
 
         ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
@@ -603,7 +586,7 @@ public class Utils {
             LED.ONorOFF(customShape);
             //Esta condicion comprueba si uno de los CustomCircle pertenece al Switch
         } else if (StartHandler.getID().getGridName().equals(GridNames[1]) || (EndHandler.getID().getGridName().equals(GridNames[1]))) {
-            Switch.ChargePass(customShape, cables);
+            Switch.ChargePass(customShape);
         }
     }
 
