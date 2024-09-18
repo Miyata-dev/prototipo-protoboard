@@ -100,8 +100,8 @@ public class Utils {
     // indice de columna, ver si la id es valida o no (a travez de su gridName)
     public static void paintCircles(GridPaneObserver gridPaneObserver, ID id, int state, ArrayList<Cable> cables) {
         String[] validGridNames = {
-            gridPaneObserver.getFirstGridPaneTrail().getName(),
-            gridPaneObserver.getSecondGridPaneTrail().getName()
+                gridPaneObserver.getFirstGridPaneTrail().getName(),
+                gridPaneObserver.getSecondGridPaneTrail().getName()
         };
         //int columnToPaint = id.getIndexColumn();
         //if (!id.getIsForGridpane()) return;
@@ -177,6 +177,7 @@ public class Utils {
             });
         }
     }
+    //TODO dejar los gridNameVolts dinamicos.
     public static void paintCirclesVolt(GridPane gridPaneObserver, ID id, int state){
         String[] validGridNames = {
                 "gridVolt1",
@@ -203,9 +204,7 @@ public class Utils {
 
     public static void unPaintCirclesVolt(GridPane grid, int rowToUnPaint) {
         ArrayList<CustomCircle> circles = getRowOfCustomCircles(grid, rowToUnPaint);
-        circles.forEach(circle -> {
-            circle.setState(0);
-        });
+        circles.forEach(CustomCircle::removeEnergy);
     }
 
     //retorna null si no encuentra el nodo.
@@ -316,8 +315,8 @@ public class Utils {
     //obtiene el gridpane de acuerdo al nombre que se asigno, este metodo recibe los GridPaneTarilController.
     public static GridPane getGridpaneByGridName(String GridName, GridPaneController gridVoltOne, GridPaneController gridVoltTwo) {
         String[] voltNames = {
-                "gridVolt1",
-                "gridVolt2"
+            "gridVolt1",
+            "gridVolt2"
         };
 
         GridPane gridpane = null;
@@ -340,14 +339,14 @@ public class Utils {
 
         //estos son los nombres que usa internamente las ID de los circulos pertenecientes al centro.
         String[] validGridNames = {
-                "gridTrail1",
-                "gridTrail2"
+            gridOne.getName(),
+            gridTwo.getName()
         };
         //si una de las ids provienen de los volts (buses), entonces se realiza una eliminación de energía en cadena.
         //en caso de que el cable sea el único proveedoor se pierde la energia.
         String[] voltNames = {
-                "gridVolt1",
-                "gridVolt2"
+            gridVoltOne.getName(),
+            gridVoltTwo.getName()
         };
 
         //se recupera el nodo que se presiona.
@@ -369,12 +368,8 @@ public class Utils {
             circle.setisTaken(false);
 
             if (Arrays.asList(validGridNames).contains(secondID.getGridName())) { //BateryVolt --> GridTrails 1 o 2
-                /*
-                if (firstID.getGridName().equals(validGridNames[0])) {
-                    gridpane = gridOne.getGridPane();
-                } else if (firstID.getGridName().equals(validGridNames[1])) {
-                    gridpane = gridTwo.getGridPane();
-                } */
+
+                System.out.println("in batery one");
 
                 gridpane = getGridpaneByGridName(secondID.getGridName(), gridOne, gridTwo); //gridOne, gridTwo type is = gridPaneTarilController.
                 unPaintCircles(gridPaneObserver, secondID, false);
@@ -383,12 +378,7 @@ public class Utils {
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
                 return;
             } else if (Arrays.asList(voltNames).contains(secondID.getGridName())) { //BateryVolt --> GridVolts
-                /*
-                if (secondID.getGridName().equals(voltNames[0])) {
-                    gridpane = gridVoltOne.getGridPane();
-                } else if (secondID.getGridName().equals(voltNames[1])) {
-                    gridpane = gridVoltTwo.getGridPane();
-                } */
+                System.out.println("in batery one");
 
                 gridpane = getGridpaneByGridName(secondID.getGridName(), gridVoltOne, gridVoltTwo); //estos grid son del tipo gridPaneController (volts)
                 unPaintCirclesVolt(gridpane, secondID.getIndexRow());
@@ -405,7 +395,7 @@ public class Utils {
             int index = secondID.getIndexRow();
             CustomCircle circle = bateria.getPoloByIndexRow(index);
             circle.setisTaken(false);
-
+            System.out.println("in batery two ");
             //si el id pertenece a uno de los gridpanes de pistas, entonces entra en este condicional.
             if (Arrays.asList(validGridNames).contains(firstID.getGridName())) { // GridTrails 1 o 2 -->  BateryVolt
 
@@ -440,9 +430,9 @@ public class Utils {
             //si hay un solo cable, entonces no hay necesidad de eliminar la energía en cadena. //TODO revisar que pasa al conectar 2 gridpaneVolts.
             if (connectedCables.isEmpty()) {
                 GridPane gridPane = getGridpaneByGridName(
-                    secondID.getGridName(),
-                    gridOne,
-                    gridTwo
+                        secondID.getGridName(),
+                        gridOne,
+                        gridTwo
                 ); // son del tipo de gridPaneTrailController.
 
                 unPaintCircles(gridPaneObserver, secondID, false);
@@ -456,9 +446,9 @@ public class Utils {
                 GridPane secondCircleGridPane = null;
 
                 secondCircleGridPane = getGridpaneByGridName(
-                    cable.getIds()[1].getGridName(),
-                    gridOne,
-                    gridTwo
+                        cable.getIds()[1].getGridName(),
+                        gridOne,
+                        gridTwo
                 ); //son del tipo de gridPaneTrailController.
 
                 if (cable.getIds()[0].getGridName().equals(gridTwo.getName())) {
@@ -481,12 +471,6 @@ public class Utils {
             ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable);
             //TODO revisar que pasa al conectar 2 gridpaneVolts.
             if (connectedCables.isEmpty()) {
-                GridPane gridPane = getGridpaneByGridName(
-                        firstID.getGridName(),
-                        gridOne,
-                        gridTwo
-                ); //del tipo gridPaneTrailController.
-
                 unPaintCircles(gridPaneObserver, firstID, false);
 
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
@@ -496,12 +480,6 @@ public class Utils {
 
             for (Cable cable : connectedCables) {
                 GridPane secondCircleGridPane = null;
-
-                secondCircleGridPane = getGridpaneByGridName(
-                        cable.getIds()[0].getGridName(),
-                        gridOne,
-                        gridTwo
-                ); //del tipo gridPaneTrailController.
 
                 unPaintCircles(gridPaneObserver, cable.getIds()[1], false);
                 unPaintCircles(gridPaneObserver, cable.getIds()[0], false);
@@ -552,19 +530,19 @@ public class Utils {
         //Para hacer que funcione necesitamos utilizar AtomicReference
         node.setOnMousePressed(e -> {
             calculateOffSet(
-                    e,
-                    node,
-                    startX,
-                    startY
+                e,
+                node,
+                startX,
+                startY
             );
         });
 
         node.setOnMouseDragged(e -> {
             setOnDragFigure(
-                    e,
-                    node,
-                    startX,
-                    startY
+                e,
+                node,
+                startX,
+                startY
             );
         });
     }
@@ -586,7 +564,7 @@ public class Utils {
             LED.ONorOFF(customShape);
             //Esta condicion comprueba si uno de los CustomCircle pertenece al Switch
         } else if (StartHandler.getID().getGridName().equals(GridNames[1]) || (EndHandler.getID().getGridName().equals(GridNames[1]))) {
-            Switch.ChargePass(customShape);
+            Switch.ChargePass(customShape, cables);
         }
     }
 

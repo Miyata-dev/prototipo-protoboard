@@ -20,10 +20,8 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
     public Switch(boolean PasoDeCarga, CustomShape customShape, GridPaneObserver gridPaneObserver, Basurero basurero, AnchorPane root, ArrayList<Cable> cables) {
         super(customShape);
         //Switch.PasoDeCarga = PasoDeCarga;
-        //Switch.gridPane1 = gridPaneObserver.getFirstGridPaneTrail();
-        //Switch.gridPane2 = gridPaneObserver.getSecondGridPaneTrail();
-        Switch.gridPaneObserver = gridPaneObserver;
         this.basurero= basurero;
+        gridPaneObserver= gridPaneObserver;
         Switch.root = root;
         Switch.cables= cables;
 
@@ -86,7 +84,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
             //Preguntamos si se puede pasar energia y si una pata tiene energia y la otra pata tiene cable, ya que para pasarla necesitamos que al menos tenga un cable
             if (customShape.getLeg1().hasEnergy() && customShape.getLeg2().hasCable()) {
                 System.out.println(customShape.getLeg1().getState());
-                //Si la Pata1 tiene energia entonces tenemos que cambiar el Estado de la segunda al estado correspondiente
+                //Si la Pata1 tiene energia entonces tenemos que cambiar el Estado de la segunda al estado correspondiente y tambien la carga del cable
                 customShape.getLeg2().setState(customShape.getLeg1().getState());
                 customShape.getLeg2().getCable().setTipodecarga(customShape.getLeg1().getState());
                 //Esta condición compara la ID del CustomCircle es la misma con una de las ID que almacena el Cable.
@@ -98,8 +96,10 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
                     ID id = customShape.getLeg2().getCable().getIds()[0];
                     PaintSwitch(id, customShape, customShape.getLeg2(), cables);
                 }
+
             } else if (customShape.getLeg2().hasEnergy() && Switch.PasoDeCarga && customShape.getLeg1().hasCable()) {
                 customShape.getLeg1().setState(customShape.getLeg2().getState());
+                customShape.getLeg1().getCable().setTipodecarga(customShape.getLeg2().getState());
                 if (ID.isSameID(customShape.getLeg1().getID(), customShape.getLeg1().getCable().getIds()[0])) {
                     customShape.getLeg2().setState(customShape.getLeg1().getState());
                     ID id = customShape.getLeg1().getCable().getIds()[1];
@@ -192,9 +192,9 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
     public static void UnPaintSwitch(ID id, CustomShape customShape, CustomCircle Leg) {
         if ("gridTrail1".equals(id.getGridName())) {
             // Llamamos a la función de Despintar
-            Utils.unPaintCircles(gridPane1.getGridPane(), id.getIndexColumn(), false);
+            Utils.unPaintCircles(gridPaneObserver, id, false);
         } else if ("gridTrail2".equals(id.getGridName())) {
-            Utils.unPaintCircles(gridPane2.getGridPane(), id.getIndexColumn(), false);
+            Utils.unPaintCircles(gridPaneObserver, id, false);
         } else {
             if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
                 // En el caso que el nombre del Grid no es de ninguno de los Gridpane entonces debe ser de Automaticamente del una bateria, LED o Switch.
@@ -208,7 +208,9 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         }
     }
 
-    //Este metodo lo que hace es decidir la pata final para quitar la energia correspondiente
+
+
+    //Este metodo lo que hace es decidir la pata final para despues a que direccion se va a quitar la energia del GridPane
     public static void DecideEndLeg(CustomShape customShape){
         if(customShape.getLeg1().hasCable() && !(customShape.getLeg2().hasCable())){
             SetEndLeg(customShape.getLeg2());
