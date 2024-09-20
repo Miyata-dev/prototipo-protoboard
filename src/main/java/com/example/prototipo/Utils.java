@@ -423,12 +423,6 @@ public class Utils {
             ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable);
             //si hay un solo cable, entonces no hay necesidad de eliminar la energía en cadena. //TODO revisar que pasa al conectar 2 gridpaneVolts.
             if (connectedCables.isEmpty()) {
-                GridPane gridPane = getGridpaneByGridName(
-                        secondID.getGridName(),
-                        gridOne,
-                        gridTwo
-                ); // son del tipo de gridPaneTrailController.
-
                 unPaintCircles(gridPaneObserver, secondID, false);
 
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
@@ -436,24 +430,8 @@ public class Utils {
             }
 
             for (Cable cable : connectedCables) {
-                GridPane firstCircleGridPane = null;
-                GridPane secondCircleGridPane = null;
-
-                secondCircleGridPane = getGridpaneByGridName(
-                        cable.getIds()[1].getGridName(),
-                        gridOne,
-                        gridTwo
-                ); //son del tipo de gridPaneTrailController.
-
-                if (cable.getIds()[0].getGridName().equals(gridTwo.getName())) {
-                    firstCircleGridPane = gridTwo.getGridPane();
-                } else if (cable.getIds()[0].getGridName().equals(gridOne.getName())) {
-                    firstCircleGridPane = gridOne.getGridPane();
-                }
-
                 unPaintCircles(gridPaneObserver, cable.getIds()[1], false);
                 //unPaintCircles(firstCircleGridPane, cable.getIds()[1].getIndexColumn(), false);
-
                 unPaintCircles(gridPaneObserver, cable.getIds()[0], false);
                 //unPaintCircles(firstCircleGridPane, cable.getIds()[0].getIndexColumn(), false);
             }
@@ -487,14 +465,6 @@ public class Utils {
         ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable);
 
         for (Cable cable : connectedCables) {
-            GridPane secondCircleGridPane = null;
-
-            secondCircleGridPane = getGridpaneByGridName(
-                    cable.getIds()[0].getGridName(),
-                    gridOne,
-                    gridTwo
-            ); //del tipo gridPaneTrailController.
-
             ArrayList<CustomCircle> column = getColumnOfCustomCircles(gridPaneObserver, cable.getIds()[0]);
             hasVoltCable(column);
 
