@@ -82,7 +82,8 @@ public class ClickLine {
     private void LinePressed(AnchorPane root,MouseEvent Event){
         if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) {  //Verifica que empiece solo de los circulos
             //CurrentLine.setLine(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
-            int carga = CurrentLine.getTipodecarga();
+            int carga;
+            carga = CurrentLine.getTipodecarga();
             //String previousID = CurrentLine.getRandomID();
             CurrentLine = new Cable(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
             CurrentLine.setTipodecarga(carga);
@@ -159,30 +160,33 @@ public class ClickLine {
         cables.add(current);
 
         if (rec != null && !StartHandler.getID().getIsForGridpane()) {
-            System.out.println("pata 1 del led");
-
             if (StartHandler.getID().getIndexRow() == 1) {
                 System.out.println("ID 1");
                 rec.setLeg1(StartHandler);
-                System.out.println(StartHandler.getCable());
+                System.out.println(StartHandler.getCable().getRandomID() +" Energy: "  + StartHandler.getCable().getTipodecarga());
+                System.out.println("StartHandler : " +  StartHandler.getState());
             } else if (StartHandler.getID().getIndexRow() == 2) {
                 System.out.println("ID 2");
                 rec.setLeg2(StartHandler);
-                System.out.println(StartHandler.getCable());
+                System.out.println(StartHandler.getCable().getRandomID() +" Energy: " + StartHandler.getCable().getTipodecarga());
+                System.out.println("StartHandler : " +  StartHandler.getState());
             }
 
         } else if (rec != null && !EndHandler.getID().getIsForGridpane()) {
-            System.out.println("pata 2 del led");
             if (EndHandler.getID().getIndexRow() == 1) {
                 System.out.println("ID 1");
                 rec.setLeg1(EndHandler);
-                System.out.println(EndHandler.getCable());
+
+                System.out.println(EndHandler.getCable().getRandomID() +" Energy: " + EndHandler.getCable().getTipodecarga());
+                System.out.println("EndHalder : " +  EndHandler.getState());
             } else if (EndHandler.getID().getIndexRow() == 2) {
                 System.out.println("ID 2");
                 rec.setLeg2(EndHandler);
-                System.out.println(EndHandler.getCable());
+                System.out.println(EndHandler.getCable().getRandomID() +" Energy: " + EndHandler.getCable().getTipodecarga());
+                System.out.println("ENdlhanlds : " +  EndHandler.getState());
             }
         }
+
         //CASO BATERIA-GRIDPANEVOLT OR GRIDPANEVOLT-BATERIA
         if (Arrays.asList(edgeCases).contains(StartHandler.getID().getGridName()) && Arrays.asList(gridNames).contains(EndHandler.getID().getGridName())){ //PREGUNTA SI DE DONDE EMPIEZA ES UN GRIDPANEVOLT Y SI TERMINA ES LA BATERIA (GRIDPANEVOLT --> BATERIA)
             String startCircleGridnamevolt = StartHandler.getID().getGridName();
@@ -232,10 +236,14 @@ public class ClickLine {
             }
         }
 
+
+
         UpdateState(StartHandler, EndHandler, current);
+
+        System.out.println("StartHandler : " +  StartHandler.getState());
+        System.out.println("EndHalder : " +  EndHandler.getState());
+
         Utils.IdentifiedFunction(StartHandler, EndHandler, rec, cables);
-        System.out.println(StartHandler.getState());
-        System.out.println(EndHandler.getState());
 
         //TODO revisar que hace.
         StartHandler = null;

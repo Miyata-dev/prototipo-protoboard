@@ -19,7 +19,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
     public Switch(boolean PasoDeCarga, CustomShape customShape, GridPaneObserver gridPaneObserver, Basurero basurero, AnchorPane root, ArrayList<Cable> cables) {
         super(customShape);
-        //Switch.PasoDeCarga = PasoDeCarga;
+        Switch.PasoDeCarga = true;
         this.basurero= basurero;
         Switch.gridPaneObserver = gridPaneObserver;
         Switch.root = root;
@@ -36,6 +36,10 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
             //Al darle Click al Switch se cambia el paso de carga y se llama a la funcion correspondiente
             Switch.PasoDeCarga = !Switch.PasoDeCarga;
             Switch.ChargePass(customShape, cables);
+
+//            cables.forEach(cable ->{
+//                System.out.println(cable.getRandomID() + "    energy: " + cable.getTipodecarga());
+//            });
 
 
             System.out.println("el paso de carga" + Switch.PasoDeCarga);
@@ -70,6 +74,11 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         customShape.getLeg2().setTranslateX(x+35);
         customShape.getLeg2().setTranslateY(y+15);
 
+        customShape.getLeg1().removeEnergy();
+        customShape.getLeg2().removeEnergy();
+        customShape.getLeg1().setCable(null);
+        customShape.getLeg2().setCable(null);
+
         //Se añaden al grupo de la Clase Switch
         this.getChildren().add(customShape.getLeg1());
         this.getChildren().add(customShape.getLeg2());
@@ -83,7 +92,6 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         if(Switch.PasoDeCarga) {
             //Preguntamos si se puede pasar energia y si una pata tiene energia y la otra pata tiene cable, ya que para pasarla necesitamos que al menos tenga un cable
             if (customShape.getLeg1().hasEnergy() && customShape.getLeg2().hasCable()) {
-                System.out.println(customShape.getLeg1().getState());
                 //Si la Pata1 tiene energia entonces tenemos que cambiar el Estado de la segunda al estado correspondiente y tambien la carga del cable
                 customShape.getLeg2().setState(customShape.getLeg1().getState());
                 customShape.getLeg2().getCable().setTipodecarga(customShape.getLeg1().getState());
@@ -109,18 +117,19 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
                     ID id = customShape.getLeg1().getCable().getIds()[0];
                     PaintSwitch(id, customShape, customShape.getLeg1(), cables);
                 }
-
-            } else {
-                //La primera vez cuando ninguno de los dos tiene un estado va a tirar error porque no se puede determinar el estado
-                if (customShape.getLeg1().hasCable() && !customShape.getLeg2().hasCable()) {
-                    customShape.getLeg1().setState(customShape.getLeg1().getCable().getTipodecarga());
-                } else if (customShape.getLeg2().hasCable() && !(customShape.getLeg1().hasCable())) {
-                    customShape.getLeg2().setState(customShape.getLeg2().getCable().getTipodecarga());
-                }
             }
+
+//            } else {
+//                //La primera vez cuando ninguno de los dos tiene un estado va a tirar error porque no se puede determinar el estado
+//                if (customShape.getLeg1().hasCable() && !customShape.getLeg2().hasCable()) {
+//                    customShape.getLeg1().setState(customShape.getLeg1().getCable().getTipodecarga());
+//                } else if (customShape.getLeg2().hasCable() && !(customShape.getLeg1().hasCable())) {
+//                    customShape.getLeg2().setState(customShape.getLeg2().getCable().getTipodecarga());
+//                }
+//            }
         } else{
             System.out.println("BBBBBBBBBBJBJASDBLKSD");
-            if(customShape.getLeg1().hasEnergy() && customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasCable() && customShape.getLeg2().hasCable() && Switch.EndLeg != null && Switch.PasoDeCarga) {
+            if(customShape.getLeg1().hasEnergy() && customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasCable() && customShape.getLeg2().hasCable() && Switch.EndLeg != null) {
                 if(customShape.getLeg1().getCable().getTipodecarga() != customShape.getLeg2().getCable().getTipodecarga()){
                     if( ID.isSameID(Switch.EndLeg.getCable().getIds()[0],Switch.EndLeg.getID() )){
                         System.out.println("AAAA");
