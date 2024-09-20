@@ -101,7 +101,7 @@ public class Cable extends Line {
     //mira si un cable está PRUEBALO DSP DE AYUDAR AL POLLO MRD.
     public boolean isConnectedToBatery() {
         String bateryID = "BateryVolt";
-
+        //mira si una de las ids relacionadas a los circulos que conecta el cable pertenece a la bateria.
         boolean isFirstConnected = ids[0].getGridName().equals(bateryID);
         boolean isSecondConnected = ids[1].getGridName().equals(bateryID);
 

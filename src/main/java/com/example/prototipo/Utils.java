@@ -137,7 +137,7 @@ public class Utils {
         //mira que la primera id sea valida, es decir, esté dentro de los nombres del gridpane.
         if (Arrays.asList(validGridNames).contains(indexOne.getGridName())) {
             //se obtiene una colección de cables que están conectados entre si.
-            ArrayList<Cable> connectedCables = getConnectedCables(cables, cableFound);
+            ArrayList<Cable> connectedCables = getConnectedCables(cables, cableFound, true);
             //getColumnOfCustomCircles(grid, indexTwo.getIndexColumn());
 
             connectedCables.forEach(el -> {
@@ -159,7 +159,7 @@ public class Utils {
         }
 
         if (Arrays.asList(validGridNames).contains(indexTwo.getGridName())) {
-            ArrayList<Cable> connectedCables = getConnectedCables(cables, cableFound);
+            ArrayList<Cable> connectedCables = getConnectedCables(cables, cableFound, true);
 
             connectedCables.forEach(el -> {
                 System.out.println(el.getIds()[0].getGeneratedID());
@@ -290,14 +290,21 @@ public class Utils {
         return initialIndex;
     }
 
-    public static ArrayList<Cable> getConnectedCablesFromVolts(ArrayList<Cable> cables, Cable cableToConnect) {
-        HashSet<Cable> connectedCablesHashSet = new HashSet<>();
+    public static boolean isConnectedToBatery(ArrayList<CustomCircle> circles) {
+        for (CustomCircle circle : circles) {
+            if (circle.hasCable() && circle.getCable().isConnectedToBatery()) {
+                System.out.println("it's conected to batery. ");
+                System.out.println(circle.getCable().getIds()[0].getGridName());
+                System.out.println(circle.getCable().getIds()[1].getGridName());
 
+                return true;
+            }
+        }
 
-        return new ArrayList<>(connectedCablesHashSet);
-    };
+        return false;
+    }
 
-    public static ArrayList<Cable> getConnectedCables(ArrayList<Cable> cables, Cable cableToConnect) {
+    public static ArrayList<Cable> getConnectedCables(ArrayList<Cable> cables, Cable cableToConnect, boolean ignoreVoltCables) {
         String[] voltNames = {
                 "gridVolt1",
                 "gridVolt2"
@@ -311,9 +318,12 @@ public class Utils {
             //se mira que cada uno de los cables de la colección, no provenga de un gridVolt
             boolean isFirstIDinVolt = Arrays.asList(voltNames).contains(cables.get(i).getIds()[0].getGridName());
             boolean isSecondIDinVolt = Arrays.asList(voltNames).contains(cables.get(i).getIds()[1].getGridName());
+            
+            //se agregan a la colección de cables si está la opción de ignorar el caso de que pertenezcan a los volts.
+            boolean areVoltCablesValid = (!isFirstIDinVolt && !isSecondIDinVolt) || !ignoreVoltCables;
 
             //mira que los cables estén conectados entre si Y ADEMÁS, que no sea un cable que provenga de los gridVolts.
-            if (Cable.areConnected(cables.get(i), cableToConnect) && !isFirstIDinVolt && !isSecondIDinVolt) {
+            if (Cable.areConnected(cables.get(i), cableToConnect) && areVoltCablesValid) {
                 connectedCablesHashSet.add(cables.get(i));
             }
             //si es hashset NO está vacío, mira todos los elementos del hashset
@@ -330,7 +340,10 @@ public class Utils {
                         boolean isFirstIDcableinVolt = Arrays.asList(voltNames).contains(cable.getIds()[0].getGridName());
                         boolean isSecondIDcableinVolt = Arrays.asList(voltNames).contains(cable.getIds()[1].getGridName());
 
-                        if (Cable.areConnected(arrayListAux.get(j), cable) && !isFirstIDcableinVolt && !isSecondIDcableinVolt) {
+                        //se agregan a la colección de cables si está la opción de ignorar el caso de que pertenezcan a los volts.
+                        boolean areVoltsIDValid = (!isFirstIDcableinVolt && !isSecondIDcableinVolt) || !ignoreVoltCables;
+
+                        if (Cable.areConnected(arrayListAux.get(j), cable) && areVoltsIDValid) {
                             connectedCablesHashSet.add(cable);
                         }
                     }
@@ -404,7 +417,7 @@ public class Utils {
         ID secondID = pressedCable.getIds()[1];
         CustomCircle resetState;
 
-        //antes de entrar a los casos generales, se busca.
+        //antes de entrar a los casos generales, se mira que el cable esté conectado a 2 volts, TODO hacer que funcione en cadena..
         if (Arrays.asList(voltNames).contains(secondID.getGridName()) && Arrays.asList(voltNames).contains(firstID.getGridName())) {
             System.out.println("el cable proviene de los 2 volts.");
 
@@ -412,12 +425,16 @@ public class Utils {
             ArrayList<CustomCircle> firstCirclesRow = getRowOfCustomCircles(gridPaneObserver, firstID);
             ArrayList<CustomCircle> secondCircleRow = getRowOfCustomCircles(gridPaneObserver, secondID);
 
-            cables.forEach(cable -> {
-                System.out.println(cable);
-            });
+            boolean isFirstConnected = isConnectedToBatery(firstCirclesRow);
+            boolean isSecondConnected = isConnectedToBatery(secondCircleRow);
 
-            //mira que las filas de los volts tengan energía proveniente de una bateria.
-            //ArrayList<Cable> connectedCablesToFirstRow = getConnectedCables();
+            if (!isFirstConnected) {
+                unPaintCirclesVolt(gridPaneObserver, firstID);
+            }
+
+            if (!isSecondConnected) {
+                unPaintCirclesVolt(gridPaneObserver, secondID);
+            }
 
             ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
             return;
@@ -491,7 +508,7 @@ public class Utils {
         //si el primer ID pertenece a los volts, se extrae el Gridpane del segundo para despintarlo.
         if (Arrays.asList(voltNames).contains(firstID.getGridName())) {
             //se obtiene la coleccion de cables conectados al primer cable.
-            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable);
+            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable, true);
             //si hay un solo cable, entonces no hay necesidad de eliminar la energía en cadena. //TODO revisar que pasa al conectar 2 gridpaneVolts.
             if (connectedCables.isEmpty()) {
                 unPaintCircles(gridPaneObserver, secondID, false);
@@ -511,7 +528,7 @@ public class Utils {
             return;
         } else if (Arrays.asList(voltNames).contains(secondID.getGridName())) {
             //se obtiene la coleccion de cables conectados al primer cable.
-            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable);
+            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable, true);
             //TODO revisar que pasa al conectar 2 gridpaneVolts.
             if (connectedCables.isEmpty()) {
                 unPaintCircles(gridPaneObserver, firstID, false);
@@ -533,7 +550,7 @@ public class Utils {
             return;
         }
 
-        ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable);
+        ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable, true);
 
         for (Cable cable : connectedCables) {
             ArrayList<CustomCircle> column = getColumnOfCustomCircles(gridPaneObserver, cable.getIds()[0]);
