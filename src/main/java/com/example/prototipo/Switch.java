@@ -21,7 +21,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         super(customShape);
         //Switch.PasoDeCarga = PasoDeCarga;
         this.basurero= basurero;
-        gridPaneObserver= gridPaneObserver;
+        Switch.gridPaneObserver = gridPaneObserver;
         Switch.root = root;
         Switch.cables= cables;
 
