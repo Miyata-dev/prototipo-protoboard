@@ -20,37 +20,31 @@ public class Utils {
             circle.setState(state);
         });
     }
-    //TODO implementar el recibimiento de un gridpaneObserver y obtener el gridPane correcto de acuerdo al gridName.
-    //se obtiene una coleccion de CustomCircles a partir de la columna en comun.
-    public static ArrayList<CustomCircle> getColumnOfCustomCircles(GridPaneObserver gridPaneObserver, ID id) {
-        Iterator<Node> fristCircleToPaint = gridPaneObserver.getFirstGridPaneTrail().getGridPane().getChildren().iterator();
-        Iterator<Node> secondCircleToPaint = gridPaneObserver.getSecondGridPaneTrail().getGridPane().getChildren().iterator();
-
-        ArrayList<CustomCircle> circles = new ArrayList<>();
-        //recorre el primer arreglo que tiene el gridPane.
+    //este método agrega un circlo a la colección que recibe como parámetro solo si son de la misma columna.
+    private static void addCirclesFromSameColumn(ID id, Iterator<Node> fristCircleToPaint, ArrayList<CustomCircle> circles) {
         while(fristCircleToPaint.hasNext()) {
             Node circle = fristCircleToPaint.next();
             String targetID = circle.getId();
             ID temporaryID = new ID(targetID);
             CustomCircle targetedCircle = (CustomCircle) circle;
             int columnToGet = id.getIndexColumn();
-
+            //mira que pertenezca a la misma columna
             if (ID.isThisColumn(temporaryID, columnToGet) && temporaryID.getGridName().equals(id.getGridName())) {
                 circles.add(targetedCircle);
             }
         }
+    }
+
+    //se obtiene una coleccion de CustomCircles a partir de la columna en común, este método solo aplica a los gridPaneTrails.
+    public static ArrayList<CustomCircle> getColumnOfCustomCircles(GridPaneObserver gridPaneObserver, ID id) {
+        Iterator<Node> fristCircleToPaint = gridPaneObserver.getFirstGridPaneTrail().getGridPane().getChildren().iterator();
+        Iterator<Node> secondCircleToPaint = gridPaneObserver.getSecondGridPaneTrail().getGridPane().getChildren().iterator();
+
+        ArrayList<CustomCircle> circles = new ArrayList<>();
+        //recorre el primer arreglo que tiene el gridPane.
+        addCirclesFromSameColumn(id, fristCircleToPaint, circles);
         //recorre el segundo arreglo de gridpane para ver si pertenece.
-        while(secondCircleToPaint.hasNext()) {
-            Node circle = secondCircleToPaint.next();
-            String targetID = circle.getId();
-            ID temporaryID = new ID(targetID);
-            CustomCircle targetedCircle = (CustomCircle) circle;
-            int columnToGet = id.getIndexColumn();
-
-            if (ID.isThisColumn(temporaryID, columnToGet) && temporaryID.getGridName().equals(id.getGridName())) {
-                circles.add(targetedCircle);
-            }
-        }
+        addCirclesFromSameColumn(id, secondCircleToPaint, circles);
 
         return circles;
     }
@@ -225,13 +219,13 @@ public class Utils {
 
         return foundCircle;
     }
-    //devuelve el numero de cables que tiene una columna.
+    //devuelve el numero de cables que estan conectadas a un volt que tiene una columna.
     public static int numberOfCablesConnectedToVolts(GridPaneObserver gridPaneObserver, ID id) {
         int count = 0;
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(gridPaneObserver, id);
 
         for (CustomCircle circle : circles) {
-            if (circle.getIsTaken()) {
+            if (circle.hasCable()) {
                 count++;
             }
         }
