@@ -35,16 +35,10 @@ public class ClickLine {
             Node nodoclickeado = event.getPickResult().getIntersectedNode();
             if(nodoclickeado instanceof CustomCircle && !((CustomCircle) nodoclickeado).getIsTaken()){
                 ids = new ID[2]; //se asegura de que el cable tome la referencia del objeto actual y no el anterior.
-
                 CustomCircle Circulo = (CustomCircle) nodoclickeado;
-
                 SetStartHandler(Circulo);
                 StartHandler.setisTaken(true);
-
-//                CurrentLine.setRandomID();
-
                 CurrentLine.setTipodecarga(Circulo.getState()); //se pasa por el cable el tipo de carga que tiene el circulo
-
                 ids[0] = new ID(Circulo.getID().getGeneratedID());
 
                 LinePressed(root,event);
@@ -69,7 +63,6 @@ public class ClickLine {
         root.setOnMouseClicked(e -> {
             boolean canDelete = basurero.getIsActive();
             if (!canDelete) return;
-            //if (!(e.getTarget() instanceof Line || e.getTarget() instanceof CustomShape)) return;
 
             Utils.deleteCable(e,
                 gridPaneObserver,
@@ -81,9 +74,7 @@ public class ClickLine {
     //TODO: aca puede que ocurran los ids duplicados.
     private void LinePressed(AnchorPane root,MouseEvent Event){
         if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) {  //Verifica que empiece solo de los circulos
-            //CurrentLine.setLine(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
             int carga = CurrentLine.getTipodecarga();
-            //String previousID = CurrentLine.getRandomID();
             CurrentLine = new Cable(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
             CurrentLine.setTipodecarga(carga);
             CurrentLine.setStrokeWidth(5);
@@ -148,19 +139,13 @@ public class ClickLine {
         current.setIds(CurrentLine.getIds());
         current.setTipodecarga(CurrentLine.getTipodecarga());
         current.setRandomID(CurrentLine.getRandomID());
-
         current.SetCircles(new CustomCircle[] {StartHandler, EndHandler });
-
         StartHandler.setCable(current);
         EndHandler.setCable(current);
-
-
-
         cables.add(current);
 
         if (rec != null && !StartHandler.getID().getIsForGridpane()) {
             System.out.println("pata 1 del led");
-
             if (StartHandler.getID().getIndexRow() == 1) {
                 System.out.println("ID 1");
                 rec.setLeg1(StartHandler);
@@ -213,7 +198,6 @@ public class ClickLine {
                 Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
             }
             EndHandler.setisTaken(true);
-            //StartHandler.setisTaken(true);
         } else {
             //recuperamos el nombre del gridName para ver en cual gridpane pintar
             if ( (StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane()) || (StartHandler.getID().getGridName()).equals(gridNames[2]) ) { // Pregunta si el gridname es igual al gridname de la bateria
@@ -228,7 +212,6 @@ public class ClickLine {
                     Utils.paintCirclesVolt(gridPaneObserver,ids[1],CurrentLine.getTipodecarga());
                 }
                 EndHandler.setisTaken(true);
-                //StartHandler.setisTaken(true);
             }
         }
 
