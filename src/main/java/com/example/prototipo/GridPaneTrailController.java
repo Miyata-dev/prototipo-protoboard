@@ -15,7 +15,7 @@ public class GridPaneTrailController {
         this.name = name;
         fillGridPaneWithCircles();
     }
-    //to improve readability
+    //to improve readability TODO quitarlo.
     private GridPane createGridPane(int rows, int columns) {
         GridPane grid = new GridPane();
 

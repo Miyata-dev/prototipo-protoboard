@@ -187,16 +187,16 @@ public class ClickLine {
         if (Arrays.asList(edgeCases).contains(StartHandler.getID().getGridName()) && Arrays.asList(gridNames).contains(EndHandler.getID().getGridName())){ //PREGUNTA SI DE DONDE EMPIEZA ES UN GRIDPANEVOLT Y SI TERMINA ES LA BATERIA (GRIDPANEVOLT --> BATERIA)
             String startCircleGridnamevolt = StartHandler.getID().getGridName();
             if(startCircleGridnamevolt.equals(gridPaneObserver.getFirsGridPaneVolt().getName())){ // PREGUNTA SI DE DONDE EMPIEZA ES EL PRIMER GRIDPANEVOLT (GRIDPANEVOLT-->BATERIA)
-                Utils.paintCirclesVolt(gridPaneObserver.getFirsGridPaneVolt().getGridPane(),ids[0],EndHandler.getState());
+                Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
             }  else{ // PARA EL CASO DEL SEGUNDO GRIDPANEVOLT (GRIDPANEVOLT --> BATERIA)
-                Utils.paintCirclesVolt(gridPaneObserver.getSecondGridPaneVolt().getGridPane(),ids[0],EndHandler.getState());
+                Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
             }
         }else if (Arrays.asList(edgeCases).contains(EndHandler.getID().getGridName()) && Arrays.asList(gridNames).contains(StartHandler.getID().getGridName())){ // PREGUNTA SI DE DONDE EMPIEZA ES UNA BATERIA Y SI TERMINA EN UN GRIDPANEVOLT (BATERIA --> GRIDPANEVOLT)
             String FinalCircleGridnamevolt = EndHandler.getID().getGridName();
             if(FinalCircleGridnamevolt.equals(gridPaneObserver.getFirsGridPaneVolt().getName())){ // BATERIA --> PRIMER GRIDPANEVOLT
-                Utils.paintCirclesVolt(gridPaneObserver.getFirsGridPaneVolt().getGridPane(),ids[1],StartHandler.getState());
+                Utils.paintCirclesVolt(gridPaneObserver,ids[1],StartHandler.getState());
             }else{ // BATERIA --> SEGUNDO GRIDPANEVOLT
-                Utils.paintCirclesVolt(gridPaneObserver.getSecondGridPaneVolt().getGridPane(),ids[1],StartHandler.getState());
+                Utils.paintCirclesVolt(gridPaneObserver,ids[1],StartHandler.getState());
             }
         }
 
@@ -208,9 +208,9 @@ public class ClickLine {
             } else if(startCircleGridName.equals(gridPaneObserver.getSecondGridPaneTrail().getName())) {
                 Utils.paintCircles(gridPaneObserver, ids[0], EndHandler.getState(), cables);
             } else if (startCircleGridName.equals(gridPaneObserver.getFirsGridPaneVolt().getName())) {
-                Utils.paintCirclesVolt(gridPaneObserver.getFirsGridPaneVolt().getGridPane(),ids[0],EndHandler.getState());
+                Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
             } else if (startCircleGridName.equals(gridPaneObserver.getSecondGridPaneVolt().getName())) {
-                Utils.paintCirclesVolt(gridPaneObserver.getSecondGridPaneVolt().getGridPane(),ids[0],EndHandler.getState());
+                Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
             }
             EndHandler.setisTaken(true);
             //StartHandler.setisTaken(true);
@@ -223,9 +223,9 @@ public class ClickLine {
                 }else if(endCircleGridName.equals(gridPaneObserver.getSecondGridPaneTrail().getName())){
                     Utils.paintCircles(gridPaneObserver, ids[1], CurrentLine.getTipodecarga(), cables);
                 } else if (endCircleGridName.equals(gridPaneObserver.getFirsGridPaneVolt().getName())) {
-                    Utils.paintCirclesVolt(gridPaneObserver.getFirsGridPaneVolt().getGridPane(),ids[1],CurrentLine.getTipodecarga());
+                    Utils.paintCirclesVolt(gridPaneObserver,ids[1],CurrentLine.getTipodecarga());
                 } else if(endCircleGridName.equals(gridPaneObserver.getSecondGridPaneVolt().getName())){
-                    Utils.paintCirclesVolt(gridPaneObserver.getSecondGridPaneVolt().getGridPane(),ids[1],CurrentLine.getTipodecarga());
+                    Utils.paintCirclesVolt(gridPaneObserver,ids[1],CurrentLine.getTipodecarga());
                 }
                 EndHandler.setisTaken(true);
                 //StartHandler.setisTaken(true);

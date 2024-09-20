@@ -98,6 +98,15 @@ public class Cable extends Line {
 
         return (firstAtt || secondAtt) && (firstGridNameNameID || secondGridNameID);
     }
+    //mira si un cable está PRUEBALO DSP DE AYUDAR AL POLLO MRD.
+    public boolean isConnectedToBatery() {
+        String bateryID = "BateryVolt";
+
+        boolean isFirstConnected = ids[0].getGridName().equals(bateryID);
+        boolean isSecondConnected = ids[1].getGridName().equals(bateryID);
+
+        return isFirstConnected || isSecondConnected;
+    }
 
     public void SetCircles(CustomCircle[] circles){
         this.circles = circles;
