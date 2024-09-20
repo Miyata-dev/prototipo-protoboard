@@ -97,8 +97,6 @@ public class Utils {
                 gridPaneObserver.getFirstGridPaneTrail().getName(),
                 gridPaneObserver.getSecondGridPaneTrail().getName()
         };
-        //int columnToPaint = id.getIndexColumn();
-        //if (!id.getIsForGridpane()) return;
         if (!Arrays.asList(validGridNames).contains(id.getGridName())) return;
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(gridPaneObserver, id);
 
@@ -130,8 +128,6 @@ public class Utils {
         if (Arrays.asList(validGridNames).contains(indexOne.getGridName())) {
             //se obtiene una colección de cables que están conectados entre si.
             ArrayList<Cable> connectedCables = getConnectedCables(cables, cableFound);
-            //getColumnOfCustomCircles(grid, indexTwo.getIndexColumn());
-
             connectedCables.forEach(el -> {
                 System.out.println(el.getIds()[0].getGeneratedID());
                 System.out.println(el.getIds()[1].getGeneratedID());
@@ -241,7 +237,6 @@ public class Utils {
                 initialIndex = i;
             }
         }
-
         return initialIndex;
     }
 
@@ -431,9 +426,7 @@ public class Utils {
 
             for (Cable cable : connectedCables) {
                 unPaintCircles(gridPaneObserver, cable.getIds()[1], false);
-                //unPaintCircles(firstCircleGridPane, cable.getIds()[1].getIndexColumn(), false);
                 unPaintCircles(gridPaneObserver, cable.getIds()[0], false);
-                //unPaintCircles(firstCircleGridPane, cable.getIds()[0].getIndexColumn(), false);
             }
 
             ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
@@ -452,18 +445,13 @@ public class Utils {
 
             for (Cable cable : connectedCables) {
                 GridPane secondCircleGridPane = null;
-
                 unPaintCircles(gridPaneObserver, cable.getIds()[1], false);
                 unPaintCircles(gridPaneObserver, cable.getIds()[0], false);
-                //System.out.println(cable.getIds()[1].getIndexColumn());
             }
-
             ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
             return;
         }
-
         ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable);
-
         for (Cable cable : connectedCables) {
             ArrayList<CustomCircle> column = getColumnOfCustomCircles(gridPaneObserver, cable.getIds()[0]);
             hasVoltCable(column);
@@ -531,8 +519,5 @@ public class Utils {
             Switch.ChargePass(customShape, cables);
         }
     }
-
-    public static String createRandomID() {
-        return UUID.randomUUID().toString();
-    }
+    public static String createRandomID() {return UUID.randomUUID().toString();}
 }

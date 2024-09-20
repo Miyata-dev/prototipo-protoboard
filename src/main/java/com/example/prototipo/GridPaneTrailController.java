@@ -15,23 +15,6 @@ public class GridPaneTrailController {
         this.name = name;
         fillGridPaneWithCircles();
     }
-    //to improve readability
-    private GridPane createGridPane(int rows, int columns) {
-        GridPane grid = new GridPane();
-
-        for (int i = 0; i < rows; i++) { //row
-            for (int j = 0; j < columns; j++) { //column
-                ID temporaryID = new ID(i, j, name); // (column, row)
-                CustomCircle circle = new CustomCircle(7, temporaryID, 0);
-
-                circle.getStyleClass().add(CSS_CLASS);
-
-                circle.setId(temporaryID.getGeneratedID());
-                grid.add(circle, j, i); //(column, row)
-            }
-        }
-        return grid;
-    }
     //toma un gridPane y agrega circulos con la clase CustomCircle.
     private void fillGridPaneWithCircles() {
         for (int i = 0; i < gridPane.getRowCount(); i++) { //row
