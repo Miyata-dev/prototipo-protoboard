@@ -7,6 +7,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class ClickLine {
     private Cable CurrentLine;
@@ -64,10 +65,20 @@ public class ClickLine {
             boolean canDelete = basurero.getIsActive();
             if (!canDelete) return;
 
+            HashMap<String, LED> leds = Utils.getLEDs(root);
+
+            leds.forEach((id, el) -> System.out.println(el));
+            System.out.println("--------------------");
+
+            System.out.println("IN CLICKED");
+            System.out.println(cables.get(cables.size() - 1).Getcircles()[0]);
+            System.out.println(cables.get(cables.size() - 1).Getcircles()[1]);
+
             Utils.deleteCable(e,
                 gridPaneObserver,
                 bateria,
-                cables
+                cables,
+                leds
             );
         });
     }
@@ -143,6 +154,10 @@ public class ClickLine {
         StartHandler.setCable(current);
         EndHandler.setCable(current);
         cables.add(current);
+
+        System.out.println("IN RELEASELINE");
+        System.out.println(cables.get(cables.size() - 1).Getcircles()[0]);
+        System.out.println(cables.get(cables.size() - 1).Getcircles()[1]);
 
         if (rec != null && !StartHandler.getID().getIsForGridpane()) {
             System.out.println("pata 1 del led");

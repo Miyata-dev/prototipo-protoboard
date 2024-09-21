@@ -1,5 +1,7 @@
 package com.example.prototipo;
 
+import java.util.ArrayList;
+
 public class GridPaneObserver {
     private GridPaneTrailController firstGridPane;
     private GridPaneTrailController secondGridPane;

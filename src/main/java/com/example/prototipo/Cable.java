@@ -112,6 +112,14 @@ public class Cable extends Line {
         this.circles = circles;
     }
 
+    public CustomCircle getFirstCircle(){
+        return circles[0];
+    }
+
+    public CustomCircle getSecondCircle(){
+        return circles[1];
+    }
+
     public CustomCircle[] Getcircles(){
         return this.circles;
     }

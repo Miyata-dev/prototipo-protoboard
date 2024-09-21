@@ -5,6 +5,7 @@ public class ID {
     private String gridName;
     private String generatedID;//La id generado se agregan como id a los CustomCircles
     private boolean isForGridpane;//true->Es para un GridPane       false->No es para un GridPane
+    private String randomID;
 
     //se busca crear una ID con los indices separados y el nombre del GridPane con un gion ej: "indexRow-indexCol-gridName"
     public ID(int indexRow, int indexColumn, String gridName) {
@@ -31,6 +32,12 @@ public class ID {
     public void setIsForGridpane(boolean isForGridpane) {
         this.isForGridpane = isForGridpane;
     }
+
+    //este método solo se usa con las IDs que NO son para gridpanes, (leds)
+    public void setRandomID() {
+        if (this.isForGridpane) return;
+        this.randomID = Utils.createRandomID();
+    }
     //Getters
     public String getGeneratedID() {
         return generatedID;
@@ -38,6 +45,10 @@ public class ID {
 
     public String getGridName() {
         return gridName;
+    }
+
+    public String getRandomID() {
+        return randomID;
     }
 
     public int getIndexRow() {
