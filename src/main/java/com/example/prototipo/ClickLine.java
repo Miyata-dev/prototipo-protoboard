@@ -20,6 +20,7 @@ public class ClickLine {
     private ArrayList<Cable> cables;
     private Basurero basurero;
     private CustomShape rec;
+    private ArrayList<CustomShape> shapes;
 
     public ClickLine(AnchorPane root, GridPaneObserver gridPaneObserver, Basurero basurero, Bateria bateria, ArrayList<Cable> cables) {
         this.root = root;
@@ -45,7 +46,6 @@ public class ClickLine {
                 LinePressed(root,event);
             }
         });
-        // TODO implementar quite de energia una vez el cable se va.
         root.setOnMouseDragged(e -> {
             //se asegura que acabe en un circulo.
             if (e.getTarget() instanceof Circle) {
@@ -55,6 +55,7 @@ public class ClickLine {
         root.setOnMouseReleased(e -> {
             if (e.getTarget() instanceof CustomShape shape) {
                 rec = shape;
+                shapes.add(rec);
             }
 
             if(!(e.getTarget() instanceof CustomCircle)) return;
@@ -74,12 +75,27 @@ public class ClickLine {
             System.out.println(cables.get(cables.size() - 1).Getcircles()[0]);
             System.out.println(cables.get(cables.size() - 1).Getcircles()[1]);
 
+            if(e.getTarget() instanceof Cable cable){
+                cables.forEach(cable1 ->{
+                    if(cable1.getRandomID().equals(cable.getRandomID())){
+                        if(cable1.getFirstCircle().getID().getGridName().equals("LedVolt1") || cable1.getFirstCircle().getID().getGridName().equals("switchvolt1")){
+                            cable1.getFirstCircle().removeEnergy();
+                            Utils.IdentifiedFunction(cable1.getFirstCircle(), cable1.getSecondCircle(), rec, cables);
+                        } else if( cable1.getSecondCircle().getID().getGridName().equals("LedVolt1") || cable1.getSecondCircle().getID().getGridName().equals("switchvolt1")){
+                            cable1.getSecondCircle().removeEnergy();
+                            Utils.IdentifiedFunction(cable1.getFirstCircle(), cable1.getSecondCircle(), rec, cables);
+                        }
+                    }
+                });
+            }
+
             Utils.deleteCable(e,
                 gridPaneObserver,
                 bateria,
                 cables,
                 leds
             );
+
         });
     }
     //TODO: aca puede que ocurran los ids duplicados.

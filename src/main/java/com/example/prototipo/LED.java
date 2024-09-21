@@ -125,7 +125,6 @@ public class LED extends Group {
     public String getID() {
         return ID;
     }
-
     public CustomCircle[] getLegs() {
         return legs;
     }

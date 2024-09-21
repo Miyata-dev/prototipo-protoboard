@@ -97,8 +97,7 @@ public class Utils {
         return value;
     }
 
-    //TODO resolver bug cuando se contecta 2 cables en los grid de voltios. propuesta, debe tomar un gridpanetrail.
-    //pinta una columna de un color dependiendo del estado que tenga (1 ¿ positivo, -1 negativo), pasar ID y calcular el
+    //pinta una columna de un color dependiendo del estado que tenga (1 positivo, -1 negativo), pasar ID y calcular el
     // indice de columna, ver si la id es valida o no (a travez de su gridName)
     public static void paintCircles(GridPaneObserver gridPaneObserver, ID id, int state, ArrayList<Cable> cables) {
         String[] validGridNames = {
@@ -136,7 +135,6 @@ public class Utils {
         if (Arrays.asList(validGridNames).contains(indexOne.getGridName())) {
             //se obtiene una colección de cables que están conectados entre si.
             ArrayList<Cable> connectedCables = getConnectedCables(cables, cableFound, true);
-            //getColumnOfCustomCircles(grid, indexTwo.getIndexColumn());
 
             connectedCables.forEach(el -> {
                 System.out.println(el.getIds()[0].getGeneratedID());
@@ -177,7 +175,8 @@ public class Utils {
             });
         }
     }
-    //TODO dejar los gridNameVolts dinamicos.
+
+
     public static void paintCirclesVolt(GridPaneObserver gridPaneObserver, ID id, int state){
         String[] validGridNames = {
                 "gridVolt1",
@@ -193,7 +192,7 @@ public class Utils {
         });
 
     }
-    //TODO se tiene que ver que la columna sea proveniente de un volt (la energia que recibe)
+
     public static void unPaintCircles(GridPaneObserver gridPaneObserver, ID id, boolean ignoreVoltCables) {
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(gridPaneObserver, id);
 
@@ -215,7 +214,6 @@ public class Utils {
         Iterator<Node> secondGridTraiIterator = gridPaneObserver.getSecondGridPaneTrail().getGridPane().getChildren().iterator();
         Iterator<Node> firstVoltIterator = gridPaneObserver.getFirsGridPaneVolt().getGridPane().getChildren().iterator();
         Iterator<Node> secondVoltIterator = gridPaneObserver.getSecondGridPaneVolt().getGridPane().getChildren().iterator();
-        //TODO pasar esta abominacion a método
         while(firstGridTraiIterator.hasNext()) {
             Node circle = (Node) firstGridTraiIterator.next();
             String targetID = circle.getId();
@@ -310,9 +308,6 @@ public class Utils {
     public static boolean isConnectedToBatery(ArrayList<CustomCircle> circles) {
         for (CustomCircle circle : circles) {
             if (circle.hasCable() && circle.getCable().isConnectedToBatery()) {
-                System.out.println("it's conected to batery. ");
-                System.out.println(circle.getCable().getIds()[0].getGridName());
-                System.out.println(circle.getCable().getIds()[1].getGridName());
 
                 return true;
             }
@@ -376,7 +371,6 @@ public class Utils {
                 "gridTrail1",
                 "gridTrail2"
         };
-        System.out.println("gridname is: " + GridName);
 
         GridPane gridpane = null;
 
@@ -418,7 +412,6 @@ public class Utils {
         return cableFound;
     }
 
-    //TODO pasarle el gridPaneObserevr para dsp calcular los grids.
     public static void deleteCable(MouseEvent e, GridPaneObserver gridPaneObserver, Bateria bateria, ArrayList<Cable> cables, HashMap<String, LED> leds) {
         //se obtienen los gridpanes del gridpaneobserver.
         GridPaneTrailController gridOne = gridPaneObserver.getFirstGridPaneTrail();
@@ -451,7 +444,6 @@ public class Utils {
 
         //antes de entrar a los casos generales, se mira que el cable esté conectado a 2 volts, TODO hacer que funcione en cadena..
         if (Arrays.asList(voltNames).contains(secondID.getGridName()) && Arrays.asList(voltNames).contains(firstID.getGridName())) {
-            System.out.println("el cable proviene de los 2 volts.");
 
             //se obtiene la colección de circulos de las filas de los volts.
             ArrayList<CustomCircle> firstCirclesRow = getRowOfCustomCircles(gridPaneObserver, firstID);

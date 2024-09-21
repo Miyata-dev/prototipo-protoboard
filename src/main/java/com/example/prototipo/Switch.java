@@ -37,12 +37,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
             Switch.PasoDeCarga = !Switch.PasoDeCarga;
             Switch.ChargePass(customShape, cables);
 
-//            cables.forEach(cable ->{
-//                System.out.println(cable.getRandomID() + "    energy: " + cable.getTipodecarga());
-//            });
 
-
-            System.out.println("el paso de carga" + Switch.PasoDeCarga);
             if (basurero.getIsActive()) {
                 //Llamamos al metodo para eliminar los cables que pueden pertenecer al Switch y despues borrar este mismo
                 basurero.EliminateElements(customShape, e, root);
@@ -85,8 +80,6 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
     }
 
 
-
-    //TODO REVISAR TODO FLUJO DE CONDICIONES ESTA ENREDADO
     //Este Metodo lo que hace es realizar la funcionalidad del Switch
     public static void ChargePass(CustomShape customShape, ArrayList<Cable> cables1){
         //Llamamos al inicio del metodo si es que tiene una EndLeg
@@ -124,7 +117,6 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         } else{
             //Cuando el paso de energia es False y preguntamos si es que existe el EndLeg
             if (Switch.EndLeg != null){
-
                 //Queremos que cuando sea falso despintar entonces preguntamos si las dos patas tienen energia y su cable correspondiente
                 if(customShape.getLeg1().hasEnergy() && customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasCable() && customShape.getLeg2().hasCable()){
                     //Pregutamos si el estado que tienen son los mismos
@@ -132,20 +124,13 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
                         //Despues preguntamos por el EndLeg
                         if(ID.isSameID(Switch.EndLeg.getCable().getIds()[0],Switch.EndLeg.getID())){
                             //Encontramos la id que no es perteneciente al Switch
-                            System.out.println("KAJSHFKLJAFHLKASDJFHA");
                             UnPaintSwitch(EndLeg.getCable().getIds()[1], customShape, Switch.EndLeg );
                         } else{
-                            System.out.println("KFJAHLSDKJFAHF");
                             UnPaintSwitch(EndLeg.getCable().getIds()[0], customShape, Switch.EndLeg );
                         }
                     } //NO sucede nada cuando los estados de las patas son distintas
                 }
             }
-        }
-
-
-        if(Switch.EndLeg != null){
-            System.out.printf("End Leg is " + Switch.EndLeg.getID());
         }
     }
 
@@ -173,11 +158,9 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
     public static void UnPaintSwitch(ID id, CustomShape customShape, CustomCircle Leg) {
         if ("gridTrail1".equals(id.getGridName())) {
-            System.out.println("BUENO AQUI");
             // Llamamos a la función de Despintar
             Utils.unPaintCircles(Switch.gridPaneObserver, id, true);
         } else if ("gridTrail2".equals(id.getGridName())) {
-            System.out.println("AQUI SERA PO");
             Utils.unPaintCircles(Switch.gridPaneObserver, id, true);
         } else if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
                 // En el caso que el nombre del Grid no es de ninguno de los Gridpane entonces debe ser de Automaticamente del una bateria, LED o Switch.
