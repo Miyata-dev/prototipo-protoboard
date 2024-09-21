@@ -89,6 +89,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
     //TODO REVISAR TODO FLUJO DE CONDICIONES ESTA ENREDADO
     //Este Metodo lo que hace es realizar la funcionalidad del Switch
     public static void ChargePass(CustomShape customShape, ArrayList<Cable> cables1){
+        DecideEndLeg(customShape);
         if(Switch.PasoDeCarga) {
             //Preguntamos si se puede pasar energia y si una pata tiene energia y la otra pata tiene cable, ya que para pasarla necesitamos que al menos tenga un cable
             if (customShape.getLeg1().hasEnergy() && customShape.getLeg2().hasCable()) {
@@ -119,62 +120,55 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
                 }
             }
 
-//            } else {
-//                //La primera vez cuando ninguno de los dos tiene un estado va a tirar error porque no se puede determinar el estado
-//                if (customShape.getLeg1().hasCable() && !customShape.getLeg2().hasCable()) {
-//                    customShape.getLeg1().setState(customShape.getLeg1().getCable().getTipodecarga());
-//                } else if (customShape.getLeg2().hasCable() && !(customShape.getLeg1().hasCable())) {
-//                    customShape.getLeg2().setState(customShape.getLeg2().getCable().getTipodecarga());
+        } else{
+            //Cuando el paso de energia es False y preguntamos si es que existe el EndLeg
+            if (Switch.EndLeg != null){
+                System.out.println("KJFHASKFAS");
+                //Queremos que cuando sea falso despintar entonces preguntamos si las dos patas tienen energia y su cable correspondiente
+                if(customShape.getLeg1().hasEnergy() && customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasCable() && customShape.getLeg2().hasCable()){
+                    //Pregutamos si el estado que tienen son los mismos
+                    if(customShape.getLeg1().getState() == customShape.getLeg2().getState()){
+                        //Despues preguntamos por el EndLeg
+                        if(ID.isSameID(Switch.EndLeg.getCable().getIds()[0],Switch.EndLeg.getID())){
+                            //Encontramos la id que no es perteneciente al Switch
+                            System.out.println("KAJSHFKLJAFHLKASDJFHA");
+                            UnPaintSwitch(EndLeg.getCable().getIds()[1], customShape, Switch.EndLeg );
+                        } else{
+                            System.out.println("KFJAHLSDKJFAHF");
+                            UnPaintSwitch(EndLeg.getCable().getIds()[0], customShape, Switch.EndLeg );
+                        }
+                    } //NO sucede nada cuando los estados de las patas son distintas
+                }
+            }
+
+//            if(customShape.getLeg1().hasEnergy() && customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasCable() && customShape.getLeg2().hasCable()) {
+//                if(customShape.getLeg1().getCable().getTipodecarga() != customShape.getLeg2().getCable().getTipodecarga()){
+//                    if( ID.isSameID(Switch.EndLeg.getCable().getIds()[0],Switch.EndLeg.getID() )){
+//                        System.out.println("AAAA");
+//                        UnPaintSwitch(Switch.EndLeg.getCable().getIds()[1], customShape, EndLeg);
+//                    } else{
+//                        System.out.println("AAAAAAAAAAAAAAAA");
+//                        UnPaintSwitch(Switch.EndLeg.getCable().getIds()[0], customShape, EndLeg );
+//                    }
+//                }
+//                if (ID.isSameID(Switch.EndLeg.getID(), Switch.EndLeg.getCable().Getcircles()[0].getID())) {
+//                    if (Switch.EndLeg.getState() != Switch.EndLeg.getCable().Getcircles()[1].getState()) {
+//                        PaintSwitch(Switch.EndLeg.getCable().Getcircles()[1].getID(), customShape, Switch.EndLeg, cables);
+//                        System.out.println("B");
+//                    }
+//                }else {
+//                    if(Switch.EndLeg.getState() != Switch.EndLeg.getCable().Getcircles()[0].getState()){
+//                        PaintSwitch(Switch.EndLeg.getCable().Getcircles()[0].getID(), customShape, Switch.EndLeg, cables);
+//                        System.out.println("A");
+//                    }
 //                }
 //            }
-        } else{
-            System.out.println("BBBBBBBBBBJBJASDBLKSD");
-            if(customShape.getLeg1().hasEnergy() && customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasCable() && customShape.getLeg2().hasCable() && Switch.EndLeg != null) {
-                if(customShape.getLeg1().getCable().getTipodecarga() != customShape.getLeg2().getCable().getTipodecarga()){
-                    if( ID.isSameID(Switch.EndLeg.getCable().getIds()[0],Switch.EndLeg.getID() )){
-                        System.out.println("AAAA");
-                        UnPaintSwitch(Switch.EndLeg.getCable().getIds()[1], customShape, EndLeg);
-                    } else{
-                        System.out.println("AAAAAAAAAAAAAAAA");
-                        UnPaintSwitch(Switch.EndLeg.getCable().getIds()[0], customShape, EndLeg );
-                    }
-                }
-                if (ID.isSameID(Switch.EndLeg.getID(), Switch.EndLeg.getCable().Getcircles()[0].getID())) {
-                    if (Switch.EndLeg.getState() != Switch.EndLeg.getCable().Getcircles()[1].getState()) {
-                        PaintSwitch(Switch.EndLeg.getCable().Getcircles()[1].getID(), customShape, Switch.EndLeg, cables);
-                        System.out.println("B");
-                    }
-                }else {
-                    if(Switch.EndLeg.getState() != Switch.EndLeg.getCable().Getcircles()[0].getState()){
-                        PaintSwitch(Switch.EndLeg.getCable().Getcircles()[0].getID(), customShape, Switch.EndLeg, cables);
-                        System.out.println("A");
-                    }
-                }
-            }
 
-
-            //Se puede preguntar si es que las dos patas tienen cable, si es asi y el paso de energia es falso se despinta si las energias son falsas
-            //Para eso tenemos que modificar la condicion y el flujo de energia
-            if(!(Switch.PasoDeCarga) && EndLeg != null && customShape.getLeg2().hasCable() && customShape.getLeg1().hasCable()) {
-                if (customShape.getLeg1().getCable().getTipodecarga() != customShape.getLeg2().getCable().getTipodecarga()) {
-                    if (ID.isSameID(Switch.EndLeg.getCable().getIds()[0], Switch.EndLeg.getID())) {
-                        UnPaintSwitch(Switch.EndLeg.getCable().getIds()[1], customShape, EndLeg);
-                    } else {
-                        UnPaintSwitch(Switch.EndLeg.getCable().getIds()[0], customShape, EndLeg);
-                    }
-                } else {
-                    if (ID.isSameID(Switch.EndLeg.getCable().getIds()[0], Switch.EndLeg.getID())) {
-                        UnPaintSwitch(Switch.EndLeg.getCable().getIds()[1], customShape, EndLeg);
-                    } else {
-                        UnPaintSwitch(Switch.EndLeg.getCable().getIds()[0], customShape, EndLeg);
-                    }
-                }
-            }
         }
 
-        DecideEndLeg(customShape);
-        if(EndLeg != null){
-            System.out.printf("End Leg is " + EndLeg.getID());
+
+        if(Switch.EndLeg != null){
+            System.out.printf("End Leg is " + Switch.EndLeg.getID());
         }
     }
 
@@ -182,12 +176,11 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
     //Este metodo lo que hace es pintar El gridpane segun el GridPane que corresponda
     public static void PaintSwitch(ID id, CustomShape customShape, CustomCircle Leg, ArrayList<Cable> cables) {
-        System.out.println(id.getGridName());
         if ("gridTrail1".equals(id.getGridName())) {
             //Llamamos a la funcion de Pintar
-            Utils.paintCircles(gridPaneObserver, id, Leg.getState(), cables);
+            Utils.paintCircles(Switch.gridPaneObserver, id, Leg.getState(), cables);
         } else if ("gridTrail2".equals(id.getGridName())) {
-            Utils.paintCircles(gridPaneObserver, id, Leg.getState(), cables);
+            Utils.paintCircles(Switch.gridPaneObserver, id, Leg.getState(), cables);
         } else if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
             //En el caso que el nombre del Grid no es de ninguno de los Gridpane entonces debe ser de Automaticamente del una bateria, LED o Switch.
             if (ID.isSameID(Leg.getID(), Leg.getCable().Getcircles()[0].getID())) {
@@ -198,35 +191,34 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         }
     }
 
+
+
+
     public static void UnPaintSwitch(ID id, CustomShape customShape, CustomCircle Leg) {
         if ("gridTrail1".equals(id.getGridName())) {
             // Llamamos a la función de Despintar
-            Utils.unPaintCircles(gridPaneObserver, id, false);
+            Utils.unPaintCircles(Switch.gridPaneObserver, id, false);
         } else if ("gridTrail2".equals(id.getGridName())) {
-            Utils.unPaintCircles(gridPaneObserver, id, false);
-        } else {
-            if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
+            Utils.unPaintCircles(Switch.gridPaneObserver, id, false);
+        } else if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
                 // En el caso que el nombre del Grid no es de ninguno de los Gridpane entonces debe ser de Automaticamente del una bateria, LED o Switch.
                 if (ID.isSameID(Leg.getID(), Leg.getCable().Getcircles()[0].getID())) {
                     Leg.getCable().Getcircles()[1].setState(0);
                 } else {
                     Leg.getCable().Getcircles()[0].setState(0);
                 }
-            }
-            Leg.setState(0);
+
         }
     }
 
 
 
-    //Este metodo lo que hace es decidir la pata final para despues a que direccion se va a quitar la energia del GridPane
+    //Este metodo lo que realiza es decidir la pata a la cual sabremos hacia donde se quitara la energía
     public static void DecideEndLeg(CustomShape customShape){
         if(customShape.getLeg1().hasCable() && !(customShape.getLeg2().hasCable())){
             SetEndLeg(customShape.getLeg2());
         } else if ( customShape.getLeg2().hasCable() && !(customShape.getLeg1().hasCable())){
             SetEndLeg(customShape.getLeg1());
-        } else {
-            SetEndLeg(null);
         }
     }
 
