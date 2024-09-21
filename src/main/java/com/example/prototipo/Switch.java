@@ -37,7 +37,6 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
             Switch.PasoDeCarga = !Switch.PasoDeCarga;
             Switch.ChargePass(customShape, cables);
 
-
             System.out.println("el paso de carga" + Switch.PasoDeCarga);
             if (basurero.getIsActive()) {
                 //Llamamos al metodo para eliminar los cables que pueden pertenecer al Switch y despues borrar este mismo
