@@ -85,7 +85,10 @@ public class ClickLine {
     //TODO: aca puede que ocurran los ids duplicados.
     private void LinePressed(AnchorPane root,MouseEvent Event){
         if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) {  //Verifica que empiece solo de los circulos
-            int carga = CurrentLine.getTipodecarga();
+            //CurrentLine.setLine(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
+            int carga;
+            carga = CurrentLine.getTipodecarga();
+            //String previousID = CurrentLine.getRandomID();
             CurrentLine = new Cable(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
             CurrentLine.setTipodecarga(carga);
             CurrentLine.setStrokeWidth(5);
@@ -150,9 +153,14 @@ public class ClickLine {
         current.setIds(CurrentLine.getIds());
         current.setTipodecarga(CurrentLine.getTipodecarga());
         current.setRandomID(CurrentLine.getRandomID());
+
         current.SetCircles(new CustomCircle[] {StartHandler, EndHandler });
+
         StartHandler.setCable(current);
         EndHandler.setCable(current);
+
+
+
         cables.add(current);
 
         System.out.println("IN RELEASELINE");
@@ -213,6 +221,7 @@ public class ClickLine {
                 Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
             }
             EndHandler.setisTaken(true);
+            //StartHandler.setisTaken(true);
         } else {
             //recuperamos el nombre del gridName para ver en cual gridpane pintar
             if ( (StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane()) || (StartHandler.getID().getGridName()).equals(gridNames[2]) ) { // Pregunta si el gridname es igual al gridname de la bateria
@@ -227,10 +236,17 @@ public class ClickLine {
                     Utils.paintCirclesVolt(gridPaneObserver,ids[1],CurrentLine.getTipodecarga());
                 }
                 EndHandler.setisTaken(true);
+                //StartHandler.setisTaken(true);
             }
         }
 
+
+
         UpdateState(StartHandler, EndHandler, current);
+
+        System.out.println("StartHandler : " +  StartHandler.getState());
+        System.out.println("EndHalder : " +  EndHandler.getState());
+
         Utils.IdentifiedFunction(StartHandler, EndHandler, rec, cables);
         System.out.println(StartHandler.getState());
         System.out.println(EndHandler.getState());
