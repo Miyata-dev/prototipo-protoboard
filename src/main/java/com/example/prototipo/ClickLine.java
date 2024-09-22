@@ -168,9 +168,9 @@ public class ClickLine {
         //cables.add(current);
         gridPaneObserver.addCable(current);
 
-        gridPaneObserver.getCables().forEach(cable -> {
-            System.out.println("tipo de energia: " + cable.getTipodecarga());
-        });
+//        gridPaneObserver.getCables().forEach(cable -> {
+//            System.out.println("tipo de energia: " + cable.getTipodecarga());
+//        });
 
         if (rec != null && !StartHandler.getID().getIsForGridpane()) {
             System.out.println("pata 1 del led");
@@ -244,7 +244,6 @@ public class ClickLine {
                 //StartHandler.setisTaken(true);
             }
         }
-
         UpdateState(StartHandler, EndHandler, current);
         shapes.forEach(shape ->{
             if(shape.getLeg2().hasCable()){
@@ -256,7 +255,6 @@ public class ClickLine {
                     Utils.IdentifiedFunction(StartHandler, EndHandler, shape, gridPaneObserver.getCables());
                 }
             }
-
         });
         StartHandler = null;
         EndHandler = null;
@@ -271,7 +269,6 @@ public class ClickLine {
             //Actualizamos que el StartHandler y el EndHandler estan tomados para que no se conecten mas de un cable en el mismo CustomCircle
             EndHandler.setisTaken(true);
             StartHandler.setisTaken(true);
-
             //Preguntamos si el EndHandler es para GridPane y el StartHandler no es para GridPane
         } else if(EndHandler.getID().getIsForGridpane() && !(StartHandler.getID().getIsForGridpane())){
             //Actualizamos el estado del que no es para GridPane
