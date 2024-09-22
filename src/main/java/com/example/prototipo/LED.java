@@ -7,14 +7,14 @@ import javafx.scene.paint.Color;
 import java.util.Set;
 
 public class LED extends Group {
-    public static boolean state;  //false -> apagado      true-> encendido
+    public  boolean state;  //false -> apagado      true-> encendido
     private Basurero basurero;
     private AnchorPane root;
     private CustomCircle[] legs;
 
     public LED(boolean state, CustomShape customShape, Basurero basurero, AnchorPane root) {
         super(customShape);
-        LED.state = state;
+        this.state = state;
         this.legs = new CustomCircle[] {
             customShape.getLeg1(),
             customShape.getLeg2()
@@ -78,7 +78,7 @@ public class LED extends Group {
 
 
     //Este metodo lo que hace es cambiar el color del LED cuando Cambia su estado
-    public static void LedFunction(CustomShape customShape) {
+    public void LedFunction(CustomShape customShape) {
         //false -> apagado      true-> encendido
         if (GetState()) {
             //Cuando el LED esta encendido el relleno se mostrara Verde y si esta apagado sera Rojo
@@ -89,7 +89,7 @@ public class LED extends Group {
     }
 
     //Metodo para mostrar si el LED esta encendido o Apagado
-    public static void ONorOFF(CustomShape customShape) {
+    public void ONorOFF(CustomShape customShape) {
         //Preguntamos si las dos patas tienen energía y ademas la energia que tienen es distinta entre si
         if ((customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasEnergy()) && (customShape.getLeg2().getState() != customShape.getLeg1().getState())) {
             //al ser distintas actualizamos el estado a true que es igual a encendido
@@ -103,17 +103,17 @@ public class LED extends Group {
         }
     }
 
-    public static void SetState(boolean states){
-        state = states;
+    public void SetState(boolean states){
+        this.state = states;
     }
-    public static boolean GetState(){
-        return state;
+    public boolean GetState(){
+        return this.state;
     }
 
     public CustomShape getCustomShape() {
         return (CustomShape) this.getChildren().get(0);
     }
-    public CustomCircle[] getLegs() {
+    public CustomCircle[] getCircles() {
         return legs;
     }
 }

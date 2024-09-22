@@ -8,6 +8,8 @@ public class GridPaneObserver {
     private GridPaneController firsGridPaneVolt;
     private GridPaneController secondGridPaneVolt;
     private ArrayList<Cable> cables = new ArrayList<>();
+    private ArrayList<LED> leds = new ArrayList<>();
+    private ArrayList<Switch> switches = new ArrayList<>();
 
     public GridPaneObserver(GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, GridPaneController firsGridPaneVolt, GridPaneController secondGridPaneVolt) {
         this.firstGridPane = firstGridPane;
@@ -15,6 +17,7 @@ public class GridPaneObserver {
         this.firsGridPaneVolt = firsGridPaneVolt;
         this.secondGridPaneVolt = secondGridPaneVolt;
     }
+
     //setters
     public void setCables(ArrayList<Cable> cables) {
         this.cables = cables;
@@ -26,6 +29,30 @@ public class GridPaneObserver {
 
     public void removeCable(Cable cable) {
         cables.remove(cable);
+    }
+
+    public void setLeds(ArrayList<LED> leds) {
+        this.leds = leds;
+    }
+
+    public void addLeds(LED led) {
+        leds.add(led);
+    }
+
+    public void removeLeds(LED led) {
+        leds.remove(led);
+    }
+
+    public void setSwitches(ArrayList<Switch> switches) {
+        this.switches = switches;
+    }
+
+    public void addSwitches(Switch switchs){
+        switches.add(switchs);
+    }
+
+    public void removeSwitches(Switch switchs){
+        switches.remove(switchs);
     }
 
     //getters
@@ -61,5 +88,13 @@ public class GridPaneObserver {
 
     public ArrayList<Cable> getCables() {
         return cables;
+    }
+
+    public ArrayList<LED> getLeds(){
+        return leds;
+    }
+
+    public ArrayList<Switch> getSwitches(){
+        return switches;
     }
 }

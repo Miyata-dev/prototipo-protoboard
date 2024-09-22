@@ -10,6 +10,7 @@ public class CustomShape extends Rectangle {
     private CustomCircle Leg2;
     private AtomicReference<Double> startX = new AtomicReference<>((double) 0);
     private AtomicReference<Double> startY = new AtomicReference<>((double) 0);
+    private String UniqueID;
 
     public CustomShape(int x, int y, int width, int height, Color color) {
         super(x, y, width, height);
@@ -17,6 +18,7 @@ public class CustomShape extends Rectangle {
         this.setStroke(Color.BLACK);
         this.setStrokeWidth(3);
         this.setFill(color);
+        this.UniqueID= Utils.createRandomID();
     }
 
     public void setLeg1(CustomCircle leg1) {
@@ -37,4 +39,8 @@ public class CustomShape extends Rectangle {
     public AtomicReference<Double> getStartX(){return this.startX;}
 
     public AtomicReference<Double> getStartY(){return this.startY;}
+
+    public String getUniqueID(){
+        return this.UniqueID;
+    }
 }

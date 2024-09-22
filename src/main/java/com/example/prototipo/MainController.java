@@ -31,6 +31,8 @@ public class MainController {
     GridPaneObserver gridPaneObserver;
     //se coloca esta variable en el controlador par poder darle acceso los switches y leds.
     public ArrayList<Cable> cables = new ArrayList<>();
+    public ArrayList<LED> leds = new ArrayList<>();
+    public ArrayList<Switch> switches = new ArrayList<>();
 
     public void initialize() {
         //nombres para cada grid para los identificadores unicos.
@@ -61,7 +63,9 @@ public class MainController {
             gridPaneObserver,
             basurero,
             bateria,
-            cables
+            cables,
+                leds,
+                switches
         );
         clickLineMatrizUno.CircleAsignator();
         System.out.println("controller: " + basurero.getParent());
