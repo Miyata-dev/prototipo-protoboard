@@ -37,7 +37,7 @@ public class CustomCircle extends Circle {
 
     //TODO implementar energia para los leds.
     public void setState(int state) {
-        if (state == 0) return; //si el estado es igual a 0, entonces no se toma encuanta como un vaor valido.
+        if (state == 0) return; //si el estado es igual a 0, entonces no se toma encuanta como un vaLor valido.
 
         this.state = state;
 

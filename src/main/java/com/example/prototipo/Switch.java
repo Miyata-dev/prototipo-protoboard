@@ -134,8 +134,6 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         }
     }
 
-
-
     //Este metodo lo que hace es pintar El gridpane segun el GridPane que corresponda
     public static void PaintSwitch(ID id, CustomShape customShape, CustomCircle Leg, ArrayList<Cable> cables) {
         if ("gridTrail1".equals(id.getGridName())) {

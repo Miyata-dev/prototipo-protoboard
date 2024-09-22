@@ -66,15 +66,6 @@ public class ClickLine {
             boolean canDelete = basurero.getIsActive();
             if (!canDelete) return;
 
-            HashMap<String, LED> leds = Utils.getLEDs(root);
-
-            leds.forEach((id, el) -> System.out.println(el));
-            System.out.println("--------------------");
-
-            System.out.println("IN CLICKED");
-            System.out.println(cables.get(cables.size() - 1).Getcircles()[0]);
-            System.out.println(cables.get(cables.size() - 1).Getcircles()[1]);
-
             if(e.getTarget() instanceof Cable cable){
                 cables.forEach(cable1 ->{
                     if(cable1.getRandomID().equals(cable.getRandomID())){
@@ -92,8 +83,7 @@ public class ClickLine {
             Utils.deleteCable(e,
                 gridPaneObserver,
                 bateria,
-                cables,
-                leds
+                cables
             );
 
         });
@@ -146,7 +136,7 @@ public class ClickLine {
                 "gridVolt2"
         };
 
-        if (EndHandler == null || StartHandler == null) {  // REVISAR METODO, PORQUE AL PRESIONAR EL CIRCULO FINAL DE LA LINEA SE ELIMINA EL CABLE
+        if (EndHandler == null || StartHandler == null) {
 
             CustomCircle circle = (CustomCircle) e.getTarget();
             //si no esta tomado, se sale de la funcion, y por lo tanto no se elimina.
@@ -169,19 +159,13 @@ public class ClickLine {
         current.setIds(CurrentLine.getIds());
         current.setTipodecarga(CurrentLine.getTipodecarga());
         current.setRandomID(CurrentLine.getRandomID());
-
-        current.SetCircles(new CustomCircle[] {StartHandler, EndHandler });
-
+        current.SetCircles(new CustomCircle[] {
+                StartHandler,
+                EndHandler
+        });
         StartHandler.setCable(current);
         EndHandler.setCable(current);
-
-
-
         cables.add(current);
-
-        System.out.println("IN RELEASELINE");
-        System.out.println(cables.get(cables.size() - 1).Getcircles()[0]);
-        System.out.println(cables.get(cables.size() - 1).Getcircles()[1]);
 
         if (rec != null && !StartHandler.getID().getIsForGridpane()) {
             System.out.println("pata 1 del led");
@@ -256,18 +240,8 @@ public class ClickLine {
             }
         }
 
-
-
         UpdateState(StartHandler, EndHandler, current);
-
-        System.out.println("StartHandler : " +  StartHandler.getState());
-        System.out.println("EndHalder : " +  EndHandler.getState());
-
         Utils.IdentifiedFunction(StartHandler, EndHandler, rec, cables);
-        System.out.println(StartHandler.getState());
-        System.out.println(EndHandler.getState());
-
-        //TODO revisar que hace.
         StartHandler = null;
         EndHandler = null;
     }
