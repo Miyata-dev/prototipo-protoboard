@@ -14,6 +14,19 @@ import javafx.scene.shape.Circle;
 public class Utils {
     public Utils() {
     }
+
+    //esto va en utils.
+    public static int numberOfCables(ArrayList<CustomCircle> column) {
+        int numberOfCables = 0;
+
+        for (CustomCircle c : column) {
+            if (c.hasCable()) {
+                numberOfCables++;
+            }
+        }
+        return numberOfCables;
+    }
+
     //pinta una columna dependiendo del estado, este método se creó para mejorar la legibilidad del código.
     public static void paintColumn(ArrayList<CustomCircle> column, int state) {
         column.forEach(circle -> {
@@ -99,13 +112,15 @@ public class Utils {
 
     //pinta una columna de un color dependiendo del estado que tenga (1 positivo, -1 negativo), pasar ID y calcular el
     // indice de columna, ver si la id es valida o no (a travez de su gridName)
-    public static void paintCircles(GridPaneObserver gridPaneObserver, ID id, int state, ArrayList<Cable> cables) {
+    public static void paintCircles(GridPaneObserver gridPaneObserver, ID id, int state) {
         String[] validGridNames = {
                 gridPaneObserver.getFirstGridPaneTrail().getName(),
                 gridPaneObserver.getSecondGridPaneTrail().getName()
         };
         if (!Arrays.asList(validGridNames).contains(id.getGridName())) return;
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(gridPaneObserver, id);
+        //se extraen los cables del griPaneController.
+        ArrayList<Cable> cables = gridPaneObserver.getCables();
 
         Cable cableFound = null;
 
@@ -393,13 +408,16 @@ public class Utils {
 
         return cableFound;
     }
-
-    public static void deleteCable(MouseEvent e, GridPaneObserver gridPaneObserver, Bateria bateria, ArrayList<Cable> cables) {
+    //TODO eliminar el cable de la coleecición una vez se borra del gridpane.
+    public static void deleteCable(MouseEvent e, GridPaneObserver gridPaneObserver, Bateria bateria) {
         //se obtienen los gridpanes del gridpaneobserver.
         GridPaneTrailController gridOne = gridPaneObserver.getFirstGridPaneTrail();
         GridPaneTrailController gridTwo = gridPaneObserver.getSecondGridPaneTrail();
         GridPaneController gridVoltOne = gridPaneObserver.getFirsGridPaneVolt();
         GridPaneController gridVoltTwo = gridPaneObserver.getSecondGridPaneVolt();
+
+        //se obtiene los cables del gridPaneObserver
+        ArrayList<Cable> cables = gridPaneObserver.getCables();
 
         //estos son los nombres que usa internamente las ID de los circulos pertenecientes al centro.
         String[] validGridNames = {

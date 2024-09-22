@@ -140,9 +140,9 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
     public static void PaintSwitch(ID id, CustomShape customShape, CustomCircle Leg, ArrayList<Cable> cables) {
         if ("gridTrail1".equals(id.getGridName())) {
             //Llamamos a la funcion de Pintar
-            Utils.paintCircles(Switch.gridPaneObserver, id, Leg.getState(), cables);
+            Utils.paintCircles(Switch.gridPaneObserver, id, Leg.getState());
         } else if ("gridTrail2".equals(id.getGridName())) {
-            Utils.paintCircles(Switch.gridPaneObserver, id, Leg.getState(), cables);
+            Utils.paintCircles(Switch.gridPaneObserver, id, Leg.getState());
         } else if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
             //En el caso que el nombre del Grid no es de ninguno de los Gridpane entonces debe ser de Automaticamente del una bateria, LED o Switch.
             if (ID.isSameID(Leg.getID(), Leg.getCable().Getcircles()[0].getID())) {

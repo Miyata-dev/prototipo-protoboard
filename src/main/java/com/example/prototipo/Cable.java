@@ -3,6 +3,7 @@ package com.example.prototipo;
 import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Cable extends Line {
     private int tipodecarga;
@@ -107,6 +108,19 @@ public class Cable extends Line {
 
         return isFirstConnected || isSecondConnected;
     }
+    //ESTO VA EN CABLE
+    //esta solución es POR EL MOMENTO, TODO: implementar para nombrs de volts dinámicos.
+    public boolean isConnectedToVolts() {
+        String[] voltNames = {
+                "gridVolt1",
+                "gridVolt2"
+        };
+        //ids[0].getGridName()
+        boolean isFirstConnected = Arrays.asList(voltNames).contains(ids[0].getGridName());
+        boolean isSecondConnected = Arrays.asList(voltNames).contains(ids[1].getGridName());
+
+        return isFirstConnected || isSecondConnected;
+    }
 
     public void SetCircles(CustomCircle[] circles){
         this.circles = circles;
@@ -122,5 +136,15 @@ public class Cable extends Line {
 
     public CustomCircle[] Getcircles(){
         return this.circles;
+    }
+    //TODO revisar.
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof Cable)) return false;
+
+        Cable cable = (Cable) obj;
+
+        return this.randomID.equals(cable.getRandomID());
     }
 }
