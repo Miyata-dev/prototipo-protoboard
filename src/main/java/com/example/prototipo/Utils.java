@@ -263,24 +263,6 @@ public class Utils {
         return foundCircle;
     }
 
-    public static LED getLEDbyID(HashMap<String, LED> leds, ID id) {
-        LED ledFound = leds.get(id.getGridName());
-        return ledFound;
-    }
-
-    public static HashMap<String, LED> getLEDs(AnchorPane root) {
-        //ArrayList<LED> leds = new ArrayList<>();
-        HashMap<String, LED> leds = new HashMap<>(); //la llave (String) es asignada con la ID del led para poder trabajar.
-        // clave, valor
-        root.getChildren().forEach(el -> {
-            if (el instanceof LED led) {
-                leds.put(led.getID(), led); //
-            }
-        });
-
-        return leds;
-    }
-
     //devuelve el numero de cables que estan conectadas a un volt que tiene una columna.
     public static int numberOfCablesConnectedToVolts(GridPaneObserver gridPaneObserver, ID id) {
         int count = 0;
@@ -419,7 +401,7 @@ public class Utils {
     }
 
     //TODO pasarle el gridPaneObserevr para dsp calcular los grids.
-    public static void deleteCable(MouseEvent e, GridPaneObserver gridPaneObserver, Bateria bateria, ArrayList<Cable> cables, HashMap<String, LED> leds) {
+    public static void deleteCable(MouseEvent e, GridPaneObserver gridPaneObserver, Bateria bateria, ArrayList<Cable> cables) {
         //se obtienen los gridpanes del gridpaneobserver.
         GridPaneTrailController gridOne = gridPaneObserver.getFirstGridPaneTrail();
         GridPaneTrailController gridTwo = gridPaneObserver.getSecondGridPaneTrail();
@@ -441,14 +423,11 @@ public class Utils {
         //se recupera el nodo que se presiona.
         Node pressedNode = (Node) e.getTarget();
         if (!(e.getTarget() instanceof Cable pressedCable)) return;
-
-        //se tiene que obtener el cable de la colecciín, sino la información de los círculos se pierde.
+        //se tiene que obtener el cable de la coleccion, sino la información de los círculos se pierde.
         Cable cableFound = getCableByID(cables, pressedCable);
-
         //se recupera las ids del cable para poder ver donde pasar la energia.
         ID firstID = pressedCable.getIds()[0];
         ID secondID = pressedCable.getIds()[1];
-
         //antes de entrar a los casos generales, se mira que el cable esté conectado a 2 volts, TODO hacer que funcione en cadena..
         if (Arrays.asList(voltNames).contains(secondID.getGridName()) && Arrays.asList(voltNames).contains(firstID.getGridName())) {
             System.out.println("el cable proviene de los 2 volts.");
@@ -467,7 +446,7 @@ public class Utils {
             if (!isSecondConnected) {
                 unPaintCirclesVolt(gridPaneObserver, secondID);
             }
-
+            ResetStateCustomCircles(cableFound);
             ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
             return;
         }
@@ -484,13 +463,13 @@ public class Utils {
             if (Arrays.asList(validGridNames).contains(secondID.getGridName())) { //BateryVolt --> GridTrails 1 o 2
                 System.out.println("in batery one");
                 unPaintCircles(gridPaneObserver,secondID,false);
-                ResetStateCustomCircles(cableFound, gridPaneObserver, leds);
+                ResetStateCustomCircles(cableFound);
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
                 return;
             } else if (Arrays.asList(voltNames).contains(secondID.getGridName())) { //BateryVolt --> GridVolts
                 System.out.println("in batery one");
                 unPaintCirclesVolt(gridPaneObserver, secondID);
-                ResetStateCustomCircles(cableFound, gridPaneObserver, leds);
+                ResetStateCustomCircles(cableFound);
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
                 return;
             }
@@ -506,13 +485,13 @@ public class Utils {
             //si el id pertenece a uno de los gridpanes de pistas, entonces entra en este condicional.
             if (Arrays.asList(validGridNames).contains(firstID.getGridName())) { // GridTrails 1 o 2 -->  BateryVolt
                 unPaintCircles(gridPaneObserver, firstID, false);
-                ResetStateCustomCircles(cableFound, gridPaneObserver, leds);
+                ResetStateCustomCircles(cableFound);
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
                 return;
 
             } else if (Arrays.asList(voltNames).contains(firstID.getGridName())) {
                 unPaintCirclesVolt(gridPaneObserver, firstID);
-                ResetStateCustomCircles(cableFound, gridPaneObserver, leds);
+                ResetStateCustomCircles(cableFound);
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
                 return;
             }
@@ -523,7 +502,6 @@ public class Utils {
             ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
             return;
         }
-
         //si el primer ID pertenece a los volts, se extrae el Gridpane del segundo para despintarlo.
         if (Arrays.asList(voltNames).contains(firstID.getGridName())) {
             //se obtiene la coleccion de cables conectados al primer cable.
@@ -531,7 +509,7 @@ public class Utils {
             //si hay un solo cable, entonces no hay necesidad de eliminar la energía en cadena. //TODO revisar que pasa al conectar 2 gridpaneVolts.
             if (connectedCables.isEmpty()) {
                 unPaintCircles(gridPaneObserver, secondID, false);
-                ResetStateCustomCircles(cableFound, gridPaneObserver, leds);
+                ResetStateCustomCircles(cableFound);
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
                 return;
             }
@@ -540,7 +518,7 @@ public class Utils {
                 unPaintCircles(gridPaneObserver, cable.getIds()[1], false);
                 unPaintCircles(gridPaneObserver, cable.getIds()[0], false);
             }
-            ResetStateCustomCircles(cableFound, gridPaneObserver, leds);
+            ResetStateCustomCircles(cableFound);
             ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
             return;
         } else if (Arrays.asList(voltNames).contains(secondID.getGridName())) {
@@ -549,18 +527,16 @@ public class Utils {
             //TODO revisar que pasa al conectar 2 gridpaneVolts.
             if (connectedCables.isEmpty()) {
                 unPaintCircles(gridPaneObserver, firstID, false);
-                ResetStateCustomCircles(cableFound, gridPaneObserver, leds);
+                ResetStateCustomCircles(cableFound);
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
                 return;
             }
-
-
             for (Cable cable : connectedCables) {
                 GridPane secondCircleGridPane = null;
                 unPaintCircles(gridPaneObserver, cable.getIds()[1], false);
                 unPaintCircles(gridPaneObserver, cable.getIds()[0], false);
             }
-            ResetStateCustomCircles(cableFound, gridPaneObserver, leds);
+            ResetStateCustomCircles(cableFound);
             ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
             return;
         }
@@ -575,7 +551,7 @@ public class Utils {
             unPaintCircles(gridPaneObserver, cable.getIds()[0], true);
         }
 
-        ResetStateCustomCircles(cableFound, gridPaneObserver, leds);
+        ResetStateCustomCircles(cableFound);
         ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
     }
     //como los switches y los leds extienden rectangle, entonces solo aceptan clases que extiendan rectangle.
@@ -583,51 +559,13 @@ public class Utils {
         ((AnchorPane) nodeToDelete.getParent()).getChildren().remove(nodeToDelete);
     }
 
-    public static void ResetStateCustomCircles(Cable pressedCable, GridPaneObserver gridPaneObserver, HashMap<String, LED> leds) {
-        String[] EdgeCases = {
-                "switchvolt1",
-                "LedVolt1",
-                "BateryVolt"
-        };
-        CustomCircle resetState;
+    public static void ResetStateCustomCircles(Cable pressedCable) {
 
         pressedCable.Getcircles()[0].setisTaken(false);
         pressedCable.Getcircles()[1].setisTaken(false);
-        /*
-        ID firstID = pressedCable.getIds()[0];
-        ID secondID = pressedCable.getIds()[1];
 
-        if (EdgeCases[1].equals(firstID.getGridName())) {
-            leds.forEach((key, value) -> {
-                System.out.println("key: " + key);
-                System.out.println("value: " + value);
-            });
-            System.out.println("------");
-            System.out.println(firstID.getGridName());
-            System.out.println(secondID.getGridName());
-        } else if (EdgeCases[1].equals(secondID.getGridName())) {
-            leds.forEach((key, value) -> {
-                System.out.println("key: " + key);
-                System.out.println("value: " + value);
-            });
-            System.out.println("------");
-            System.out.println(secondID.getGridName());
-            System.out.println(firstID.getGridName());
-        }
-
-        if(firstID.getGridName().equals(EdgeCases[0]) || firstID.getGridName().equals(EdgeCases[1]) || firstID.getGridName().equals(EdgeCases[2]) ) {
-            resetState = getCustomCircleByID(gridPaneObserver, secondID);
-            resetState.setisTaken(false);
-            return;
-        } else if(secondID.getGridName().equals(EdgeCases[0]) || secondID.getGridName().equals(EdgeCases[1]) || secondID.getGridName().equals(EdgeCases[2]) ) {
-            resetState = getCustomCircleByID(gridPaneObserver, firstID); // Reinicia el estado del circulo de comienzo
-            resetState.setisTaken(false);
-            return;
-        }
-        resetState = getCustomCircleByID(gridPaneObserver, firstID); // Reinicia el estado del circulo de comienzo
-        resetState.setisTaken(false);
-        resetState = getCustomCircleByID(gridPaneObserver, secondID);
-        resetState.setisTaken(false); */
+        pressedCable.Getcircles()[0].setCable(null);
+        pressedCable.Getcircles()[1].setCable(null);
 
     }
 
