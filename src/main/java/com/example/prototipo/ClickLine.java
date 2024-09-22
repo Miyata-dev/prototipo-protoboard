@@ -72,10 +72,26 @@ public class ClickLine {
                     if(cable1.getRandomID().equals(cable.getRandomID())){
                         if(cable1.getFirstCircle().getID().getGridName().equals("LedVolt1") || cable1.getFirstCircle().getID().getGridName().equals("switchvolt1")){
                             cable1.getFirstCircle().removeEnergy();
-                            Utils.IdentifiedFunction(cable1.getFirstCircle(), cable1.getSecondCircle(), rec, gridPaneObserver.getCables());
+                            for (CustomShape shape : shapes) {
+                                if(shape.getLeg1().hasCable() || shape.getLeg2().hasCable()){
+                                    if(shape.getLeg1().getID().getGridName().equals("switchvolt1") || shape.getLeg2().getID().getGridName().equals("switchvolt1")){
+                                        Switch.ChargePass(shape, gridPaneObserver.getCables());
+                                    } else if(shape.getLeg1().getID().getGridName().equals("LedVolt1") || shape.getLeg2().getID().getGridName().equals("LedVolt1")){
+                                        LED.ONorOFF(shape);
+                                    }
+                                }
+                            }
                         } else if( cable1.getSecondCircle().getID().getGridName().equals("LedVolt1") || cable1.getSecondCircle().getID().getGridName().equals("switchvolt1")){
                             cable1.getSecondCircle().removeEnergy();
-                            Utils.IdentifiedFunction(cable1.getFirstCircle(), cable1.getSecondCircle(), rec, gridPaneObserver.getCables());
+                            for (CustomShape shape : shapes) {
+                                if(shape.getLeg1().hasCable() || shape.getLeg2().hasCable()){
+                                    if(shape.getLeg1().getID().getGridName().equals("switchvolt1") || shape.getLeg2().getID().getGridName().equals("switchvolt1")){
+                                        Switch.ChargePass(shape, gridPaneObserver.getCables());
+                                    } else if(shape.getLeg1().getID().getGridName().equals("LedVolt1") || shape.getLeg2().getID().getGridName().equals("LedVolt1")){
+                                        LED.ONorOFF(shape);
+                                    }
+                                }
+                            }
                         }
                     }
                 });
@@ -245,17 +261,17 @@ public class ClickLine {
             }
         }
         UpdateState(StartHandler, EndHandler, current);
-        shapes.forEach(shape ->{
-            if(shape.getLeg2().hasCable()){
-                if(StartHandler.getCable().getRandomID().equals(shape.getLeg2().getCable().getRandomID()) && EndHandler.getCable().getRandomID().equals(shape.getLeg2().getCable().getRandomID())){
-                    Utils.IdentifiedFunction(StartHandler, EndHandler, shape, gridPaneObserver.getCables());
-                }
-            } else if( shape.getLeg1().hasCable()){
-                if(StartHandler.getCable().getRandomID().equals(shape.getLeg1().getCable().getRandomID()) && EndHandler.getCable().getRandomID().equals(shape.getLeg1().getCable().getRandomID())){
-                    Utils.IdentifiedFunction(StartHandler, EndHandler, shape, gridPaneObserver.getCables());
+
+        for (CustomShape shape : shapes) {
+            if(shape.getLeg1().hasCable() || shape.getLeg2().hasCable()){
+                if(shape.getLeg1().getID().getGridName().equals(gridNames[0]) || shape.getLeg2().getID().getGridName().equals(gridNames[0])){
+                    Switch.ChargePass(shape, gridPaneObserver.getCables());
+                } else if(shape.getLeg1().getID().getGridName().equals(gridNames[1]) || shape.getLeg2().getID().getGridName().equals(gridNames[1])){
+                    LED.ONorOFF(shape);
                 }
             }
-        });
+        }
+
         StartHandler = null;
         EndHandler = null;
     }
