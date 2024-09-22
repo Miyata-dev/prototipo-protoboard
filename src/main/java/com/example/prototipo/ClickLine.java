@@ -241,7 +241,18 @@ public class ClickLine {
         }
 
         UpdateState(StartHandler, EndHandler, current);
-        Utils.IdentifiedFunction(StartHandler, EndHandler, rec, cables);
+        shapes.forEach(shape ->{
+            if(shape.getLeg2().hasCable()){
+                if(StartHandler.getCable().getRandomID().equals(shape.getLeg2().getCable().getRandomID()) && EndHandler.getCable().getRandomID().equals(shape.getLeg2().getCable().getRandomID())){
+                    Utils.IdentifiedFunction(StartHandler, EndHandler, shape, cables);
+                }
+            } else if( shape.getLeg1().hasCable()){
+                if(StartHandler.getCable().getRandomID().equals(shape.getLeg1().getCable().getRandomID()) && EndHandler.getCable().getRandomID().equals(shape.getLeg1().getCable().getRandomID())){
+                    Utils.IdentifiedFunction(StartHandler, EndHandler, shape, cables);
+                }
+            }
+
+        });
         StartHandler = null;
         EndHandler = null;
     }
