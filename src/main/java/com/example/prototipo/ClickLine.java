@@ -20,7 +20,7 @@ public class ClickLine {
     private ArrayList<Cable> cables;
     private Basurero basurero;
     private CustomShape rec;
-    private ArrayList<CustomShape> shapes;
+    private ArrayList<CustomShape> shapes = new ArrayList<>();
 
     public ClickLine(AnchorPane root, GridPaneObserver gridPaneObserver, Basurero basurero, Bateria bateria, ArrayList<Cable> cables) {
         this.root = root;

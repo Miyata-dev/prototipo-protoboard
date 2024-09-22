@@ -57,18 +57,17 @@ public class Basurero extends ImageView {
 
         if (customShape.getLeg2().hasCable()) {
             Cable cableToRemove = customShape.getLeg2().getCable();
-
             //Se realiza un eliminacion si el elemento es un cable y ademas las ID son iguales al cable a remover del Elemento Correspondiente
             root.getChildren().removeIf(element -> {
+                Utils.ResetStateCustomCircles(cableToRemove);
                 return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
             });
-
         }
         if (customShape.getLeg1().hasCable()) {
             Cable cableToRemove = customShape.getLeg1().getCable();
-
             //Se realiza un eliminacion si el elemento es un cable y ademas las ID son iguales al cable a remover del Elemento Correspondiente
             root.getChildren().removeIf(element -> {
+                Utils.ResetStateCustomCircles(cableToRemove);
                 return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
             });
 
