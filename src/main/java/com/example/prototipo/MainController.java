@@ -31,6 +31,7 @@ public class MainController {
     GridPaneObserver gridPaneObserver;
     //se coloca esta variable en el controlador par poder darle acceso los switches y leds.
     public ArrayList<Cable> cables = new ArrayList<>();
+    boolean isProtoboardActive = false;
 
     public void initialize() {
         //nombres para cada grid para los identificadores unicos.
@@ -77,6 +78,18 @@ public class MainController {
         CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE);
         Switch switch1 = new Switch(true, customShape, gridPaneObserver, basurero, parent, cables);
         parent.getChildren().add(switch1);
+    }
+
+    public void toggleProtoBoard() {
+        if (!isProtoboardActive) {
+            System.out.println("apagando Protoboard");
+            gridPaneObserver.deactivateGridObserver();
+        } else {
+            System.out.println("prendiendo protoboard");
+            gridPaneObserver.activateGridObserver();
+        }
+
+        isProtoboardActive = !isProtoboardActive;
     }
 
 }

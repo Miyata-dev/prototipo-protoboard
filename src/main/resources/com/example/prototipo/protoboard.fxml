@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="parent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="607.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.prototipo.MainController">
+<AnchorPane fx:id="parent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="607.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.prototipo.MainController">
    <children>
       <Group layoutX="123.0" layoutY="10.0">
          <children>
@@ -258,5 +263,6 @@
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c3c3c3" height="25.0" layoutX="123.0" layoutY="273.0" stroke="BLACK" strokeType="INSIDE" width="581.0" />
       <Button layoutX="183.0" layoutY="554.0" mnemonicParsing="false" onAction="#crearLed" text="Crear LED" />
       <Button layoutX="575.0" layoutY="554.0" mnemonicParsing="false" onAction="#CreateSwitch" text="Crear Switch" />
+      <Button layoutX="352.0" layoutY="554.0" mnemonicParsing="false" onAction="#toggleProtoBoard" text="Apagar protoboard" />
    </children>
 </AnchorPane>

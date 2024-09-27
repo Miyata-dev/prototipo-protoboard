@@ -28,10 +28,12 @@ public class Utils {
     }
 
     //pinta una columna dependiendo del estado, este método se creó para mejorar la legibilidad del código.
-    public static void paintColumn(ArrayList<CustomCircle> column, int state) {
+    public static void paintColumn(GridPaneObserver gridPaneObserver, ArrayList<CustomCircle> column, int state) {
         column.forEach(circle -> {
             circle.setState(state);
         });
+        //se registra en el gridPane la columna afectada.
+        gridPaneObserver.addColumn(column, state);
     }
     //este método agrega un círclo a la colección que recibe como parámetro solo si son de la misma columna.
     private static void addCirclesFromSameColumn(ID id, Iterator<Node> fristCircleToPaint, ArrayList<CustomCircle> circles) {
@@ -135,6 +137,8 @@ public class Utils {
             circles.forEach(circle -> {
                 circle.setState(state);
             });
+            //se registra la columna en el gridPaneObserver
+            //gridPaneObserver.addColumn(circles, state);
             return;
         }
         //se obtienen las IDs de los circulos que el cable conecta.
@@ -142,7 +146,9 @@ public class Utils {
         ID indexTwo = cableFound.getIds()[1];
 
         if (!indexOne.getGridName().equals(indexTwo.getGridName())) {
-            paintColumn(circles, state);
+            paintColumn(gridPaneObserver, circles, state);
+            //se registra la columna en el gridPaneObserver
+            //gridPaneObserver.addColumn(circles, state);
             return;
         }
 
@@ -164,8 +170,11 @@ public class Utils {
                 ArrayList<CustomCircle> firstColumn = getColumnOfCustomCircles(gridPaneObserver, elementOneID);
                 ArrayList<CustomCircle> secondColumn = getColumnOfCustomCircles(gridPaneObserver, elementTwoID);
 
-                paintColumn(firstColumn, state);
-                paintColumn(secondColumn, state);
+                paintColumn(gridPaneObserver, firstColumn, state);
+                paintColumn(gridPaneObserver, secondColumn, state);
+
+                //gridPaneObserver.addColumn(firstColumn, state);
+                //gridPaneObserver.addColumn(secondColumn, state);
             });
         }
 
@@ -185,8 +194,11 @@ public class Utils {
                 ArrayList<CustomCircle> secondColumn = getColumnOfCustomCircles(gridPaneObserver, elementOneID);
                 ArrayList<CustomCircle> firstColumn = getColumnOfCustomCircles(gridPaneObserver, elementTwoID);
 
-                paintColumn(firstColumn, state);
-                paintColumn(secondColumn, state);
+                paintColumn(gridPaneObserver, firstColumn, state);
+                paintColumn(gridPaneObserver, secondColumn, state);
+
+                //gridPaneObserver.addColumn(firstColumn, state);
+                //gridPaneObserver.addColumn(secondColumn, state);
             });
         }
     }
@@ -205,7 +217,8 @@ public class Utils {
         circles.forEach(circle -> {
             circle.setState(state);
         });
-
+        //se registra la columna afectada.
+        gridPaneObserver.addColumn(circles, state);
     }
 
     public static void unPaintCircles(GridPaneObserver gridPaneObserver, ID id, boolean ignoreVoltCables) {
@@ -317,7 +330,7 @@ public class Utils {
 
         return false;
     }
-
+    //TODO pedir el gridPaneObserver
     public static ArrayList<Cable> getConnectedCables(ArrayList<Cable> cables, Cable cableToConnect, boolean ignoreVoltCables) {
         String[] voltNames = {
                 "gridVolt1",
