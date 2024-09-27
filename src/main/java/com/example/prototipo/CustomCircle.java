@@ -61,4 +61,16 @@ public class CustomCircle extends Circle {
         return this.id;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof CustomCircle)) return false;
+
+        CustomCircle other = (CustomCircle) obj;
+
+        boolean sameID = ID.isSameID(this.getID(), other.getID());
+        //boolean sameID = this.id.equals(other.getID());
+
+        return sameID;
+    }
 }

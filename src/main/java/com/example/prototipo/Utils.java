@@ -224,8 +224,12 @@ public class Utils {
     public static void unPaintCircles(GridPaneObserver gridPaneObserver, ID id, boolean ignoreVoltCables) {
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(gridPaneObserver, id);
 
+        Integer tipoDeCarga = circles.get(0).getState();
+
         if (hasVoltCable(circles) && ignoreVoltCables) return;
 //        if (HasOtherEnergySource(circles)) return;
+
+        gridPaneObserver.removeColumn(circles);
         circles.forEach(CustomCircle::removeEnergy);
     }
 

@@ -51,6 +51,8 @@ public class ID {
         return randomID;
     }
 
+
+
     public int getIndexRow() {
         return indexRow;
     }
@@ -84,6 +86,14 @@ public class ID {
 
     public static boolean isThisColumn(ID id, int desiredColumn) {
         return id.getIndexColumn() == desiredColumn;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof ID)) return false;
+
+        return ID.isSameID(this, (ID) obj);
     }
 
     @Override

@@ -34,6 +34,16 @@ public class GridPaneObserver {
         energizedColumns.add(new Pair<>(energy, column));
     }
 
+    public void removeColumn(ArrayList<CustomCircle> column) {
+        //se elimina la columna que tenga la misma id que la columna que se pasa por parametro.
+        energizedColumns.removeIf(el -> {
+            ID elementID = el.getSecondValue().get(0).getID(); //
+            ID columnID = column.get(0).getID(); //se obtiene la id de la columna a partir
+
+            return elementID.equals(columnID);
+        });
+    }
+
     //quita temporalmente la energía (desactiva la energía) //TODO REVISAR.
     public void deactivateGridObserver() {
         //remueve la energía que tiene el gridPane
