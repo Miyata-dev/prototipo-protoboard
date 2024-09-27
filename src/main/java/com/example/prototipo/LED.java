@@ -11,21 +11,23 @@ public class LED extends Group {
     private Basurero basurero;
     private AnchorPane root;
     private CustomCircle[] legs;
+    private String UniqueId;
 
-    public LED(boolean state, CustomShape customShape, Basurero basurero, AnchorPane root) {
+    public LED(boolean state, CustomShape customShape, Basurero basurero, AnchorPane root, GridPaneObserver gridPaneObserver) {
         super(customShape);
         this.state = state;
         this.legs = new CustomCircle[] {
             customShape.getLeg1(),
             customShape.getLeg2()
         };
-
+        this.UniqueId = customShape.getUniqueID();
         this.basurero = basurero;
         this.root = root;
         LedFunction(customShape);
 
         Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());
         init(customShape);
+        gridPaneObserver.addLeds(this);
 
         this.setOnMouseClicked(e -> {
             //Al momento de soltar el LED se pueden crear Cables
@@ -40,7 +42,7 @@ public class LED extends Group {
 
             if (basurero.getIsActive()) {
                 //Llamamos al metodo del Basurero para borrar los cables que pueden tener el LED y despues borrar este mismo
-                basurero.EliminateElements(customShape, e, root);
+                basurero.EliminateElements(customShape, e, root, gridPaneObserver, this);
                 root.getChildren().remove(this);
             }
         });
@@ -116,4 +118,5 @@ public class LED extends Group {
     public CustomCircle[] getCircles() {
         return legs;
     }
+    public String getUniqueId(){return this.UniqueId;}
 }

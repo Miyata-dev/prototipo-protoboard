@@ -72,13 +72,13 @@ public class MainController {
     }
 
     public void crearLed() {
-        CustomShape customShape = new CustomShape(720, 504, 25, 15, Color.YELLOW);
-        LED led = new LED(false, customShape, basurero, parent);
+        CustomShape customShape = new CustomShape(720, 504, 25, 15, Color.YELLOW, "LED");
+        LED led = new LED(false, customShape, basurero, parent, gridPaneObserver);
         parent.getChildren().add(led);
     }
 
     public void CreateSwitch(){
-        CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE);
+        CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE, "Switch");
         Switch switch1 = new Switch(true, customShape, gridPaneObserver, basurero, parent, cables);
         parent.getChildren().add(switch1);
     }

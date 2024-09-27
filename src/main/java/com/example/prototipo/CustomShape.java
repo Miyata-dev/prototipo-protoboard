@@ -11,14 +11,16 @@ public class CustomShape extends Rectangle {
     private AtomicReference<Double> startX = new AtomicReference<>((double) 0);
     private AtomicReference<Double> startY = new AtomicReference<>((double) 0);
     private String UniqueID;
+    private String Type;
 
-    public CustomShape(int x, int y, int width, int height, Color color) {
+    public CustomShape(int x, int y, int width, int height, Color color, String type) {
         super(x, y, width, height);
         //El grosor de la linea de la figura independientemente del tamano que tenga
         this.setStroke(Color.BLACK);
         this.setStrokeWidth(3);
         this.setFill(color);
         this.UniqueID= Utils.createRandomID();
+        this.Type = type;
     }
 
     public void setLeg1(CustomCircle leg1) {
@@ -43,4 +45,5 @@ public class CustomShape extends Rectangle {
     public String getUniqueID(){
         return this.UniqueID;
     }
+    public String getType(){return this.Type;}
 }

@@ -56,12 +56,7 @@ public class ClickLine {
             }
         });
         root.setOnMouseReleased(e -> {
-            if (e.getTarget() instanceof CustomShape shape) {
-                if(e.getTarget() instanceof LED led){
-                    gridPaneObserver.addLeds(led);
-                } else if( e.getTarget() instanceof  Switch switchs){
-                    gridPaneObserver.addSwitches(switchs);
-                }
+            if(e.getTarget() instanceof CustomShape shape){
                 rec = shape;
                 shapes.add(rec);
             }
@@ -74,7 +69,32 @@ public class ClickLine {
             boolean canDelete = basurero.getIsActive();
             if (!canDelete) return;
 
-            //TODO actualizarlo al nuevo tipo de accion necesaria
+
+            if(e.getTarget() instanceof Cable cable) {
+
+                CustomShape found = getCustomShapebyCable(shapes, cable);
+                if(found != null) {
+                    if(found.getLeg1().getID().getGridName().equals("switchvolt1") || found.getLeg1().getID().getGridName().equals("LedVolt1")){
+                        found.getLeg1().removeEnergy();
+                    } else if(found.getLeg2().getID().getGridName().equals("switchvolt1") || found.getLeg2().getID().getGridName().equals("LedVolt1")){
+                        found.getLeg2().removeEnergy();
+                    }
+                    if(found.getType().equals("Switch")){
+                      for (Switch aSwitch : gridPaneObserver.getSwitches()) {
+                          if(aSwitch.getUniqueId().equals(found.getUniqueID())){
+                              aSwitch.ChargePass(found, gridPaneObserver.getCables());
+                          }
+                      }
+                  } else if(found.getType().equals("LED")){
+                      for (LED led : gridPaneObserver.getLeds()) {
+                          if(led.getUniqueId().equals(found.getUniqueID())){
+                              led.ONorOFF(found);
+                          }
+
+                      }
+                  }
+                }
+            }
 //            if(e.getTarget() instanceof Cable cable){
 //                gridPaneObserver.getCables().forEach(cable1 ->{
 //                    if(cable1.getRandomID().equals(cable.getRandomID())){
@@ -258,18 +278,24 @@ public class ClickLine {
         //Switch
         if(StartHandler.getID().getGridName().equals(edgeCases[0]) || EndHandler.getID().getGridName().equals(edgeCases[0])){
             for (Switch switchs : gridPaneObserver.getSwitches()) {
-                CustomCircle firstleg = switchs.getCircles()[0];
-                CustomCircle secondleg= switchs.getCircles()[1];
                 System.out.println("hola");
-                if((firstleg.hasCable() && firstleg.getCable().getRandomID().equals(StartHandler.getCable().getRandomID())) ||(secondleg.hasCable() && secondleg.getCable().getRandomID().equals(StartHandler.getCable().getRandomID()))){
-                    System.out.println("FOOOOUUUUUNNNNNDDDD");
-                    switchs.ChargePass((CustomShape) switchs.getChildren(), gridPaneObserver.getCables());
+                if(switchs.getCircles()[0] != null && switchs.getCircles()[0].hasCable()){
+                    System.out.println("no es nulo");
+                    if(switchs.getCircles()[0].getCable().getRandomID().equals(current.getRandomID())){
+                        CustomShape shape= getCustomShapebyUniqueID(shapes, switchs.getUniqueId());
+                        System.out.println("FOUUUUNDNLKSAJDSA");
+                        switchs.ChargePass(shape, gridPaneObserver.getCables());
+                    }
+                } else if (switchs.getCircles()[1] != null && switchs.getCircles()[1].hasCable()){
+                    if(switchs.getCircles()[1].getCable().getRandomID().equals(current.getRandomID())){
+                        CustomShape shape= getCustomShapebyUniqueID(shapes, switchs.getUniqueId());
+                        switchs.ChargePass(shape, gridPaneObserver.getCables());
+                    }
                 }
             }
 
         //LED
         } else if(StartHandler.getID().getGridName().equals(edgeCases[1]) || EndHandler.getID().getGridName().equals(edgeCases[1])){
-
             for (LED led : gridPaneObserver.getLeds()) {
                 CustomCircle firstleg = led.getCircles()[0];
                 CustomCircle secondleg = led.getCircles()[1];
@@ -285,9 +311,9 @@ public class ClickLine {
     }
 
     //Este metodo lo que hace es actualizar el estado a los CustomCircle que no son para un GridPane
-    public void UpdateState(CustomCircle StartHandler, CustomCircle EndHandler, Cable current){
+    public void UpdateState(CustomCircle StartHandler, CustomCircle EndHandler, Cable current) {
         //Preguntamos si el StartHandler es para gridPane y si el EndHandler no es para GridPane
-        if(StartHandler.getID().getIsForGridpane() && !(EndHandler.getID().getIsForGridpane())){
+        if (StartHandler.getID().getIsForGridpane() && !(EndHandler.getID().getIsForGridpane())) {
             //Actualizamos el estado del que no es para GridPane
             EndHandler.setState(StartHandler.getState());
             //Actualizamos que el StartHandler y el EndHandler estan tomados para que no se conecten mas de un cable en el mismo CustomCircle
@@ -295,7 +321,7 @@ public class ClickLine {
             StartHandler.setisTaken(true);
 
             //Preguntamos si el EndHandler es para GridPane y el StartHandler no es para GridPane
-        } else if(EndHandler.getID().getIsForGridpane() && !(StartHandler.getID().getIsForGridpane())){
+        } else if (EndHandler.getID().getIsForGridpane() && !(StartHandler.getID().getIsForGridpane())) {
             //Actualizamos el estado del que no es para GridPane
             StartHandler.setState(EndHandler.getState());
             //Actualizamos que el StartHandler y el EndHandler estan tomados para que no se conecten mas de un cable en el mismo CustomCircle
@@ -306,4 +332,27 @@ public class ClickLine {
 
     public void SetStartHandler(CustomCircle startHandler){this.StartHandler = startHandler;}
     public void SetEndHandler(CustomCircle endHandler){this.EndHandler = endHandler;}
+
+    public CustomShape getCustomShapebyCable( ArrayList<CustomShape> customShape, Cable cable) {
+        for (CustomShape shape : customShape) {
+            if(shape.getLeg2().hasCable()){
+                if(shape.getLeg2().getCable().getRandomID().equals(cable.getRandomID())){
+                    return shape;
+                }
+            } else if(shape.getLeg1().hasCable()){
+                if(shape.getLeg1().getCable().getRandomID().equals(cable.getRandomID())){
+                    return shape;
+                }
+            }
+        }
+        return null;
+    }
+    public CustomShape getCustomShapebyUniqueID(ArrayList<CustomShape> shapes, String UniqueId){
+        for (CustomShape shape : shapes) {
+            if(shape.getUniqueID().equals(UniqueId)){
+                return shape;
+            }
+        }
+        return null;
+    }
 }

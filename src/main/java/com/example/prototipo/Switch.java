@@ -28,10 +28,12 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         this.cables= cables;
         this.UniqueId= customShape.getUniqueID();
         this.customCircles = new CustomCircle[]{customShape.getLeg1(), customShape.getLeg2()};
-        this.EndLeg= null;
+        this.EndLeg = null;
 
         Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());//Llamamos a la clase Util para poder convertir el Switch en un nodo movible.
         Init(customShape);
+        gridPaneObserver.addSwitches(this);
+
 
         this.setOnMouseClicked(e -> {
             Utils.makeUndraggableNode(this);
@@ -39,15 +41,15 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
             customShape.getLeg2().setisTaken(false);
 
             //Al darle Click al Switch se cambia el paso de carga y se llama a la funcion correspondiente
-            this.PasoDeCarga = !this.PasoDeCarga;
-            ChargePass(customShape, cables);
+            setPasoDeCarga(!getPasoDeCarga());
+            this.ChargePass(customShape, cables);
 
-            System.out.println("El Paso de Carga es: " + getPasoDeCarga());
+            System.out.println("El Paso de Carga es: " + getPasoDeCarga() + " de " + this.getUniqueId());
 
 
             if (basurero.getIsActive()) {
                 //Llamamos al metodo para eliminar los cables que pueden pertenecer al Switch y despues borrar este mismo
-                basurero.EliminateElements(customShape, e, root);
+                basurero.EliminateElements(customShape, e, root, gridPaneObserver, this);
                 root.getChildren().remove(this);
             }
         });
@@ -148,10 +150,10 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
     //Este metodo lo que hace es pintar El gridpane segun el GridPane que corresponda
     public  void PaintSwitch(ID id, CustomShape customShape, CustomCircle Leg, ArrayList<Cable> cables) {
-        if ("gridTrail1".equals(id.getGridName())) {
+        if (this.gridPaneObserver.getFirstGridPaneTrail().getName().equals(id.getGridName())) {
             //Llamamos a la funcion de Pintar
             Utils.paintCircles(this.gridPaneObserver, id, Leg.getState());
-        } else if ("gridTrail2".equals(id.getGridName())) {
+        } else if (this.gridPaneObserver.getSecondGridPaneTrail().getName().equals(id.getGridName())) {
             Utils.paintCircles(this.gridPaneObserver, id, Leg.getState());
         } else if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
             //En el caso que el nombre del Grid no es de ninguno de los Gridpane entonces debe ser de Automaticamente del una bateria, LED o Switch.
@@ -196,7 +198,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
 
 
-    public  void SetPasoDeCarga(boolean state){
+    public  void setPasoDeCarga(boolean state){
         this.PasoDeCarga = state;
     }
     public void SetEndLeg(CustomCircle c){ this.EndLeg=c;}
