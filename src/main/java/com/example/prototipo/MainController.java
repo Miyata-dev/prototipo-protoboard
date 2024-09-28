@@ -81,15 +81,16 @@ public class MainController {
     }
 
     public void toggleProtoBoard() {
-        if (!isProtoboardActive) {
+        gridPaneObserver.toggleObserver();
+
+        if (!gridPaneObserver.getIsEnergyActivated()) {
             System.out.println("apagando Protoboard");
             gridPaneObserver.deactivateGridObserver();
         } else {
             System.out.println("prendiendo protoboard");
             gridPaneObserver.activateGridObserver();
         }
-
-        isProtoboardActive = !isProtoboardActive;
+        System.out.println("state: " + gridPaneObserver.getIsEnergyActivated());
     }
 
 }
