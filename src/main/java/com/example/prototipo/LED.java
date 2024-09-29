@@ -12,9 +12,11 @@ public class LED extends Group {
     private AnchorPane root;
     private CustomCircle[] legs;
     private String UniqueId;
+    private CustomShape shape;
 
     public LED(boolean state, CustomShape customShape, Basurero basurero, AnchorPane root, GridPaneObserver gridPaneObserver) {
         super(customShape);
+        this.shape = customShape;
         this.state = state;
         this.legs = new CustomCircle[] {
             customShape.getLeg1(),
@@ -23,7 +25,7 @@ public class LED extends Group {
         this.UniqueId = customShape.getUniqueID();
         this.basurero = basurero;
         this.root = root;
-        LedFunction(customShape);
+        LedFunction();
 
         Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());
         init(customShape);
@@ -49,6 +51,7 @@ public class LED extends Group {
             if (basurero.getIsActive()) {
                 //Llamamos al metodo del Basurero para borrar los cables que pueden tener el LED y despues borrar este mismo
                 basurero.EliminateElements(customShape, e, root, gridPaneObserver, this);
+                gridPaneObserver.removeLeds(this);
                 root.getChildren().remove(this);
             }
         });
@@ -86,28 +89,28 @@ public class LED extends Group {
 
 
     //Este metodo lo que hace es cambiar el color del LED cuando Cambia su estado
-    public void LedFunction(CustomShape customShape) {
+    public void LedFunction() {
         //false -> apagado      true-> encendido
         if (GetState()) {
             //Cuando el LED esta encendido el relleno se mostrara Verde y si esta apagado sera Rojo
-            customShape.setFill(Color.GREEN);
+            this.shape.setFill(Color.GREEN);
         } else {
-            customShape.setFill(Color.RED);
+            this.shape.setFill(Color.RED);
         }
     }
 
     //Metodo para mostrar si el LED esta encendido o Apagado
-    public void ONorOFF(CustomShape customShape) {
+    public void ONorOFF() {
         //Preguntamos si las dos patas tienen energía y ademas la energia que tienen es distinta entre si
-        if ((customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasEnergy()) && (customShape.getLeg2().getState() != customShape.getLeg1().getState())) {
+        if ((this.shape.getLeg2().hasEnergy() && this.shape.getLeg1().hasEnergy()) && (this.shape.getLeg2().getState() != this.shape.getLeg1().getState())) {
             //al ser distintas actualizamos el estado a true que es igual a encendido
             SetState(true);
             //Y lo cambiamos para que se vea graficamente
-            LedFunction(customShape);
+            LedFunction();
         } else {
             //en el caso que la condicion sea false se cambiara el state a false que es igual a apagado y se cambiara graficamente el LED a apagado
             SetState(false );
-            LedFunction(customShape);
+            LedFunction();
         }
     }
 

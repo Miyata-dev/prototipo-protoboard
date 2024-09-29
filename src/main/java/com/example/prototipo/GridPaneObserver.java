@@ -61,6 +61,7 @@ public class GridPaneObserver {
             col.forEach(CustomCircle::removeEnergy);
         });
     }
+
     //activa la energía TODO: refactorizar este chancherío.
     public void activateGridObserver() {
         cables.forEach(cable -> GridPaneObserver.refreshProtoboard(this));
@@ -121,6 +122,19 @@ public class GridPaneObserver {
 
             col.forEach(cir -> cir.setState(energy));
         });
+        RefreshElements(gridPane.getSwitches(), gridPane.getLeds(), gridPane.getCables());
+    }
+
+    //Este metodo lo que hace es actualizar todos los elementos del protoboard(Switch y LED) cuando al momento de Encender y apagar se llamen su funcionalidad correspondiente
+    public static void RefreshElements(ArrayList<Switch> switches, ArrayList<LED> leds, ArrayList<Cable> cables){
+        //Actualizamos todos los switchs
+        for (Switch aSwitch : switches) {
+            aSwitch.ChargePass(cables);
+        }
+        //Actualizamos todos los LEDs
+        for (LED led : leds) {
+            led.ONorOFF();
+        }
     }
 
     public void setIsEnergyActivated(boolean isEnergyActivated) {
