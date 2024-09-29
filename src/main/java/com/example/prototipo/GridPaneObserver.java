@@ -14,7 +14,7 @@ public class GridPaneObserver {
     private ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energizedColumns = new ArrayList<>();
     private boolean isEnergyActivated = true; //al principio, el protoboard no está apagado.
 
-    public GridPaneObserver(GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, GridPaneController firsGridPaneVolt, GridPaneController secondGridPaneVolt) {
+    public GridPaneObserver(GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, GridPaneController firstGridPaneVolt, GridPaneController secondGridPaneVolt) {
         this.firstGridPane = firstGridPane;
         this.secondGridPane = secondGridPane;
         this.firstGridPaneVolt = firstGridPaneVolt;
