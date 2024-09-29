@@ -3,36 +3,44 @@ package com.example.prototipo;
 import javafx.scene.Group;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LED extends Group {
-    public static boolean state;  //false -> apagado      true-> encendido
+    public  boolean state;  //false -> apagado      true-> encendido
     private Basurero basurero;
     private AnchorPane root;
     private CustomCircle[] legs;
+    private String UniqueId;
 
-    public LED(boolean state, CustomShape customShape, Basurero basurero, AnchorPane root) {
+    public LED(boolean state, CustomShape customShape, Basurero basurero, AnchorPane root, GridPaneObserver gridPaneObserver) {
         super(customShape);
-        LED.state = state;
+        this.state = state;
         this.legs = new CustomCircle[] {
             customShape.getLeg1(),
             customShape.getLeg2()
         };
-
+        this.UniqueId = customShape.getUniqueID();
         this.basurero = basurero;
         this.root = root;
         LedFunction(customShape);
 
         Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());
         init(customShape);
+        gridPaneObserver.addLeds(this);
+
+
+        //Este AtomicBoolean lo que hace es que cada vez que se haga click en el LED el setisTaken sea siempre false
+        AtomicBoolean LegTaken = new AtomicBoolean(true);
 
         this.setOnMouseClicked(e -> {
             //Al momento de soltar el LED se pueden crear Cables
-            customShape.getLeg1().setisTaken(false);
-            customShape.getLeg2().setisTaken(false);
-            Utils.makeUndraggableNode(this);
-
+            if(LegTaken.get()){
+                Utils.makeUndraggableNode(this);
+                customShape.getLeg1().setisTaken(false);
+                customShape.getLeg2().setisTaken(false);
+                LegTaken.set(false);
+            }
             //fuciona las dos ids de las patas y crea una ID a partir de las 2.
 
             System.out.println("pata 1: " + customShape.getLeg1().getID().getGeneratedID());
@@ -40,7 +48,7 @@ public class LED extends Group {
 
             if (basurero.getIsActive()) {
                 //Llamamos al metodo del Basurero para borrar los cables que pueden tener el LED y despues borrar este mismo
-                basurero.EliminateElements(customShape, e, root);
+                basurero.EliminateElements(customShape, e, root, gridPaneObserver, this);
                 root.getChildren().remove(this);
             }
         });
@@ -78,7 +86,7 @@ public class LED extends Group {
 
 
     //Este metodo lo que hace es cambiar el color del LED cuando Cambia su estado
-    public static void LedFunction(CustomShape customShape) {
+    public void LedFunction(CustomShape customShape) {
         //false -> apagado      true-> encendido
         if (GetState()) {
             //Cuando el LED esta encendido el relleno se mostrara Verde y si esta apagado sera Rojo
@@ -89,7 +97,7 @@ public class LED extends Group {
     }
 
     //Metodo para mostrar si el LED esta encendido o Apagado
-    public static void ONorOFF(CustomShape customShape) {
+    public void ONorOFF(CustomShape customShape) {
         //Preguntamos si las dos patas tienen energía y ademas la energia que tienen es distinta entre si
         if ((customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasEnergy()) && (customShape.getLeg2().getState() != customShape.getLeg1().getState())) {
             //al ser distintas actualizamos el estado a true que es igual a encendido
@@ -103,17 +111,18 @@ public class LED extends Group {
         }
     }
 
-    public static void SetState(boolean states){
-        state = states;
+    public void SetState(boolean states){
+        this.state = states;
     }
-    public static boolean GetState(){
-        return state;
+    public boolean GetState(){
+        return this.state;
     }
 
     public CustomShape getCustomShape() {
         return (CustomShape) this.getChildren().get(0);
     }
-    public CustomCircle[] getLegs() {
+    public CustomCircle[] getCircles() {
         return legs;
     }
+    public String getUniqueId(){return this.UniqueId;}
 }

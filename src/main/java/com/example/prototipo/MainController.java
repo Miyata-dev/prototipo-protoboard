@@ -32,6 +32,8 @@ public class MainController {
     //se coloca esta variable en el controlador par poder darle acceso los switches y leds.
     public ArrayList<Cable> cables = new ArrayList<>();
     boolean isProtoboardActive = false;
+    public ArrayList<LED> leds = new ArrayList<>();
+    public ArrayList<Switch> switches = new ArrayList<>();
 
     public void initialize() {
         //nombres para cada grid para los identificadores unicos.
@@ -62,20 +64,22 @@ public class MainController {
             gridPaneObserver,
             basurero,
             bateria,
-            cables
+            cables,
+                leds,
+                switches
         );
         clickLineMatrizUno.CircleAsignator();
         System.out.println("controller: " + basurero.getParent());
     }
 
     public void crearLed() {
-        CustomShape customShape = new CustomShape(720, 504, 25, 15, Color.YELLOW);
-        LED led = new LED(false, customShape, basurero, parent);
+        CustomShape customShape = new CustomShape(720, 504, 25, 15, Color.YELLOW, "LED");
+        LED led = new LED(false, customShape, basurero, parent, gridPaneObserver);
         parent.getChildren().add(led);
     }
 
     public void CreateSwitch(){
-        CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE);
+        CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE, "Switch");
         Switch switch1 = new Switch(true, customShape, gridPaneObserver, basurero, parent, cables);
         parent.getChildren().add(switch1);
     }

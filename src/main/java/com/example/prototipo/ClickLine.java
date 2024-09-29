@@ -22,15 +22,18 @@ public class ClickLine {
     private ArrayList<CustomShape> shapes = new ArrayList<>();
     //private ArrayList<Cable> cables;
 
-    public ClickLine(AnchorPane root, GridPaneObserver gridPaneObserver, Basurero basurero, Bateria bateria, ArrayList<Cable> cables) {
+    public ClickLine(AnchorPane root, GridPaneObserver gridPaneObserver, Basurero basurero, Bateria bateria, ArrayList<Cable> cables, ArrayList<LED> leds, ArrayList<Switch> switches) {
         this.root = root;
         this.gridPaneObserver = gridPaneObserver;
         this.basurero = basurero;
         this.bateria = bateria;
         //this.cables = cables;
         gridPaneObserver.setCables(cables);
+        gridPaneObserver.setLeds(leds);
+        gridPaneObserver.setSwitches(switches);
         ids = new ID[2];
         CurrentLine = new Cable();
+
     }
 
     public void CircleAsignator(){
@@ -64,48 +67,54 @@ public class ClickLine {
         });
 
         root.setOnMouseClicked(e -> {
+            if (e.getTarget() instanceof CustomShape shape){
+                shapes.add(shape);
+            }
             boolean canDelete = basurero.getIsActive();
             if (!canDelete) return;
 
-            if(e.getTarget() instanceof Cable cable){
-                gridPaneObserver.getCables().forEach(cable1 ->{
-                    if(cable1.getRandomID().equals(cable.getRandomID())){
-                        if(cable1.getFirstCircle().getID().getGridName().equals("LedVolt1") || cable1.getFirstCircle().getID().getGridName().equals("switchvolt1")){
-                            cable1.getFirstCircle().removeEnergy();
-                            for (CustomShape shape : shapes) {
-                                if(shape.getLeg1().hasCable() || shape.getLeg2().hasCable()){
-                                    if(shape.getLeg1().getID().getGridName().equals("switchvolt1") || shape.getLeg2().getID().getGridName().equals("switchvolt1")){
-                                        Switch.ChargePass(shape, gridPaneObserver.getCables());
-                                    } else if(shape.getLeg1().getID().getGridName().equals("LedVolt1") || shape.getLeg2().getID().getGridName().equals("LedVolt1")){
-                                        LED.ONorOFF(shape);
-                                    }
-                                }
-                            }
-                        } else if( cable1.getSecondCircle().getID().getGridName().equals("LedVolt1") || cable1.getSecondCircle().getID().getGridName().equals("switchvolt1")){
-                            cable1.getSecondCircle().removeEnergy();
-                            for (CustomShape shape : shapes) {
-                                if(shape.getLeg1().hasCable() || shape.getLeg2().hasCable()){
-                                    if(shape.getLeg1().getID().getGridName().equals("switchvolt1") || shape.getLeg2().getID().getGridName().equals("switchvolt1")){
-                                        Switch.ChargePass(shape, gridPaneObserver.getCables());
-                                    } else if(shape.getLeg1().getID().getGridName().equals("LedVolt1") || shape.getLeg2().getID().getGridName().equals("LedVolt1")){
-                                        LED.ONorOFF(shape);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
 
-            Utils.deleteCable(e,
+            if(e.getTarget() instanceof Cable cable) {
+                //Buscamos el cable presionado para asi ver despues si el cable pertenece a un elemento del protoboard
+                Cable cablefound = Utils.getCableByID(gridPaneObserver.getCables(), cable);
+                //asignamos los CustomCircles del cable
+                CustomCircle startHandler = cablefound.Getcircles()[0];
+                CustomCircle endHandler = cablefound.Getcircles()[1];
+                if(!startHandler.getID().getIsForGridpane()){
+                    startHandler.removeEnergy();
+                }
+                if (!endHandler.getID().getIsForGridpane()){
+                    endHandler.removeEnergy();
+                }
+                Utils.deleteCable(e,
                 gridPaneObserver,
                 bateria
-            );
-            //al eliminar un cable, el paso de energía es defectuoso, por ello se llama esta función que se asegura de que esté bn.
-            gridPaneObserver.getCables().forEach(cable -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
+                );
+                String edgeCases[] = {
+                    "switchvolt1",
+                    "LedVolt1"
+                };
+                //Switch
+                //Lo que hacemos es preguntar si el StartHandler o el EndHandler pertenecen a un Switch
+                if(startHandler.getID().getGridName().equals(edgeCases[0]) || endHandler.getID().getGridName().equals(edgeCases[0])){
+                    for (Switch switchs : gridPaneObserver.getSwitches()) {
+                        CustomShape shape = getCustomShapebyUniqueID(shapes, switchs.getUniqueId());
+                        switchs.ChargePass(gridPaneObserver.getCables());
+                    }
+                    //LED
+                    //Hacemos lo mismo que con el switch
+                } else if(startHandler.getID().getGridName().equals(edgeCases[1]) || endHandler.getID().getGridName().equals(edgeCases[1])){
+                    for (LED led : gridPaneObserver.getLeds()) {
+                        CustomShape shape = getCustomShapebyUniqueID(shapes, led.getUniqueId());
+                        led.ONorOFF(shape);
+                    }
+                }
+            }
 
         });
     }
+
+
     //TODO: aca puede que ocurran los ids duplicados.
     private void LinePressed(AnchorPane root,MouseEvent Event){
         if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) {  //Verifica que empiece solo de los circulos
@@ -142,14 +151,16 @@ public class ClickLine {
     }
     //TODO colocar setIsTaken en el deleteCable.
     private void RealizeLine(MouseEvent e) {
-        //
-        String[] gridNames = {
+
+
+
+        String[] edgeCases = {
                 "switchvolt1",
                 "LedVolt1",
                 "BateryVolt"
         };
 
-        String[] edgeCases = {
+        String[] gridNames = {
                 "gridVolt1",
                 "gridVolt2"
         };
@@ -186,9 +197,9 @@ public class ClickLine {
         //cables.add(current);
         gridPaneObserver.addCable(current);
 
-//        gridPaneObserver.getCables().forEach(cable -> {
-//            System.out.println("tipo de energia: " + cable.getTipodecarga());
-//        });
+        gridPaneObserver.getCables().forEach(cable -> {
+            System.out.println("tipo de energia: " + cable.getTipodecarga());
+        });
 
         if (rec != null && !StartHandler.getID().getIsForGridpane()) {
             System.out.println("pata 1 del led");
@@ -215,14 +226,14 @@ public class ClickLine {
             }
         }
         //CASO BATERIA-GRIDPANEVOLT OR GRIDPANEVOLT-BATERIA
-        if (Arrays.asList(edgeCases).contains(StartHandler.getID().getGridName()) && Arrays.asList(gridNames).contains(EndHandler.getID().getGridName())){ //PREGUNTA SI DE DONDE EMPIEZA ES UN GRIDPANEVOLT Y SI TERMINA ES LA BATERIA (GRIDPANEVOLT --> BATERIA)
+        if (Arrays.asList(gridNames).contains(StartHandler.getID().getGridName()) && Arrays.asList(edgeCases).contains(EndHandler.getID().getGridName())){ //PREGUNTA SI DE DONDE EMPIEZA ES UN GRIDPANEVOLT Y SI TERMINA ES LA BATERIA (GRIDPANEVOLT --> BATERIA)
             String startCircleGridnamevolt = StartHandler.getID().getGridName();
             if(startCircleGridnamevolt.equals(gridPaneObserver.getFirsGridPaneVolt().getName())){ // PREGUNTA SI DE DONDE EMPIEZA ES EL PRIMER GRIDPANEVOLT (GRIDPANEVOLT-->BATERIA)
                 Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
             }  else{ // PARA EL CASO DEL SEGUNDO GRIDPANEVOLT (GRIDPANEVOLT --> BATERIA)
                 Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
             }
-        }else if (Arrays.asList(edgeCases).contains(EndHandler.getID().getGridName()) && Arrays.asList(gridNames).contains(StartHandler.getID().getGridName())){ // PREGUNTA SI DE DONDE EMPIEZA ES UNA BATERIA Y SI TERMINA EN UN GRIDPANEVOLT (BATERIA --> GRIDPANEVOLT)
+        }else if (Arrays.asList(gridNames).contains(EndHandler.getID().getGridName()) && Arrays.asList(edgeCases).contains(StartHandler.getID().getGridName())){ // PREGUNTA SI DE DONDE EMPIEZA ES UNA BATERIA Y SI TERMINA EN UN GRIDPANEVOLT (BATERIA --> GRIDPANEVOLT)
             String FinalCircleGridnamevolt = EndHandler.getID().getGridName();
             if(FinalCircleGridnamevolt.equals(gridPaneObserver.getFirsGridPaneVolt().getName())){ // BATERIA --> PRIMER GRIDPANEVOLT
                 Utils.paintCirclesVolt(gridPaneObserver,ids[1],StartHandler.getState());
@@ -232,7 +243,7 @@ public class ClickLine {
         }
 
         //si el circulo inicial no tiene energia, se toma la energia del circulo final.
-        if ( ( !StartHandler.hasEnergy() && StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane() ) || (EndHandler.getID().getGridName()).equals(gridNames[2]) ) { // PREGUNTA SI DONDE EMPIEZA Y DONDE TERMINA ES PARA UN GRIDPANE, ADEMAS DE PREGUNTAR SI DONDE TERMINA ES UNA BATERIA
+        if ( ( !StartHandler.hasEnergy() && StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane() ) || (EndHandler.getID().getGridName()).equals(edgeCases[2]) ) { // PREGUNTA SI DONDE EMPIEZA Y DONDE TERMINA ES PARA UN GRIDPANE, ADEMAS DE PREGUNTAR SI DONDE TERMINA ES UNA BATERIA
             String startCircleGridName = StartHandler.getID().getGridName();
             if (startCircleGridName.equals(gridPaneObserver.getFirstGridPaneTrail().getName())) {
                 Utils.paintCircles(gridPaneObserver, ids[0], EndHandler.getState());
@@ -247,7 +258,7 @@ public class ClickLine {
             //StartHandler.setisTaken(true);
         } else {
             //recuperamos el nombre del gridName para ver en cual gridpane pintar
-            if ( (StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane()) || (StartHandler.getID().getGridName()).equals(gridNames[2]) ) { // Pregunta si el gridname es igual al gridname de la bateria
+            if ( (StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane()) || (StartHandler.getID().getGridName()).equals(edgeCases[2]) ) { // Pregunta si el gridname es igual al gridname de la bateria
                 String endCircleGridName = EndHandler.getID().getGridName();
                 if (endCircleGridName.equals(gridPaneObserver.getFirstGridPaneTrail().getName())) {
                     Utils.paintCircles(gridPaneObserver, ids[1], CurrentLine.getTipodecarga());
@@ -262,17 +273,26 @@ public class ClickLine {
                 //StartHandler.setisTaken(true);
             }
         }
+
         UpdateState(StartHandler, EndHandler, current);
 
-        for (CustomShape shape : shapes) {
-            if(shape.getLeg1().hasCable() || shape.getLeg2().hasCable()){
-                if(shape.getLeg1().getID().getGridName().equals(gridNames[0]) || shape.getLeg2().getID().getGridName().equals(gridNames[0])){
-                    Switch.ChargePass(shape, gridPaneObserver.getCables());
-                } else if(shape.getLeg1().getID().getGridName().equals(gridNames[1]) || shape.getLeg2().getID().getGridName().equals(gridNames[1])){
-                    LED.ONorOFF(shape);
-                }
+
+
+        //Switch
+        //Lo que hacemos es preguntar si el StartHandler o el EndHandler pertenecen a un Switch
+        if(StartHandler.getID().getGridName().equals(edgeCases[0]) || EndHandler.getID().getGridName().equals(edgeCases[0])){
+            for (Switch switchs : gridPaneObserver.getSwitches()) {
+                CustomShape shape = getCustomShapebyUniqueID(shapes, switchs.getUniqueId());
+                switchs.ChargePass(gridPaneObserver.getCables());
+            }
+        //LED
+        } else if(StartHandler.getID().getGridName().equals(edgeCases[1]) || EndHandler.getID().getGridName().equals(edgeCases[1])){
+            for (LED led : gridPaneObserver.getLeds()) {
+                CustomShape shape = getCustomShapebyUniqueID(shapes, led.getUniqueId());
+                led.ONorOFF(shape);
             }
         }
+
 
         StartHandler = null;
         EndHandler = null;
@@ -287,6 +307,7 @@ public class ClickLine {
             //Actualizamos que el StartHandler y el EndHandler estan tomados para que no se conecten mas de un cable en el mismo CustomCircle
             EndHandler.setisTaken(true);
             StartHandler.setisTaken(true);
+
             //Preguntamos si el EndHandler es para GridPane y el StartHandler no es para GridPane
         } else if(EndHandler.getID().getIsForGridpane() && !(StartHandler.getID().getIsForGridpane())){
             //Actualizamos el estado del que no es para GridPane
@@ -299,4 +320,27 @@ public class ClickLine {
 
     public void SetStartHandler(CustomCircle startHandler){this.StartHandler = startHandler;}
     public void SetEndHandler(CustomCircle endHandler){this.EndHandler = endHandler;}
+
+    public CustomShape getCustomShapebyCable( ArrayList<CustomShape> customShape, Cable cable) {
+        for (CustomShape shape : customShape) {
+            if(shape.getLeg2().hasCable()){
+                if(shape.getLeg2().getCable().getRandomID().equals(cable.getRandomID())){
+                    return shape;
+                }
+            } else if(shape.getLeg1().hasCable()){
+                if(shape.getLeg1().getCable().getRandomID().equals(cable.getRandomID())){
+                    return shape;
+                }
+            }
+        }
+        return null;
+    }
+    public CustomShape getCustomShapebyUniqueID(ArrayList<CustomShape> shapes, String UniqueId){
+        for (CustomShape shape : shapes) {
+            if(shape.getUniqueID().equals(UniqueId)){
+                return shape;
+            }
+        }
+        return null;
+    }
 }

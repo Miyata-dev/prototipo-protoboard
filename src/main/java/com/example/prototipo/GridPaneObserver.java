@@ -1,7 +1,5 @@
 package com.example.prototipo;
 
-import javafx.scene.layout.GridPane;
-
 import java.util.ArrayList;
 
 public class GridPaneObserver {
@@ -10,6 +8,8 @@ public class GridPaneObserver {
     private GridPaneController firsGridPaneVolt;
     private GridPaneController secondGridPaneVolt;
     private ArrayList<Cable> cables = new ArrayList<>();
+    private ArrayList<LED> leds = new ArrayList<>();
+    private ArrayList<Switch> switches = new ArrayList<>();
     //guarda las columnas con energía y la energía que tienen.
     private ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energizedColumns = new ArrayList<>();
     private boolean isEnergyActivated = true; //al principio, el protoboard no está apagado.
@@ -20,7 +20,8 @@ public class GridPaneObserver {
         this.firsGridPaneVolt = firsGridPaneVolt;
         this.secondGridPaneVolt = secondGridPaneVolt;
     }
-    //setters
+
+    //Setters, adds y removes de elementos del Protoboard
     public void setCables(ArrayList<Cable> cables) {
         this.cables = cables;
     }
@@ -130,6 +131,30 @@ public class GridPaneObserver {
         this.isEnergyActivated = !isEnergyActivated;
     }
 
+    public void setLeds(ArrayList<LED> leds) {
+        this.leds = leds;
+    }
+
+    public void addLeds(LED led) {
+        leds.add(led);
+    }
+
+    public void removeLeds(LED led) {
+        leds.remove(led);
+    }
+
+    public void setSwitches(ArrayList<Switch> switches) {
+        this.switches = switches;
+    }
+
+    public void addSwitches(Switch switchs){
+        switches.add(switchs);
+    }
+
+    public void removeSwitches(Switch switchs){
+        switches.remove(switchs);
+    }
+
     //getters
     public GridPaneController[] getGridPaneTrails() {
         return new GridPaneController[] {
@@ -163,6 +188,14 @@ public class GridPaneObserver {
 
     public ArrayList<Cable> getCables() {
         return cables;
+    }
+
+    public ArrayList<LED> getLeds(){
+        return leds;
+    }
+
+    public ArrayList<Switch> getSwitches(){
+        return switches;
     }
 
     public ArrayList<Pair<Integer, ArrayList<CustomCircle>>> getEnergizedColumns() {
