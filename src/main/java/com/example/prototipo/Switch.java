@@ -117,11 +117,13 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
     public  void ChargePass(ArrayList<Cable> cables){
         //Llamamos al inicio del metodo si es que tiene una EndLeg
-//        CustomCircle EndLeg1 = getDecideEndLeg(customShape);
+
         if(this.EndLeg == null){
             DecideEndLeg(this.shape);
+        } else {
             System.out.println("End Leg is" + getEndLeg().getID());
         }
+        OnlyEndLegHaveEnergy();
         //Preguntamos si el paso de carga es true o false para asi saber que hacer
         if(this.PasoDeCarga && this.shape.getLeg1().hasCable() && this.shape.getLeg2().hasCable()) {
             //Preguntamos si es que el EndLeg tiene la misma id que la pata 2, para asi saber que hay que pintar Y ademas preguntamos
@@ -213,23 +215,34 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
 
 
-//    public CustomCircle getDecideEndLeg(CustomShape customShape){
-//        if(customShape.getLeg1().hasCable() && !(customShape.getLeg2().hasCable())){
-//            return customShape.getLeg2();
-//        } else if( customShape.getLeg2().hasCable() && !(customShape.getLeg1().hasCable())){
-//            return customShape.getLeg1();
-//        } else {
-//            return null;
-//        }
-//    }
-
-
     //Este metodo lo que realiza es decidir la pata a la cual sabremos hacia donde se quitara la energía
     public void DecideEndLeg(CustomShape customShape){
         if(customShape.getLeg1().hasCable() && !(customShape.getLeg2().hasCable())){
             this.EndLeg = customShape.getLeg2();
         } else if( customShape.getLeg2().hasCable() && !(customShape.getLeg1().hasCable())){
             this.EndLeg = customShape.getLeg1();
+        }
+    }
+
+    //Este metodo lo que hace es preguntar si unicamente el EndLeg tiene energia y la otra no tiene para asi quitarle la carga
+    public void OnlyEndLegHaveEnergy(){
+        if(this.EndLeg == null) return;
+        //Preguntamos si EndLeg tiene energia
+        if(this.EndLeg.hasEnergy()){
+            //Preguntamos si la ID de EndLeg es igual la primera pata del CustomShape
+            if(ID.isSameID(this.EndLeg.getID(), this.shape.getLeg1().getID())){
+                //Si es asi preguntamos si EndLeg tiene Energia Y si la segunda pata NO tiene energia
+                if(this.EndLeg.hasEnergy() && !(this.shape.getLeg2().hasEnergy())){
+                    //Despues le quitamos la energia a la pata 1
+                    this.shape.getLeg1().removeEnergy();
+                    this.EndLeg.removeEnergy();
+                }
+            } else{
+                if(this.EndLeg.hasEnergy() && !(this.shape.getLeg1().hasEnergy())){
+                    this.shape.getLeg1().removeEnergy();
+                    this.EndLeg.removeEnergy();
+                }
+            }
         }
     }
 

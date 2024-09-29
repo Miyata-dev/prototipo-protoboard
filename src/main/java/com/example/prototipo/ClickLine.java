@@ -74,7 +74,9 @@ public class ClickLine {
 
 
             if(e.getTarget() instanceof Cable cable) {
+                //Buscamos el cable presionado para asi ver despues si el cable pertenece a un elemento del protoboard
                 Cable cablefound = Utils.getCableByID(gridPaneObserver.getCables(), cable);
+                //asignamos los CustomCircles del cable
                 CustomCircle startHandler = cablefound.Getcircles()[0];
                 CustomCircle endHandler = cablefound.Getcircles()[1];
                 if(!startHandler.getID().getIsForGridpane()){
@@ -99,6 +101,7 @@ public class ClickLine {
                         switchs.ChargePass(gridPaneObserver.getCables());
                     }
                     //LED
+                    //Hacemos lo mismo que con el switch
                 } else if(startHandler.getID().getGridName().equals(edgeCases[1]) || endHandler.getID().getGridName().equals(edgeCases[1])){
                     for (LED led : gridPaneObserver.getLeds()) {
                         CustomShape shape = getCustomShapebyUniqueID(shapes, led.getUniqueId());
