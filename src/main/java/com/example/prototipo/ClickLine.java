@@ -66,56 +66,51 @@ public class ClickLine {
         });
 
         root.setOnMouseClicked(e -> {
+            if (e.getTarget() instanceof CustomShape shape){
+                shapes.add(shape);
+            }
             boolean canDelete = basurero.getIsActive();
             if (!canDelete) return;
 
 
             if(e.getTarget() instanceof Cable cable) {
-
-                CustomShape found = getCustomShapebyCable(shapes, cable);
-                if(found != null) {
-                    if(found.getLeg1().getID().getGridName().equals("switchvolt1") || found.getLeg1().getID().getGridName().equals("LedVolt1")){
-                        found.getLeg1().removeEnergy();
-                    } else if(found.getLeg2().getID().getGridName().equals("switchvolt1") || found.getLeg2().getID().getGridName().equals("LedVolt1")){
-                        found.getLeg2().removeEnergy();
-                    }
-                    if(found.getType().equals("Switch")){
-                      for (Switch aSwitch : gridPaneObserver.getSwitches()) {
-                          if(aSwitch.getUniqueId().equals(found.getUniqueID())){
-                              aSwitch.ChargePass(found, gridPaneObserver.getCables());
-                          }
-                      }
-                  } else if(found.getType().equals("LED")){
-                      for (LED led : gridPaneObserver.getLeds()) {
-                          if(led.getUniqueId().equals(found.getUniqueID())){
-                              led.ONorOFF(found);
-                          }
-
-                      }
-                  }
+                Cable cablefound = Utils.getCableByID(gridPaneObserver.getCables(), cable);
+                CustomCircle startHandler = cablefound.Getcircles()[0];
+                CustomCircle endHandler = cablefound.Getcircles()[1];
+                if(!startHandler.getID().getIsForGridpane()){
+                    startHandler.removeEnergy();
                 }
-            }
-//            if(e.getTarget() instanceof Cable cable){
-//                gridPaneObserver.getCables().forEach(cable1 ->{
-//                    if(cable1.getRandomID().equals(cable.getRandomID())){
-//                        if(cable1.getFirstCircle().getID().getGridName().equals("LedVolt1") || cable1.getFirstCircle().getID().getGridName().equals("switchvolt1")){
-//                            cable1.getFirstCircle().removeEnergy();
-//                            Utils.IdentifiedFunction(cable1.getFirstCircle(), cable1.getSecondCircle(), rec, gridPaneObserver.getCables());
-//                        } else if( cable1.getSecondCircle().getID().getGridName().equals("LedVolt1") || cable1.getSecondCircle().getID().getGridName().equals("switchvolt1")){
-//                            cable1.getSecondCircle().removeEnergy();
-//                            Utils.IdentifiedFunction(cable1.getFirstCircle(), cable1.getSecondCircle(), rec, gridPaneObserver.getCables());
-//                        }
-//                    }
-//                });
-//            }
-
-            Utils.deleteCable(e,
+                if (!endHandler.getID().getIsForGridpane()){
+                    endHandler.removeEnergy();
+                }
+                Utils.deleteCable(e,
                 gridPaneObserver,
                 bateria
-            );
+                );
+                String edgeCases[] = {
+                    "switchvolt1",
+                    "LedVolt1"
+                };
+                //Switch
+                //Lo que hacemos es preguntar si el StartHandler o el EndHandler pertenecen a un Switch
+                if(startHandler.getID().getGridName().equals(edgeCases[0]) || endHandler.getID().getGridName().equals(edgeCases[0])){
+                    for (Switch switchs : gridPaneObserver.getSwitches()) {
+                        CustomShape shape = getCustomShapebyUniqueID(shapes, switchs.getUniqueId());
+                        switchs.ChargePass(shape, gridPaneObserver.getCables());
+                    }
+                    //LED
+                } else if(startHandler.getID().getGridName().equals(edgeCases[1]) || endHandler.getID().getGridName().equals(edgeCases[1])){
+                    for (LED led : gridPaneObserver.getLeds()) {
+                        CustomShape shape = getCustomShapebyUniqueID(shapes, led.getUniqueId());
+                        led.ONorOFF(shape);
+                    }
+                }
+            }
 
         });
     }
+
+
     //TODO: aca puede que ocurran los ids duplicados.
     private void LinePressed(AnchorPane root,MouseEvent Event){
         if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) {  //Verifica que empiece solo de los circulos
@@ -276,32 +271,17 @@ public class ClickLine {
 
 
         //Switch
+        //Lo que hacemos es preguntar si el StartHandler o el EndHandler pertenecen a un Switch
         if(StartHandler.getID().getGridName().equals(edgeCases[0]) || EndHandler.getID().getGridName().equals(edgeCases[0])){
             for (Switch switchs : gridPaneObserver.getSwitches()) {
-                System.out.println("hola");
-                if(switchs.getCircles()[0] != null && switchs.getCircles()[0].hasCable()){
-                    System.out.println("no es nulo");
-                    if(switchs.getCircles()[0].getCable().getRandomID().equals(current.getRandomID())){
-                        CustomShape shape= getCustomShapebyUniqueID(shapes, switchs.getUniqueId());
-                        System.out.println("FOUUUUNDNLKSAJDSA");
-                        switchs.ChargePass(shape, gridPaneObserver.getCables());
-                    }
-                } else if (switchs.getCircles()[1] != null && switchs.getCircles()[1].hasCable()){
-                    if(switchs.getCircles()[1].getCable().getRandomID().equals(current.getRandomID())){
-                        CustomShape shape= getCustomShapebyUniqueID(shapes, switchs.getUniqueId());
-                        switchs.ChargePass(shape, gridPaneObserver.getCables());
-                    }
-                }
+                CustomShape shape = getCustomShapebyUniqueID(shapes, switchs.getUniqueId());
+                switchs.ChargePass(shape, gridPaneObserver.getCables());
             }
-
         //LED
         } else if(StartHandler.getID().getGridName().equals(edgeCases[1]) || EndHandler.getID().getGridName().equals(edgeCases[1])){
             for (LED led : gridPaneObserver.getLeds()) {
-                CustomCircle firstleg = led.getCircles()[0];
-                CustomCircle secondleg = led.getCircles()[1];
-                if((firstleg.hasCable() && firstleg.getCable().getRandomID().equals(StartHandler.getCable().getRandomID())) ||(secondleg.hasCable() && secondleg.getCable().getRandomID().equals(StartHandler.getCable().getRandomID()))){
-                    led.ONorOFF((CustomShape) led.getChildren());
-                }
+                CustomShape shape = getCustomShapebyUniqueID(shapes, led.getUniqueId());
+                led.ONorOFF(shape);
             }
         }
 

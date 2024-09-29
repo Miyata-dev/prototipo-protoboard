@@ -6,6 +6,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuadrado
@@ -17,29 +18,35 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
     private ArrayList<Cable> cables;
     private String UniqueId;
     private CustomCircle[] customCircles;
+    private CustomShape shape;
 
 
     public Switch(boolean PasoDeCarga, CustomShape customShape, GridPaneObserver gridPaneObserver, Basurero basurero, AnchorPane root, ArrayList<Cable> cables) {
         super(customShape);
         this.PasoDeCarga = true;
-        this.basurero= basurero;
+        this.basurero = basurero;
         this.gridPaneObserver = gridPaneObserver;
         this.root = root;
-        this.cables= cables;
-        this.UniqueId= customShape.getUniqueID();
+        this.cables = cables;
+        this.UniqueId = customShape.getUniqueID();
         this.customCircles = new CustomCircle[]{customShape.getLeg1(), customShape.getLeg2()};
         this.EndLeg = null;
+        this.shape = customShape;
 
         Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());//Llamamos a la clase Util para poder convertir el Switch en un nodo movible.
         Init(customShape);
         gridPaneObserver.addSwitches(this);
 
+        //Este AtomicBoolean lo que hace es que cada vez que se haga click en el Switch el setisTaken sea siempre false
+        AtomicBoolean LegTaken = new AtomicBoolean(true);
 
         this.setOnMouseClicked(e -> {
-            Utils.makeUndraggableNode(this);
-            customShape.getLeg1().setisTaken(false);
-            customShape.getLeg2().setisTaken(false);
-
+            if(LegTaken.get()){
+                Utils.makeUndraggableNode(this);
+                customShape.getLeg1().setisTaken(false);
+                customShape.getLeg2().setisTaken(false);
+                LegTaken.set(false);
+            }
             //Al darle Click al Switch se cambia el paso de carga y se llama a la funcion correspondiente
             setPasoDeCarga(!getPasoDeCarga());
             this.ChargePass(customShape, cables);
@@ -90,55 +97,74 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
 
     //Este Metodo lo que hace es realizar la funcionalidad del Switch
+//    public void ChargePass(CustomShape customShape, ArrayList<Cable> cables){
+//        DecideEndLeg(customShape);
+//        if(this.EndLeg == null) return;
+//        if(this.PasoDeCarga && customShape.getLeg1().hasCable() && customShape.getLeg2().hasCable()){
+//            if(ID.isSameID(this.EndLeg.getID(), customShape.getLeg2().getID())){
+//                customShape.getLeg2().setState(customShape.getLeg1().getState());
+//                if(ID.isSameID(customShape.getLeg2().getID(), customShape.getLeg2().getCable().getIds()[0])){
+//                    ID id= customShape.getLeg2().getCable().getIds()[1];
+//                    PaintSwitch(id, customShape, customShape.getLeg2(), cables);
+//                } else{
+//                    ID id= customShape.getLeg2().getCable().getIds()[0];
+//                }
+//            }
+//        }
+//    }
+
+
+
     public  void ChargePass(CustomShape customShape, ArrayList<Cable> cables){
         //Llamamos al inicio del metodo si es que tiene una EndLeg
-        DecideEndLeg(customShape);
-        if(getEndLeg() != null){
+//        CustomCircle EndLeg1 = getDecideEndLeg(customShape);
+        if(this.EndLeg == null){
+            DecideEndLeg(this.shape);
             System.out.println("End Leg is" + getEndLeg().getID());
         }
         //Preguntamos si el paso de carga es true o false para asi saber que hacer
-        if(getPasoDeCarga() && customShape.getLeg1().hasCable() && customShape.getLeg2().hasCable()) {
+        if(this.PasoDeCarga && this.shape.getLeg1().hasCable() && this.shape.getLeg2().hasCable()) {
             //Preguntamos si es que el EndLeg tiene la misma id que la pata 2, para asi saber que hay que pintar Y ademas preguntamos
-            if (getEndLeg() != null && ID.isSameID(getEndLeg().getID(), customShape.getLeg2().getID())) {
+            if (this.EndLeg != null && ID.isSameID(this.EndLeg.getID(), this.shape.getLeg2().getID())) {
                 //cambiamos el estado de la pata 2, ya que sabemos que es la pata final y tiene que tener la carga de la otra pata
-                customShape.getLeg2().setState(customShape.getLeg1().getState());
+                this.shape.getLeg2().setState(this.shape.getLeg1().getState());
 
                 //Esta condición compara la ID del CustomCircle es la misma con una de las ID que almacena el Cable.
-                if (ID.isSameID(customShape.getLeg2().getID(), customShape.getLeg2().getCable().getIds()[0])) {
+                if (ID.isSameID(this.shape.getLeg2().getID(), this.shape.getLeg2().getCable().getIds()[0])) {
 
                     //En el caso que son la misma id, Se guarda la contraria ya que no es el mismo
-                    ID id = customShape.getLeg2().getCable().getIds()[1];
-                    PaintSwitch(id, customShape, customShape.getLeg2(), cables);
+                    ID id = this.shape.getLeg2().getCable().getIds()[1];
+                    PaintSwitch(id, this.shape, this.shape.getLeg2(), cables);
                 } else {
                     //En el caso que no sean iguales se hara lo mismo pero llamando a la id Contraria
-                    ID id = customShape.getLeg2().getCable().getIds()[0];
-                    PaintSwitch(id, customShape, customShape.getLeg2(), cables);
+                    ID id = this.shape.getLeg2().getCable().getIds()[0];
+                    PaintSwitch(id, this.shape, this.shape.getLeg2(), cables);
                 }
                 //Aca preguntamos en esta condición es que si la ID del EndLeg es igual a la de la pata 1
-            } else if (getEndLeg() != null && ID.isSameID(getEndLeg().getID(), customShape.getLeg1().getID())) {
+            } else if (this.EndLeg != null && ID.isSameID(this.EndLeg.getID(), this.shape.getLeg1().getID())) {
                 //Y se realiza lo mismo que se hizo anterior mente pero con la otra pata
-                customShape.getLeg1().setState(customShape.getLeg2().getState());
-                if (ID.isSameID(customShape.getLeg1().getID(), customShape.getLeg1().getCable().getIds()[0])) {
-                    ID id = customShape.getLeg1().getCable().getIds()[1];
-                    PaintSwitch(id, customShape, customShape.getLeg1(), cables);
+                this.shape.getLeg1().setState(this.shape.getLeg2().getState());
+                if (ID.isSameID(this.shape.getLeg1().getID(), this.shape.getLeg1().getCable().getIds()[0])) {
+                    ID id = this.shape.getLeg1().getCable().getIds()[1];
+                    PaintSwitch(id, this.shape, this.shape.getLeg1(), cables);
                 } else {
-                    ID id = customShape.getLeg1().getCable().getIds()[0];
-                    PaintSwitch(id, customShape, customShape.getLeg1(), cables);
+                    ID id = this.shape.getLeg1().getCable().getIds()[0];
+                    PaintSwitch(id, this.shape, this.shape.getLeg1(), cables);
                 }
             }
         } else{
             //Cuando el paso de energia es False y preguntamos si es que existe el EndLeg
-            if (getEndLeg() != null && customShape.getLeg1().hasCable() && customShape.getLeg2().hasCable()){
+            if (this.EndLeg != null && this.shape.getLeg1().hasCable() && this.shape.getLeg2().hasCable()){
                 //Queremos que cuando sea falso despintar entonces preguntamos si las dos patas tienen energia y su cable correspondiente
-                if(customShape.getLeg1().hasEnergy() && customShape.getLeg2().hasEnergy() && customShape.getLeg1().hasCable() && customShape.getLeg2().hasCable()){
+                if(this.shape.getLeg1().hasEnergy() && this.shape.getLeg2().hasEnergy() && this.shape.getLeg1().hasCable() && this.shape.getLeg2().hasCable()){
                     //Pregutamos si el estado que tienen son los mismos
-                    if(customShape.getLeg1().getState() == customShape.getLeg2().getState()){
+                    if(this.shape.getLeg1().getState() == this.shape.getLeg2().getState()){
                         //Despues preguntamos por el EndLeg
-                        if(ID.isSameID(getEndLeg().getCable().getIds()[0], EndLeg.getID())){
+                        if(ID.isSameID(this.EndLeg.getCable().getIds()[0], this.EndLeg.getID())){
                             //Encontramos la id que no es perteneciente al Switch
-                            UnPaintSwitch(EndLeg.getCable().getIds()[1], customShape, getEndLeg() );
+                            UnPaintSwitch(this.EndLeg.getCable().getIds()[1], this.shape, this.EndLeg );
                         } else{
-                            UnPaintSwitch(EndLeg.getCable().getIds()[0], customShape, getEndLeg() );
+                            UnPaintSwitch(this.EndLeg.getCable().getIds()[0], this.shape, this.EndLeg );
                         }
                     } //NO sucede nada cuando los estados de las patas son distintas
                 }
@@ -187,15 +213,25 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
 
 
+//    public CustomCircle getDecideEndLeg(CustomShape customShape){
+//        if(customShape.getLeg1().hasCable() && !(customShape.getLeg2().hasCable())){
+//            return customShape.getLeg2();
+//        } else if( customShape.getLeg2().hasCable() && !(customShape.getLeg1().hasCable())){
+//            return customShape.getLeg1();
+//        } else {
+//            return null;
+//        }
+//    }
+
+
     //Este metodo lo que realiza es decidir la pata a la cual sabremos hacia donde se quitara la energía
     public void DecideEndLeg(CustomShape customShape){
         if(customShape.getLeg1().hasCable() && !(customShape.getLeg2().hasCable())){
-            SetEndLeg(customShape.getLeg2());
-        } else if ( customShape.getLeg2().hasCable() && !(customShape.getLeg1().hasCable())){
-            SetEndLeg(customShape.getLeg1());
+            this.EndLeg = customShape.getLeg2();
+        } else if( customShape.getLeg2().hasCable() && !(customShape.getLeg1().hasCable())){
+            this.EndLeg = customShape.getLeg1();
         }
     }
-
 
 
     public  void setPasoDeCarga(boolean state){

@@ -3,8 +3,8 @@ package com.example.prototipo;
 import javafx.scene.Group;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LED extends Group {
     public  boolean state;  //false -> apagado      true-> encendido
@@ -29,12 +29,18 @@ public class LED extends Group {
         init(customShape);
         gridPaneObserver.addLeds(this);
 
+
+        //Este AtomicBoolean lo que hace es que cada vez que se haga click en el LED el setisTaken sea siempre false
+        AtomicBoolean LegTaken = new AtomicBoolean(true);
+
         this.setOnMouseClicked(e -> {
             //Al momento de soltar el LED se pueden crear Cables
-            customShape.getLeg1().setisTaken(false);
-            customShape.getLeg2().setisTaken(false);
-            Utils.makeUndraggableNode(this);
-
+            if(LegTaken.get()){
+                Utils.makeUndraggableNode(this);
+                customShape.getLeg1().setisTaken(false);
+                customShape.getLeg2().setisTaken(false);
+                LegTaken.set(false);
+            }
             //fuciona las dos ids de las patas y crea una ID a partir de las 2.
 
             System.out.println("pata 1: " + customShape.getLeg1().getID().getGeneratedID());

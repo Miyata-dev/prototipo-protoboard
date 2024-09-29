@@ -18,7 +18,7 @@ public class GridPaneObserver {
         this.secondGridPaneVolt = secondGridPaneVolt;
     }
 
-    //setters
+    //Setters, adds y removes de elementos del Protoboard
     public void setCables(ArrayList<Cable> cables) {
         this.cables = cables;
     }
