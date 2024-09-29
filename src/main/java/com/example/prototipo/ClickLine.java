@@ -94,6 +94,8 @@ public class ClickLine {
                     "switchvolt1",
                     "LedVolt1"
                 };
+                //al eliminar un cable, el paso de energía es defectuoso, por ello se llama esta función que se asegura de que esté bn.
+                gridPaneObserver.getCables().forEach(n -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
                 //Switch
                 //Lo que hacemos es preguntar si el StartHandler o el EndHandler pertenecen a un Switch
                 if(startHandler.getID().getGridName().equals(edgeCases[0]) || endHandler.getID().getGridName().equals(edgeCases[0])){
