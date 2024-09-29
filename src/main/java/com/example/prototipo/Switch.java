@@ -55,11 +55,15 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
 
             if (basurero.getIsActive()) {
+
+
+
                 //Llamamos al metodo para eliminar los cables que pueden pertenecer al Switch y despues borrar este mismo
                 basurero.EliminateElements(customShape, e, root, gridPaneObserver, this);
                 root.getChildren().remove(this);
             }
         });
+
     }
 
     //Este metodo crea las patas del LED de manera ordenada

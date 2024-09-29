@@ -33,6 +33,26 @@ public class Bateria {
         NegativePole.setFill(Color.BLUE);
     }
 
+    public void setNegativePole(int state){
+        if (state == 0) {
+            this.NegativePole.setState(state);
+            this.NegativePole.setFill(Color.GRAY);
+        }
+        if(state == -1){
+            this.NegativePole.setState(state);
+            this.NegativePole.setFill(Color.BLUE);
+        }
+    }
+    public void setPositive(int state){
+        if (state == 0) {
+            this.PositivePole.setState(state);
+            this.PositivePole.setFill(Color.GRAY);
+        }
+        if(state == 1){
+            this.PositivePole.setState(state);
+            this.PositivePole.setFill(Color.ORANGE);
+        }
+    }
     public ImageView getImage() {
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(100);

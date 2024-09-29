@@ -232,23 +232,16 @@ public class Utils {
 
     public static void unPaintCircles(GridPaneObserver gridPaneObserver, ID id, boolean ignoreVoltCables) {
         ArrayList<CustomCircle> circles = getColumnOfCustomCircles(gridPaneObserver, id);
-
-        Integer tipoDeCarga = circles.get(0).getState();
-
         if (hasVoltCable(circles) && ignoreVoltCables) return;
-//        if (HasOtherEnergySource(circles)) return;
-
         gridPaneObserver.removeColumn(circles);
         circles.forEach(CustomCircle::removeEnergy);
     }
 
-//    public static boolean HasOtherEnergySource(ArrayList<CustomCircle> circles){
-//
-//    }
 
 
     public static void unPaintCirclesVolt(GridPaneObserver grid, ID id) {
         ArrayList<CustomCircle> circles = getRowOfCustomCircles(grid, id);
+        grid.removeColumn(circles);
         circles.forEach(CustomCircle::removeEnergy);
     }
 

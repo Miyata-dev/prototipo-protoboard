@@ -17,9 +17,6 @@ public class MainController {
     public GridPane MatrizCarga2;
     public GridPane MatrizCarga1;
     public AnchorPane parent;
-
-    public int state = -1; //tiene q ser estado local de cada matriz de alimentación.
-
     public GridPaneTrailController matrizCirculosUnoController;
     public GridPaneTrailController matrizCirculosDosController;
     public GridPaneController matrizCargaUno;
@@ -34,7 +31,7 @@ public class MainController {
     boolean isProtoboardActive = false;
     public ArrayList<LED> leds = new ArrayList<>();
     public ArrayList<Switch> switches = new ArrayList<>();
-
+    public Bateria bateria;
     public void initialize() {
         //nombres para cada grid para los identificadores unicos.
         String[] gridNames = {
@@ -56,7 +53,7 @@ public class MainController {
             new GridPaneController(MatrizCarga2, gridNames[3])
         );
 
-        Bateria bateria = new Bateria(new Image(getClass().getResource("bateria.png").toExternalForm()));
+        this.bateria = new Bateria(new Image(getClass().getResource("bateria.png").toExternalForm()));
 
         parent.getChildren().addAll(basurero, basurero.getLabel(), bateria.getImage(), bateria.getPolos());
         ClickLine clickLineMatrizUno = new ClickLine(
@@ -89,9 +86,13 @@ public class MainController {
 
         if (!gridPaneObserver.getIsEnergyActivated()) {
             System.out.println("apagando Protoboard");
+            this.bateria.setNegativePole(0);
+            this.bateria.setPositive(0);
             gridPaneObserver.deactivateGridObserver();
         } else {
             System.out.println("prendiendo protoboard");
+            this.bateria.setNegativePole(-1);
+            this.bateria.setPositive(1);
             gridPaneObserver.activateGridObserver();
         }
         System.out.println("state: " + gridPaneObserver.getIsEnergyActivated());
