@@ -96,7 +96,7 @@ public class ClickLine {
                 if(startHandler.getID().getGridName().equals(edgeCases[0]) || endHandler.getID().getGridName().equals(edgeCases[0])){
                     for (Switch switchs : gridPaneObserver.getSwitches()) {
                         CustomShape shape = getCustomShapebyUniqueID(shapes, switchs.getUniqueId());
-                        switchs.ChargePass(shape, gridPaneObserver.getCables());
+                        switchs.ChargePass(gridPaneObserver.getCables());
                     }
                     //LED
                 } else if(startHandler.getID().getGridName().equals(edgeCases[1]) || endHandler.getID().getGridName().equals(edgeCases[1])){
@@ -275,7 +275,7 @@ public class ClickLine {
         if(StartHandler.getID().getGridName().equals(edgeCases[0]) || EndHandler.getID().getGridName().equals(edgeCases[0])){
             for (Switch switchs : gridPaneObserver.getSwitches()) {
                 CustomShape shape = getCustomShapebyUniqueID(shapes, switchs.getUniqueId());
-                switchs.ChargePass(shape, gridPaneObserver.getCables());
+                switchs.ChargePass(gridPaneObserver.getCables());
             }
         //LED
         } else if(StartHandler.getID().getGridName().equals(edgeCases[1]) || EndHandler.getID().getGridName().equals(edgeCases[1])){

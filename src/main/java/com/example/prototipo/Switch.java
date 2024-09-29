@@ -49,7 +49,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
             }
             //Al darle Click al Switch se cambia el paso de carga y se llama a la funcion correspondiente
             setPasoDeCarga(!getPasoDeCarga());
-            this.ChargePass(customShape, cables);
+            this.ChargePass(cables);
 
             System.out.println("El Paso de Carga es: " + getPasoDeCarga() + " de " + this.getUniqueId());
 
@@ -115,7 +115,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
 
 
-    public  void ChargePass(CustomShape customShape, ArrayList<Cable> cables){
+    public  void ChargePass(ArrayList<Cable> cables){
         //Llamamos al inicio del metodo si es que tiene una EndLeg
 //        CustomCircle EndLeg1 = getDecideEndLeg(customShape);
         if(this.EndLeg == null){
