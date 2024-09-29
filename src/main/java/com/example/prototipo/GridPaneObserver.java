@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class GridPaneObserver {
     private GridPaneTrailController firstGridPane;
     private GridPaneTrailController secondGridPane;
-    private GridPaneController firsGridPaneVolt;
+    private GridPaneController firstGridPaneVolt;
     private GridPaneController secondGridPaneVolt;
     private ArrayList<Cable> cables = new ArrayList<>();
     private ArrayList<LED> leds = new ArrayList<>();
@@ -17,7 +17,7 @@ public class GridPaneObserver {
     public GridPaneObserver(GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, GridPaneController firsGridPaneVolt, GridPaneController secondGridPaneVolt) {
         this.firstGridPane = firstGridPane;
         this.secondGridPane = secondGridPane;
-        this.firsGridPaneVolt = firsGridPaneVolt;
+        this.firstGridPaneVolt = firstGridPaneVolt;
         this.secondGridPaneVolt = secondGridPaneVolt;
     }
 
@@ -158,7 +158,7 @@ public class GridPaneObserver {
     //getters
     public GridPaneController[] getGridPaneTrails() {
         return new GridPaneController[] {
-                firsGridPaneVolt,
+                firstGridPaneVolt,
                 secondGridPaneVolt
         };
     }
@@ -179,7 +179,7 @@ public class GridPaneObserver {
     }
 
     public GridPaneController getFirsGridPaneVolt() {
-        return firsGridPaneVolt;
+        return firstGridPaneVolt;
     }
 
     public GridPaneController getSecondGridPaneVolt() {
