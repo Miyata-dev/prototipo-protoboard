@@ -101,6 +101,8 @@ public class ClickLine {
                 gridPaneObserver,
                 bateria
             );
+            //al eliminar un cable, el paso de energía es defectuoso, por ello se llama esta función que se asegura de que esté bn.
+            gridPaneObserver.getCables().forEach(cable -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
 
         });
     }
