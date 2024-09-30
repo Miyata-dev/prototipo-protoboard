@@ -178,8 +178,6 @@ public class Utils {
                 paintCirclesCollection(gridPaneObserver, firstColumn, state);
                 paintCirclesCollection(gridPaneObserver, secondColumn, state);
 
-                //gridPaneObserver.addColumn(firstColumn, state);
-                //gridPaneObserver.addColumn(secondColumn, state);
             });
         }
 
@@ -218,14 +216,7 @@ public class Utils {
         if (!id.getIsForGridpane()) return;
         if (!Arrays.asList(validGridNames).contains(id.getGridName())) return;
         ArrayList<CustomCircle> circles = getRowOfCustomCircles(gridPaneObserver, id);
-
         paintCirclesCollection(gridPaneObserver, circles, state);
-
-        /*
-        circles.forEach(circle -> {
-            circle.setState(state);
-        });
-        */
         //se registra la columna afectada.
         gridPaneObserver.addColumn(circles, state);
     }

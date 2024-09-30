@@ -80,10 +80,10 @@ public class ClickLine {
                 //asignamos los CustomCircles del cable
                 CustomCircle startHandler = cablefound.Getcircles()[0];
                 CustomCircle endHandler = cablefound.Getcircles()[1];
-                if(!startHandler.getID().getIsForGridpane()){
+                if(!startHandler.getID().getIsForGridpane() && !startHandler.getID().getGridName().equals("BateryVolt")){
                     startHandler.removeEnergy();
                 }
-                if (!endHandler.getID().getIsForGridpane()){
+                if (!endHandler.getID().getIsForGridpane() && !endHandler.getID().getGridName().equals("BateryVolt")){
                     endHandler.removeEnergy();
                 }
                 Utils.deleteCable(e,
@@ -227,18 +227,18 @@ public class ClickLine {
             }
         }
         //CASO BATERIA-GRIDPANEVOLT OR GRIDPANEVOLT-BATERIA
-        if (Arrays.asList(gridNames).contains(StartHandler.getID().getGridName()) && Arrays.asList(edgeCases).contains(EndHandler.getID().getGridName())){ //PREGUNTA SI DE DONDE EMPIEZA ES UN GRIDPANEVOLT Y SI TERMINA ES LA BATERIA (GRIDPANEVOLT --> BATERIA)
+        if (Arrays.asList(gridNames).contains(StartHandler.getID().getGridName()) && EndHandler.getID().getGridName().equals(edgeCases[2])){ //PREGUNTA SI DE DONDE EMPIEZA ES UN GRIDPANEVOLT Y SI TERMINA ES LA BATERIA (GRIDPANEVOLT --> BATERIA)
             String startCircleGridnamevolt = StartHandler.getID().getGridName();
             if(startCircleGridnamevolt.equals(gridPaneObserver.getFirsGridPaneVolt().getName())){ // PREGUNTA SI DE DONDE EMPIEZA ES EL PRIMER GRIDPANEVOLT (GRIDPANEVOLT-->BATERIA)
                 Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
-            }  else{ // PARA EL CASO DEL SEGUNDO GRIDPANEVOLT (GRIDPANEVOLT --> BATERIA)
+            }  else if(startCircleGridnamevolt.equals(gridPaneObserver.getSecondGridPaneVolt().getName())){ // PARA EL CASO DEL SEGUNDO GRIDPANEVOLT (GRIDPANEVOLT --> BATERIA)
                 Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
             }
-        }else if (Arrays.asList(gridNames).contains(EndHandler.getID().getGridName()) && Arrays.asList(edgeCases).contains(StartHandler.getID().getGridName())){ // PREGUNTA SI DE DONDE EMPIEZA ES UNA BATERIA Y SI TERMINA EN UN GRIDPANEVOLT (BATERIA --> GRIDPANEVOLT)
+        }else if (Arrays.asList(gridNames).contains(EndHandler.getID().getGridName()) && StartHandler.getID().getGridName().equals(edgeCases[2]) ){ // PREGUNTA SI DE DONDE EMPIEZA ES UNA BATERIA Y SI TERMINA EN UN GRIDPANEVOLT (BATERIA --> GRIDPANEVOLT)
             String FinalCircleGridnamevolt = EndHandler.getID().getGridName();
             if(FinalCircleGridnamevolt.equals(gridPaneObserver.getFirsGridPaneVolt().getName())){ // BATERIA --> PRIMER GRIDPANEVOLT
                 Utils.paintCirclesVolt(gridPaneObserver,ids[1],StartHandler.getState());
-            }else{ // BATERIA --> SEGUNDO GRIDPANEVOLT
+            }else if(FinalCircleGridnamevolt.equals(gridPaneObserver.getSecondGridPaneVolt().getName())){ // BATERIA --> SEGUNDO GRIDPANEVOLT
                 Utils.paintCirclesVolt(gridPaneObserver,ids[1],StartHandler.getState());
             }
         }
@@ -276,8 +276,6 @@ public class ClickLine {
         }
 
         UpdateState(StartHandler, EndHandler, current);
-
-
 
         //Switch
         //Lo que hacemos es preguntar si el StartHandler o el EndHandler pertenecen a un Switch

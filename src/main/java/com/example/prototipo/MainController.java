@@ -1,7 +1,9 @@
 package com.example.prototipo;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -81,19 +83,23 @@ public class MainController {
         parent.getChildren().add(switch1);
     }
 
-    public void toggleProtoBoard() {
+    public void toggleProtoBoard(ActionEvent a) {
         gridPaneObserver.toggleObserver();
+
+        Button button = (Button) a.getSource();
 
         if (!gridPaneObserver.getIsEnergyActivated()) {
             System.out.println("apagando Protoboard");
             this.bateria.setNegativePole(0);
             this.bateria.setPositive(0);
             gridPaneObserver.deactivateGridObserver();
+            button.setText("Encender protoboard");
         } else {
             System.out.println("prendiendo protoboard");
             this.bateria.setNegativePole(-1);
             this.bateria.setPositive(1);
             gridPaneObserver.activateGridObserver();
+            button.setText("Apagar protoboard");
         }
         System.out.println("state: " + gridPaneObserver.getIsEnergyActivated());
     }
