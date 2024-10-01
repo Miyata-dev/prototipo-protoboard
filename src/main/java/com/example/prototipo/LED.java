@@ -113,6 +113,18 @@ public class LED extends Group {
             LedFunction();
         }
     }
+    //actualiza el estado del led que se le pase por parametro, es estático puesto que este método sirve para
+    //hacer el led reactivo a los cambios de energía del protoboard.
+    public static void updateState(LED led, boolean state) {
+        System.out.println("leg uno: " + led.getLeg1() + " leg dos: " + led.getLeg2());
+        //mira que el led tenga conectado cables.
+        if (!led.getLeg1().hasCable() || !led.getLeg2().hasCable()) return;
+        //si uno de los cables no tiene energía no se cambia el estado.
+        if (led.getLeg1().getCable().getTipodecarga() == 0 || led.getLeg2().getCable().getTipodecarga() == 0) return;
+
+        led.SetState(state);
+        led.LedFunction(); //este método reacciona al estado que se le pase.
+    }
 
     public void SetState(boolean states){
         this.state = states;
@@ -126,6 +138,12 @@ public class LED extends Group {
     }
     public CustomCircle[] getCircles() {
         return legs;
+    }
+    public CustomCircle getLeg1() {
+        return this.getCustomShape().getLeg1();
+    }
+    public CustomCircle getLeg2() {
+        return this.getCustomShape().getLeg2();
     }
     public String getUniqueId(){return this.UniqueId;}
 }
