@@ -47,6 +47,10 @@ public class Cable extends Line {
         this.tipodecarga = tipodecarga;
     }
 
+    public void removeTipodecarga() {
+        this.tipodecarga = 0;
+    }
+
     public void setIds(ID[] ids) {
         this.ids = ids;
     }

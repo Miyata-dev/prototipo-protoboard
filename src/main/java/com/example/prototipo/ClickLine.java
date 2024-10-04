@@ -95,7 +95,9 @@ public class ClickLine {
                     "LedVolt1"
                 };
                 //al eliminar un cable, el paso de energía es defectuoso, por ello se llama esta función que se asegura de que esté bn.
-                gridPaneObserver.getCables().forEach(n -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
+                if (gridPaneObserver.getIsEnergyActivated()) {
+                    gridPaneObserver.getCables().forEach(n -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
+                }
                 //Switch
                 //Lo que hacemos es preguntar si el StartHandler o el EndHandler pertenecen a un Switch
                 if(startHandler.getID().getGridName().equals(edgeCases[0]) || endHandler.getID().getGridName().equals(edgeCases[0])){
@@ -186,13 +188,21 @@ public class ClickLine {
         CurrentLine.setIds(ids);
         //si no se hace esto, los cables de la coleccion terminan siendo iguales al ultimo cable.
         Cable current = new Cable();
+
         current.setIds(CurrentLine.getIds());
-        current.setTipodecarga(CurrentLine.getTipodecarga());
         current.setRandomID(CurrentLine.getRandomID());
         current.SetCircles(new CustomCircle[] {
                 StartHandler,
                 EndHandler
         });
+
+        //si los 2 circulos en el cable no tienen
+        if (current.getFirstCircle().getState() == 0 && current.getSecondCircle().getState() == 0) {
+            current.removeTipodecarga();
+        } else { //si uno de los circulos tiene energía, entonces no se le quita la energía.
+            current.setTipodecarga(CurrentLine.getTipodecarga());
+        }
+
         StartHandler.setCable(current);
         EndHandler.setCable(current);
         //cables.add(current);
@@ -201,6 +211,10 @@ public class ClickLine {
         gridPaneObserver.getCables().forEach(cable -> {
             System.out.println("tipo de energia: " + cable.getTipodecarga());
         });
+
+        System.out.println("circle one energy: " + current.getFirstCircle().getState());
+        System.out.println("circle two energy: " + current.getSecondCircle().getState());
+        System.out.println("type of energy: " + current.getTipodecarga());
 
         if (rec != null && !StartHandler.getID().getIsForGridpane()) {
             System.out.println("pata 1 del led");

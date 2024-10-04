@@ -48,12 +48,14 @@ public class LED extends Group {
             System.out.println("pata 1: " + customShape.getLeg1().getID().getGeneratedID());
             System.out.println("pata 2: " + customShape.getLeg2().getID().getGeneratedID());
 
-            if (basurero.getIsActive()) {
+            if (basurero.getIsActive() && customShape.getHasMoved()) {
                 //Llamamos al metodo del Basurero para borrar los cables que pueden tener el LED y despues borrar este mismo
                 basurero.EliminateElements(customShape, e, root, gridPaneObserver, this);
                 gridPaneObserver.removeLeds(this);
                 root.getChildren().remove(this);
             }
+
+            if (basurero.getIsActive()) customShape.setHasMoved(true);
         });
     }
 

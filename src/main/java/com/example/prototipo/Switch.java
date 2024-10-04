@@ -53,8 +53,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
             System.out.println("El Paso de Carga es: " + getPasoDeCarga() + " de " + this.getUniqueId());
 
-
-            if (basurero.getIsActive()) {
+            if (basurero.getIsActive() && customShape.getHasMoved()) {
                 if(this.PasoDeCarga){
                     this.PasoDeCarga = false;
                     this.ChargePass(this.gridPaneObserver.getCables());
@@ -64,6 +63,8 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
                 this.gridPaneObserver.removeSwitches(this);
                 root.getChildren().remove(this);
             }
+
+            if (basurero.getIsActive()) customShape.setHasMoved(true);
         });
 
     }
