@@ -112,8 +112,8 @@ public class GridPaneObserver {
                 GridPaneObserver.addColumn(gridPane, circles, secondCol.getState());
             }
 
-            System.out.println("firstCol: " + firstCol.getID().getIndexColumn() + " secondCol: " + secondCol.getID().getIndexColumn());
-            System.out.println("firstCol.getState() = " + firstCol.getState() + " secondCol.getState() = " + secondCol.getState());
+//            System.out.println("firstCol: " + firstCol.getID().getIndexColumn() + " secondCol: " + secondCol.getID().getIndexColumn());
+//            System.out.println("firstCol.getState() = " + firstCol.getState() + " secondCol.getState() = " + secondCol.getState());
         });
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
         gridPane.getEnergizedColumns().forEach(pair -> {

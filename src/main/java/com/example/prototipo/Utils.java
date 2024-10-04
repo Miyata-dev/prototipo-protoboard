@@ -31,12 +31,15 @@ public class Utils {
     public static void paintCirclesCollection(GridPaneObserver gridPaneObserver, ArrayList<CustomCircle> column, int state) {
         if (!gridPaneObserver.getIsEnergyActivated()) return;
 
-        System.out.println("is activated?: " + gridPaneObserver.getIsEnergyActivated());
-        column.forEach(circle -> {
-            circle.setState(state);
-        });
+//        System.out.println("is activated?: " + gridPaneObserver.getIsEnergyActivated());
+//        column.forEach(circle -> {
+//            circle.setState(state);
+//        });
+
         //se registra en el gridPane la columna afectada.
         gridPaneObserver.addColumn(column, state);
+        gridPaneObserver.getCables().forEach(n -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
+
     }
     //este método agrega un círclo a la colección que recibe como parámetro solo si son de la misma columna.
     private static void addCirclesFromSameColumn(ID id, Iterator<Node> fristCircleToPaint, ArrayList<CustomCircle> circles) {
@@ -162,11 +165,11 @@ public class Utils {
             //se obtiene una colección de cables que están conectados entre si.
             ArrayList<Cable> connectedCables = getConnectedCables(cables, cableFound, true);
 
-            connectedCables.forEach(el -> {
-                System.out.println(el.getIds()[0].getGeneratedID());
-                System.out.println(el.getIds()[1].getGeneratedID());
-                System.out.println("------------");
-            });
+//            connectedCables.forEach(el -> {
+//                System.out.println(el.getIds()[0].getGeneratedID());
+//                System.out.println(el.getIds()[1].getGeneratedID());
+//                System.out.println("------------");
+//            });
 
             connectedCables.forEach(element -> {
                 ID elementOneID = element.getIds()[1];
@@ -184,11 +187,11 @@ public class Utils {
         if (Arrays.asList(validGridNames).contains(indexTwo.getGridName())) {
             ArrayList<Cable> connectedCables = getConnectedCables(cables, cableFound, true);
 
-            connectedCables.forEach(el -> {
-                System.out.println(el.getIds()[0].getGeneratedID());
-                System.out.println(el.getIds()[1].getGeneratedID());
-                System.out.println("------------");
-            });
+//            connectedCables.forEach(el -> {
+//                System.out.println(el.getIds()[0].getGeneratedID());
+//                System.out.println(el.getIds()[1].getGeneratedID());
+//                System.out.println("------------");
+//            });
 
             connectedCables.forEach(element -> {
                 ID elementOneID = element.getIds()[0];
@@ -218,7 +221,6 @@ public class Utils {
         ArrayList<CustomCircle> circles = getRowOfCustomCircles(gridPaneObserver, id);
         paintCirclesCollection(gridPaneObserver, circles, state);
         //se registra la columna afectada.
-        gridPaneObserver.addColumn(circles, state);
     }
 
     public static void unPaintCircles(GridPaneObserver gridPaneObserver, ID id, boolean ignoreVoltCables) {
@@ -227,8 +229,6 @@ public class Utils {
         gridPaneObserver.removeColumn(circles);
         circles.forEach(CustomCircle::removeEnergy);
     }
-
-
 
     public static void unPaintCirclesVolt(GridPaneObserver grid, ID id) {
         ArrayList<CustomCircle> circles = getRowOfCustomCircles(grid, id);
@@ -538,7 +538,6 @@ public class Utils {
                 ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
                 return;
             }
-
             for (Cable cable : connectedCables) {
                 unPaintCircles(gridPaneObserver, cable.getIds()[1], false);
                 unPaintCircles(gridPaneObserver, cable.getIds()[0], false);
