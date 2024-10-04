@@ -45,6 +45,7 @@ public class GridPaneObserver {
     public void removeColumn(ArrayList<CustomCircle> column) {
         //se elimina la columna que tenga la misma id que la columna que se pasa por parametro.
         energizedColumns.removeIf(el -> {
+            System.out.println("EL: "+ el);
             ID elementID = el.getSecondValue().get(0).getID(); //
             ID columnID = column.get(0).getID(); //se obtiene la id de la columna a partir
 
@@ -60,11 +61,13 @@ public class GridPaneObserver {
 
             col.forEach(CustomCircle::removeEnergy);
         });
+        leds.forEach(led -> LED.updateState(led, false)); //apaga todos los leds del protoboard
     }
 
     //activa la energía TODO: refactorizar este chancherío.
     public void activateGridObserver() {
         cables.forEach(cable -> GridPaneObserver.refreshProtoboard(this));
+        leds.forEach(led -> LED.updateState(led, true)); //enciende todos los leds del protoboard.
     }
 
     public static void refreshProtoboard(GridPaneObserver gridPane) {
@@ -111,9 +114,6 @@ public class GridPaneObserver {
                 //Utils.paintCirclesCollection(this, circles, secondCol.getState());
                 GridPaneObserver.addColumn(gridPane, circles, secondCol.getState());
             }
-
-//            System.out.println("firstCol: " + firstCol.getID().getIndexColumn() + " secondCol: " + secondCol.getID().getIndexColumn());
-//            System.out.println("firstCol.getState() = " + firstCol.getState() + " secondCol.getState() = " + secondCol.getState());
         });
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
         gridPane.getEnergizedColumns().forEach(pair -> {
