@@ -165,13 +165,17 @@ public class LED extends Group {
         led.LedFunction(); //este método reacciona al estado que se le pase.
     }
 
+    //Este metodo lo que hace es actualizar al led segun si se quiere que este o no activado, Esta hecho especificamente para cuando se active y desactive el Protoboard
     public static void UpdatingState(LED led, boolean state){
+        //si el state pasado es false entonces le quitamos la energia a las patas
         if(!state){
             led.shape.getLeg1().removeEnergy();
             led.shape.getLeg2().removeEnergy();
         } else{
+            // cuando es true buscamos el estado de las patas a base del cable
             led.GetStateofLegFromCable();
         }
+        // y llamamos al metodo para ver si se enciende o no se enciende el led graficamente
         led.ONorOFF();
     }
 

@@ -123,6 +123,7 @@ public class GridPaneObserver {
 
             col.forEach(cir -> cir.setState(energy));
         });
+        //Actualizamos todos los elementos del GridPaneObserver despues de pintar todos los circulos.
         RefreshElements(gridPane.getSwitches(), gridPane.getLeds(), gridPane.getCables());
     }
 
