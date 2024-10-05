@@ -61,13 +61,14 @@ public class GridPaneObserver {
 
             col.forEach(CustomCircle::removeEnergy);
         });
-        leds.forEach(led -> LED.updateState(led, false)); //apaga todos los leds del protoboard
+
+        leds.forEach(led -> LED.UpdatingState(led, false)); //apaga todos los leds del protoboard
     }
 
     //activa la energía TODO: refactorizar este chancherío.
     public void activateGridObserver() {
         cables.forEach(cable -> GridPaneObserver.refreshProtoboard(this));
-        leds.forEach(led -> LED.updateState(led, true)); //enciende todos los leds del protoboard.
+        leds.forEach(led -> LED.UpdatingState(led, true)); //enciende todos los leds del protoboard.
     }
 
     public static void refreshProtoboard(GridPaneObserver gridPane) {
