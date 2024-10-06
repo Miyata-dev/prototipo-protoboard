@@ -7,7 +7,7 @@ import javafx.scene.shape.Circle;
 public class CustomCircle extends Circle {
     private int state = 0;// state = 0 -> Neutro    state=1 -> Positivo,    state=-1 ->Negativo
     private ID id;
-    private boolean isTaken;//Este atributo revisa si el circulo tiene un cable
+    private boolean isTaken, isBurned;//Este atributo revisa si el circulo tiene un cable, si está quemado no se va a pintar.
     private Cable Wire;
 
     public CustomCircle(int radius, ID id, int state) {
@@ -16,6 +16,7 @@ public class CustomCircle extends Circle {
         this.state = state;
         this.setId("customCircle");
         this.isTaken = false;
+        this.isBurned = false; //solo se quema una columna si es que
     }
 
     public void setCable(Cable cable){
@@ -38,6 +39,7 @@ public class CustomCircle extends Circle {
     //TODO implementar energia para los leds.
     public void setState(int state) {
         if (state == 0) return; //si el estado es igual a 0, entonces no se toma encuanta como un vaLor valido.
+        if (isBurned) return; //si está quemado no se pasa el estado.
 
         this.state = state;
 
