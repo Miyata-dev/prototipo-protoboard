@@ -98,6 +98,6 @@ public class ID {
 
     @Override
     public String toString() {
-        return "Row: " + this.getIndexRow() + " Column: " + this.getIndexColumn();
+        return "Row: " + this.getIndexRow() + " Column: " + this.getIndexColumn() + " Grid: " + this.getGridName();
     }
 }

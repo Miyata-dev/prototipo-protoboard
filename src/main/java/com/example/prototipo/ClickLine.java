@@ -64,6 +64,17 @@ public class ClickLine {
 
             if(!(e.getTarget() instanceof CustomCircle)) return;
             RealizeLine(e);
+            //al eliminar un cable, el paso de energía es defectuoso, por ello se llama esta función que se asegura de que esté bn.
+            if (gridPaneObserver.getIsEnergyActivated()) {
+                gridPaneObserver.getCables().forEach(n -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
+            }
+
+            System.out.println("-----------------");
+            gridPaneObserver.getCables().forEach(cable -> {
+                System.out.println("tipo de carga: " + cable.getTipodecarga() + " first id: " + cable.getFirstCircle().getID() + " second id: " + cable.getSecondCircle().getID());
+            });
+            System.out.println("------------------------------");
+
         });
 
         root.setOnMouseClicked(e -> {
@@ -212,14 +223,6 @@ public class ClickLine {
         EndHandler.setCable(current);
         //cables.add(current);
         gridPaneObserver.addCable(current);
-
-        gridPaneObserver.getCables().forEach(cable -> {
-            System.out.println("tipo de energia: " + cable.getTipodecarga());
-        });
-
-        System.out.println("circle one energy: " + current.getFirstCircle().getState());
-        System.out.println("circle two energy: " + current.getSecondCircle().getState());
-        System.out.println("type of energy: " + current.getTipodecarga());
 
         if (rec != null && !StartHandler.getID().getIsForGridpane()) {
             System.out.println("pata 1 del led");

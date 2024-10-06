@@ -17,18 +17,6 @@ public class Utils {
     public Utils() {
     }
 
-    //esto va en utils.
-    public static int numberOfCables(ArrayList<CustomCircle> column) {
-        int numberOfCables = 0;
-
-        for (CustomCircle c : column) {
-            if (c.hasCable()) {
-                numberOfCables++;
-            }
-        }
-        return numberOfCables;
-    }
-
     //pinta una columna dependiendo del estado, este método se creó para mejorar la legibilidad del código.
     public static void paintCirclesCollection(GridPaneObserver gridPaneObserver, ArrayList<CustomCircle> column, int state) {
         if (!gridPaneObserver.getIsEnergyActivated()) return;
@@ -267,87 +255,6 @@ public class Utils {
         circles.forEach(CustomCircle::removeEnergy);
     }
 
-    //retorna null si no encuentra el nodo.
-    public static CustomCircle getCustomCircleByID(GridPaneObserver gridPaneObserver, ID id) {
-        CustomCircle foundCircle = null;
-
-        Iterator<Node> firstGridTraiIterator = gridPaneObserver.getFirstGridPaneTrail().getGridPane().getChildren().iterator();
-        Iterator<Node> secondGridTraiIterator = gridPaneObserver.getSecondGridPaneTrail().getGridPane().getChildren().iterator();
-        Iterator<Node> firstVoltIterator = gridPaneObserver.getFirsGridPaneVolt().getGridPane().getChildren().iterator();
-        Iterator<Node> secondVoltIterator = gridPaneObserver.getSecondGridPaneVolt().getGridPane().getChildren().iterator();
-        while(firstGridTraiIterator.hasNext()) {
-            Node circle = (Node) firstGridTraiIterator.next();
-            String targetID = circle.getId();
-            ID temporaryID = new ID(targetID);
-            CustomCircle targetedCircle = (CustomCircle) circle;
-
-            if (ID.isSameID(temporaryID, id) && temporaryID.getGridName().equals(id.getGridName())) {
-                foundCircle = targetedCircle;
-            }
-        }
-
-        while(secondGridTraiIterator.hasNext()) {
-            Node circle = (Node) secondGridTraiIterator.next();
-            String targetID = circle.getId();
-            ID temporaryID = new ID(targetID);
-            CustomCircle targetedCircle = (CustomCircle) circle;
-
-            if (ID.isSameID(temporaryID, id) && temporaryID.getGridName().equals(id.getGridName())) {
-                foundCircle = targetedCircle;
-            }
-        }
-
-        while(firstVoltIterator.hasNext()) {
-            Node circle = (Node) firstVoltIterator.next();
-            String targetID = circle.getId();
-            ID temporaryID = new ID(targetID);
-            CustomCircle targetedCircle = (CustomCircle) circle;
-
-            if (ID.isSameID(temporaryID, id) && temporaryID.getGridName().equals(id.getGridName())) {
-                foundCircle = targetedCircle;
-            }
-        }
-
-        while(secondVoltIterator.hasNext()) {
-            Node circle = (Node) secondVoltIterator.next();
-            String targetID = circle.getId();
-            ID temporaryID = new ID(targetID);
-            CustomCircle targetedCircle = (CustomCircle) circle;
-
-            if (ID.isSameID(temporaryID, id) && temporaryID.getGridName().equals(id.getGridName())) {
-                foundCircle = targetedCircle;
-            }
-        }
-
-        return foundCircle;
-    }
-
-    //devuelve el numero de cables que estan conectadas a un volt que tiene una columna.
-    public static int numberOfCablesConnectedToVolts(GridPaneObserver gridPaneObserver, ID id) {
-        int count = 0;
-        ArrayList<CustomCircle> circles = getColumnOfCustomCircles(gridPaneObserver, id);
-
-        for (CustomCircle circle : circles) {
-            if (circle.hasCable()) {
-                count++;
-            }
-        }
-
-        return count;
-    }
-
-    public static int getIndexOfCable(ArrayList<Cable> cables, Cable previousCable) {
-        int initialIndex = -1; //si no encuentra el indice, se deja en -1
-
-        for (int i = 0; i < cables.size(); i++) {
-            if (Cable.compareCables(cables.get(i), previousCable)) {
-                initialIndex = i;
-            }
-        }
-
-        return initialIndex;
-    }
-
     public static boolean isConnectedToBatery(ArrayList<CustomCircle> circles) {
         for (CustomCircle circle : circles) {
             if (circle.hasCable() && circle.getCable().isConnectedToBatery()) {
@@ -407,40 +314,6 @@ public class Utils {
         }
 
         return new ArrayList<>(connectedCablesHashSet);
-    }
-
-    public static GridPane getGridpaneByGridName(String GridName, GridPaneTrailController gridOne, GridPaneTrailController gridTwo) {
-        String[] validGridNames = {
-                "gridTrail1",
-                "gridTrail2"
-        };
-
-        GridPane gridpane = null;
-
-        if (GridName.equals(validGridNames[0])) {
-            gridpane = gridOne.getGridPane();
-        } else if (GridName.equals(validGridNames[1])) {
-            gridpane = gridTwo.getGridPane();
-        }
-
-        return gridpane;
-    }
-    //obtiene el gridpane de acuerdo al nombre que se asigno, este metodo recibe los GridPaneTarilController.
-    public static GridPane getGridpaneByGridName(String GridName, GridPaneController gridVoltOne, GridPaneController gridVoltTwo) {
-        String[] voltNames = {
-                "gridVolt1",
-                "gridVolt2"
-        };
-
-        GridPane gridpane = null;
-
-        if (GridName.equals(voltNames[0])) {
-            gridpane = gridVoltOne.getGridPane();
-        } else if (GridName.equals(voltNames[1])) {
-            gridpane = gridVoltTwo.getGridPane();
-        }
-
-        return gridpane;
     }
 
     public static Cable getCableByID(ArrayList<Cable> cables, Cable cableToFind) {
@@ -670,10 +543,6 @@ public class Utils {
         gridPaneObserver.removeCable(cableFound);
         ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
     }
-    //como los switches y los leds extienden rectangle, entonces solo aceptan clases que extiendan rectangle.
-    public static void deleteNode(Group nodeToDelete) {
-        ((AnchorPane) nodeToDelete.getParent()).getChildren().remove(nodeToDelete);
-    }
 
     public static void ResetStateCustomCircles(Cable pressedCable) {
 
@@ -725,8 +594,4 @@ public class Utils {
 
 
     public static String createRandomID() {return UUID.randomUUID().toString();}
-    //fuciona 2 ids para poder usar 2 ids como una ID
-    public static String mergeIDs(String[] IDs) {
-        return IDs[0] + "-" + IDs[1];
-    }
 }

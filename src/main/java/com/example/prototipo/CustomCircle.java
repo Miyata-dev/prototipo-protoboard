@@ -39,7 +39,11 @@ public class CustomCircle extends Circle {
     //TODO implementar energia para los leds.
     public void setState(int state) {
         if (state == 0) return; //si el estado es igual a 0, entonces no se toma encuanta como un vaLor valido.
-        if (isBurned) return; //si está quemado no se pasa el estado.
+        //si el círculo está quemado sin importar la carga que tenga se coloca como negro pq está qyemado.
+        if (isBurned) {
+            this.setFill(Color.BLACK);
+            return;
+        }; //si está quemado no se pasa el estado.
 
         this.state = state;
 
@@ -51,6 +55,8 @@ public class CustomCircle extends Circle {
     }
 
     public void removeEnergy() {
+        if (isBurned) return;
+
         this.state = 0;
         this.setFill(Color.GRAY);
     }
@@ -61,6 +67,16 @@ public class CustomCircle extends Circle {
     }
     public ID getID() {
         return this.id;
+    }
+
+    public boolean getIsBurned(){
+        return this.isBurned;
+    }
+
+    public void setBurned() {
+        this.removeEnergy();
+        this.setisTaken(true);
+        this.isBurned = true;
     }
 
     @Override

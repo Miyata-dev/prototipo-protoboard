@@ -1,6 +1,7 @@
 package com.example.prototipo;
 
 import java.util.ArrayList;
+import java.util.function.BiConsumer;
 
 public class GridPaneObserver {
     private GridPaneTrailController firstGridPane;
@@ -149,6 +150,7 @@ public class GridPaneObserver {
         });
         //Actualizamos todos los elementos del GridPaneObserver despues de pintar todos los circulos.
         RefreshElements(gridPane.getSwitches(), gridPane.getLeds(), gridPane.getCables());
+        refreshCables(gridPane);
     }
 
     //Este metodo lo que hace es actualizar todos los elementos del protoboard(Switch y LED) cuando al momento de Encender y apagar se llamen su funcionalidad correspondiente
@@ -165,17 +167,30 @@ public class GridPaneObserver {
 
     //Este metodo lo que hace es refrescar todos los tipo de carga
     public static void refreshCables(GridPaneObserver gridPaneObserver){
-        for( Cable cable: gridPaneObserver.getCables()){
+
+        for(Cable cable: gridPaneObserver.getCables()){
             if(cable.getFirstCircle().getState() == cable.getSecondCircle().getState()){
                 cable.setTipodecarga(cable.getFirstCircle().getState());
             } else {
+                CustomCircle firstCircle = cable.getFirstCircle();
+                CustomCircle secondCircle = cable.getSecondCircle();
                 //Cuando los estados de los circulos son distintos, deberia suceder el cortocircuito
-                if(cable.getFirstCircle().hasEnergy() && cable.getSecondCircle().hasEnergy()){
-                    //AQUI
+                if(firstCircle.hasEnergy() && secondCircle.hasEnergy()){ //TODO implementar el corto circuito en todos los casos.
+                    //se mira que los círculos tengan carga distinta.
+                    System.out.println("corto circuito");
+
+                    ArrayList<CustomCircle> firstColumn = Utils.getColumnOfCustomCircles(gridPaneObserver, firstCircle.getID());
+                    ArrayList<CustomCircle> secondColumn = Utils.getColumnOfCustomCircles(gridPaneObserver, secondCircle.getID());
+
+                    //se queman los círculos.
+                    firstColumn.forEach(CustomCircle::setBurned);
+                    secondColumn.forEach(CustomCircle::setBurned);
+
                 }
             }
         }
     }
+
     public void setIsEnergyActivated(boolean isEnergyActivated) {
         this.isEnergyActivated = isEnergyActivated;
     }
