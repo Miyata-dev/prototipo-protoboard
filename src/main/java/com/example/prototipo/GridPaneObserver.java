@@ -163,6 +163,19 @@ public class GridPaneObserver {
         }
     }
 
+    //Este metodo lo que hace es refrescar todos los tipo de carga
+    public static void refreshCables(GridPaneObserver gridPaneObserver){
+        for( Cable cable: gridPaneObserver.getCables()){
+            if(cable.getFirstCircle().getState() == cable.getSecondCircle().getState()){
+                cable.setTipodecarga(cable.getFirstCircle().getState());
+            } else {
+                //Cuando los estados de los circulos son distintos, deberia suceder el cortocircuito
+                if(cable.getFirstCircle().hasEnergy() && cable.getSecondCircle().hasEnergy()){
+                    //AQUI
+                }
+            }
+        }
+    }
     public void setIsEnergyActivated(boolean isEnergyActivated) {
         this.isEnergyActivated = isEnergyActivated;
     }

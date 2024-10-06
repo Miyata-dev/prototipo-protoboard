@@ -124,6 +124,11 @@ public class LED extends Group {
                 SetState(false );
                 LedFunction();
             }
+        } else {
+            if(this.GetState()){
+                SetState(false);
+                LedFunction();
+            }
         }
     }
 
