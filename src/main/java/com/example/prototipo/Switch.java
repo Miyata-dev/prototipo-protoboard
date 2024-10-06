@@ -171,9 +171,9 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
                         //Despues preguntamos por el EndLeg
                         if(ID.isSameID(this.EndLeg.getCable().getIds()[0], this.EndLeg.getID())){
                             //Encontramos la id que no es perteneciente al Switch
-                            UnPaintSwitch(this.EndLeg.getCable().getIds()[1], this.shape, this.EndLeg );
+                            UnPaintSwitch(this.EndLeg.getCable().getSecondCircle(), this.shape, this.EndLeg );
                         } else{
-                            UnPaintSwitch(this.EndLeg.getCable().getIds()[0], this.shape, this.EndLeg );
+                            UnPaintSwitch(this.EndLeg.getCable().getFirstCircle(), this.shape, this.EndLeg );
                         }
                     } //NO sucede nada cuando los estados de las patas son distintas
                 }
@@ -202,14 +202,16 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
 
     //Este metodo lo que hace es Despintar la columna correspondiente que deberia despintarse
-    public  void UnPaintSwitch(ID id, CustomShape customShape, CustomCircle Leg) {
+    public  void UnPaintSwitch(CustomCircle circle, CustomShape customShape, CustomCircle Leg) {
+        ID id = circle.getID();
+
         //si la id dada es del primer gridpane, entonces...
         if ("gridTrail1".equals(id.getGridName())) {
             // Llamamos a la función de Despintar
-            Utils.unPaintCircles(this.gridPaneObserver, id, true);
+            Utils.unPaintCircles(this.gridPaneObserver, circle, true);
             Leg.removeEnergy();
         } else if ("gridTrail2".equals(id.getGridName())) {
-            Utils.unPaintCircles(this.gridPaneObserver, id, true);
+            Utils.unPaintCircles(this.gridPaneObserver, circle, true);
             Leg.removeEnergy();
         } else if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
             // En el caso que el nombre del Grid no es de ninguno de los Gridpane entonces debe ser de Automaticamente del una bateria, LED o Switch.

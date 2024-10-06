@@ -12,7 +12,19 @@ public class GridPaneObserver {
     private ArrayList<Switch> switches = new ArrayList<>();
     //guarda las columnas con energía y la energía que tienen.
     private ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energizedColumns = new ArrayList<>();
+    //aqui se guardan las columnas quemadas.
+    private ArrayList<ArrayList<CustomCircle>> burnedCircles = new ArrayList<>();
     private boolean isEnergyActivated = true; //al principio, el protoboard no está apagado.
+
+    private String[] elementIDsPrefix = {
+        "LedVolt",
+        "switchvolt"
+    };
+
+    private String[] gridNamePrefixes = {
+        "gridTrail",
+        "gridVolt"
+    };
 
     public GridPaneObserver(GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, GridPaneController firstGridPaneVolt, GridPaneController secondGridPaneVolt) {
         this.firstGridPane = firstGridPane;
@@ -35,6 +47,10 @@ public class GridPaneObserver {
     }
     //TODO ver donde ejecutar este método. este método agrega una columna con su respectiva energía.
     public void addColumn(ArrayList<CustomCircle> column, Integer energy) {
+        //si la columna está vacía, no se agrega a la colección
+        if (column.isEmpty()) return;
+
+        System.out.println("nro de elementos: " + column.size());
         energizedColumns.add(new Pair<>(energy, column));
     }
 
@@ -44,13 +60,21 @@ public class GridPaneObserver {
 
     public void removeColumn(ArrayList<CustomCircle> column) {
         //se elimina la columna que tenga la misma id que la columna que se pasa por parametro.
+        energizedColumns.forEach(el -> {
+            System.out.println("second value: " + el.getSecondValue());
+        });
+
         energizedColumns.removeIf(el -> {
-            System.out.println("EL: "+ el);
+            System.out.println("EL: "+ el.getSecondValue());
             ID elementID = el.getSecondValue().get(0).getID(); //
             ID columnID = column.get(0).getID(); //se obtiene la id de la columna a partir
 
             return elementID.equals(columnID);
         });
+    }
+
+    public void addBurnedColumn(ArrayList<CustomCircle> column) {
+        burnedCircles.add(column);
     }
 
     //quita temporalmente la energía (desactiva la energía) //TODO REVISAR.
@@ -220,5 +244,25 @@ public class GridPaneObserver {
 
     public boolean getIsEnergyActivated() {
         return isEnergyActivated;
+    }
+
+    public String[] getElementIDsPrefix() {
+        return elementIDsPrefix;
+    }
+
+    public String getLedIdPrefix() {
+        return elementIDsPrefix[0];
+    }
+
+    public String getSwitchIdPrefix() {
+        return elementIDsPrefix[1];
+    }
+
+    public String getGridTrailPrefix() {
+        return gridNamePrefixes[0];
+    }
+
+    public String getGridVoltPrefix() {
+        return gridNamePrefixes[1];
     }
 }
