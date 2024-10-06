@@ -177,6 +177,8 @@ public class LED extends Group {
             led.shape.getLeg1().removeEnergy();
             led.shape.getLeg2().removeEnergy();
         } else{
+            //si el led tiene menos de 2 cables se sale.
+            if (!led.shape.getLeg1().hasCable() || !led.shape.getLeg2().hasCable()) return;
             // cuando es true buscamos el estado de las patas a base del cable
             led.GetStateofLegFromCable();
         }
