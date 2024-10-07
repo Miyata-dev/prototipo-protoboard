@@ -111,10 +111,10 @@ public class GridPaneObserver {
             CustomCircle secondCol = cable.getSecondCircle();
 
             //se obtiene las columnas de los circulos que tiene el cables
-            ArrayList<CustomCircle> firstCircles = Utils.getColumnOfCustomCircles(gridPane, firstCol.getID());
-            ArrayList<CustomCircle> secondCircles = Utils.getColumnOfCustomCircles(gridPane, secondCol.getID());
+            ArrayList<CustomCircle> firstCircles = getCircles(gridPane,firstCol.getID());
+            ArrayList<CustomCircle> secondCircles = getCircles(gridPane,secondCol.getID());
 
-            //como los circulos conectados al cable no se actualiza bn su estado, se actualiza manualmente a travez de
+            //como los circulos conectados al cable no se actualiza bn su estado, se actualiza manualmente a traves de
             //las columnas del gridpane.
             firstCircles.forEach(el -> {
                 if (el.equals(firstCol)) {
@@ -130,13 +130,13 @@ public class GridPaneObserver {
             //en caso de tener una columna sin energía conectada a otra CON ENERGÍA, esta se registra en el
             //registro de pares <Energía, Columna> (esto es lo que ocurre en los 2 condicionales)
             if (firstCol.getState() != 0 && secondCol.getState() == 0) {
-                ArrayList<CustomCircle> circles = Utils.getColumnOfCustomCircles(gridPane, secondCol.getID());
+                ArrayList<CustomCircle> circles = getCircles(gridPane,secondCol.getID());
                 //Utils.paintCirclesCollection(this, circles, firstCol.getState());
                 GridPaneObserver.addColumn(gridPane, circles, firstCol.getState());
             }
 
             if (secondCol.getState() != 0 && firstCol.getState() == 0) {
-                ArrayList<CustomCircle> circles = Utils.getColumnOfCustomCircles(gridPane, firstCol.getID());
+                ArrayList<CustomCircle> circles = getCircles(gridPane,firstCol.getID());
                 //Utils.paintCirclesCollection(this, circles, secondCol.getState());
                 GridPaneObserver.addColumn(gridPane, circles, secondCol.getState());
             }
@@ -153,6 +153,18 @@ public class GridPaneObserver {
         refreshCables(gridPane);
     }
 
+    public static ArrayList<CustomCircle> getCircles(GridPaneObserver gridPaneObserver, ID id){
+        ArrayList<CustomCircle> circles = new ArrayList<>();
+        if(id.getGridName().contains(gridPaneObserver.getGridVoltPrefix())){
+            circles = Utils.getRowOfCustomCircles(gridPaneObserver, id);
+            return circles;
+        }else if(id.getGridName().contains(gridPaneObserver.getGridTrailPrefix())){
+            circles = Utils.getColumnOfCustomCircles(gridPaneObserver, id);
+            return circles;
+        }
+        return circles;
+    }
+
     //Este metodo lo que hace es actualizar todos los elementos del protoboard(Switch y LED) cuando al momento de Encender y apagar se llamen su funcionalidad correspondiente
     public static void RefreshElements(ArrayList<Switch> switches, ArrayList<LED> leds, ArrayList<Cable> cables){
         //Actualizamos todos los switchs
@@ -163,7 +175,8 @@ public class GridPaneObserver {
         for (LED led : leds) {
             led.ONorOFF();
         }
-    }
+    }//Actualizamos todos los switchs
+
 
     //Este metodo lo que hace es refrescar todos los tipo de carga
     public static void refreshCables(GridPaneObserver gridPaneObserver){

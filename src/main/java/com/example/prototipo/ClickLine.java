@@ -128,7 +128,6 @@ public class ClickLine {
         });
     }
 
-
     //TODO: aca puede que ocurran los ids duplicados.
     private void LinePressed(AnchorPane root,MouseEvent Event){
         if(Event.getPickResult().getIntersectedNode() instanceof CustomCircle) {  //Verifica que empiece solo de los circulos

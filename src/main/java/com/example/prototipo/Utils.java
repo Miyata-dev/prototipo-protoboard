@@ -463,8 +463,6 @@ public class Utils {
             }
 
         } else if (secondID.getGridName().equals("BateryVolt")) {
-            GridPane gridpane = null;
-
             //obtiene el indice del circulo que pertenece a la bateria, si es 1, devuelve el polo positivo, si es 2 pasa el polo negativo.
             int index = secondID.getIndexRow();
             CustomCircle circle = bateria.getPoloByIndexRow(index);
