@@ -9,6 +9,8 @@ public class CustomCircle extends Circle {
     private ID id;
     private boolean isTaken, isBurned;//Este atributo revisa si el circulo tiene un cable, si está quemado no se va a pintar.
     private Cable Wire;
+    private double x;
+    private double y;
 
     public CustomCircle(int radius, ID id, int state) {
         super((double) radius);
