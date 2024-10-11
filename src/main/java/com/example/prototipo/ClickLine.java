@@ -223,6 +223,7 @@ public class ClickLine {
         //cables.add(current);
         gridPaneObserver.addCable(current);
 
+        /*
         if (rec != null && !StartHandler.getID().getIsForGridpane()) {
             System.out.println("pata 1 del led");
             if (StartHandler.getID().getIndexRow() == 1) {
@@ -246,23 +247,7 @@ public class ClickLine {
                 rec.setLeg2(EndHandler);
                 System.out.println(EndHandler.getCable());
             }
-        }
-        //CASO BATERIA-GRIDPANEVOLT OR GRIDPANEVOLT-BATERIA
-//        if (Arrays.asList(gridNames).contains(StartHandler.getID().getGridName()) && EndHandler.getID().getGridName().equals(edgeCases[2])){ //PREGUNTA SI DE DONDE EMPIEZA ES UN GRIDPANEVOLT Y SI TERMINA ES LA BATERIA (GRIDPANEVOLT --> BATERIA)
-//            String startCircleGridnamevolt = StartHandler.getID().getGridName();
-//            if(startCircleGridnamevolt.equals(gridPaneObserver.getFirsGridPaneVolt().getName())){ // PREGUNTA SI DE DONDE EMPIEZA ES EL PRIMER GRIDPANEVOLT (GRIDPANEVOLT-->BATERIA)
-//                Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
-//            }  else if(startCircleGridnamevolt.equals(gridPaneObserver.getSecondGridPaneVolt().getName())){ // PARA EL CASO DEL SEGUNDO GRIDPANEVOLT (GRIDPANEVOLT --> BATERIA)
-//                Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
-//            }
-//        }else if (Arrays.asList(gridNames).contains(EndHandler.getID().getGridName()) && StartHandler.getID().getGridName().equals(edgeCases[2]) ){ // PREGUNTA SI DE DONDE EMPIEZA ES UNA BATERIA Y SI TERMINA EN UN GRIDPANEVOLT (BATERIA --> GRIDPANEVOLT)
-//            String FinalCircleGridnamevolt = EndHandler.getID().getGridName();
-//            if(FinalCircleGridnamevolt.equals(gridPaneObserver.getFirsGridPaneVolt().getName())){ // BATERIA --> PRIMER GRIDPANEVOLT
-//                Utils.paintCirclesVolt(gridPaneObserver,ids[1],StartHandler.getState());
-//            }else if(FinalCircleGridnamevolt.equals(gridPaneObserver.getSecondGridPaneVolt().getName())){ // BATERIA --> SEGUNDO GRIDPANEVOLT
-//                Utils.paintCirclesVolt(gridPaneObserver,ids[1],StartHandler.getState());
-//            }
-//        }
+        } */
 
         if ( ( !StartHandler.hasEnergy() && StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane() ) || (EndHandler.getID().getGridName()).equals(edgeCases[2]) ) { // PREGUNTA SI DONDE EMPIEZA Y DONDE TERMINA ES PARA UN GRIDPANE, ADEMAS DE PREGUNTAR SI DONDE TERMINA ES UNA BATERIA
             String startCircleGridName = StartHandler.getID().getGridName();

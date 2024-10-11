@@ -83,6 +83,12 @@ public class MainController {
         parent.getChildren().add(switch1);
     }
 
+    public void createChip() {
+        CustomShape customShape = new CustomShape(720, 554, 50, 30, Color.RED, "CHIP");
+        Chip chip = new Chip(customShape);
+        parent.getChildren().add(chip);
+    }
+
     public void toggleProtoBoard(ActionEvent a) {
         gridPaneObserver.toggleObserver();
 

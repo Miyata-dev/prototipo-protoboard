@@ -102,26 +102,6 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         this.getChildren().add(customShape.getLeg2());
     }
 
-
-    //Este Metodo lo que hace es realizar la funcionalidad del Switch
-//    public void ChargePass(CustomShape customShape, ArrayList<Cable> cables){
-//        DecideEndLeg(customShape);
-//        if(this.EndLeg == null) return;
-//        if(this.PasoDeCarga && customShape.getLeg1().hasCable() && customShape.getLeg2().hasCable()){
-//            if(ID.isSameID(this.EndLeg.getID(), customShape.getLeg2().getID())){
-//                customShape.getLeg2().setState(customShape.getLeg1().getState());
-//                if(ID.isSameID(customShape.getLeg2().getID(), customShape.getLeg2().getCable().getIds()[0])){
-//                    ID id= customShape.getLeg2().getCable().getIds()[1];
-//                    PaintSwitch(id, customShape, customShape.getLeg2(), cables);
-//                } else{
-//                    ID id= customShape.getLeg2().getCable().getIds()[0];
-//                }
-//            }
-//        }
-//    }
-
-
-
     public  void ChargePass(ArrayList<Cable> cables){
         //Llamamos al inicio del metodo si es que tiene una EndLeg
 
