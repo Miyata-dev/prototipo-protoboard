@@ -82,9 +82,9 @@ public class MainController {
         Switch switch1 = new Switch(true, customShape, gridPaneObserver, basurero, parent, cables);
         parent.getChildren().add(switch1);
     }
-
+    //in mainController
     public void createChip() {
-        CustomShape customShape = new CustomShape(720, 554, 50, 30, Color.BLACK, "CHIP");
+        CustomShape customShape = new CustomShape(720, 554, 70, 22, Color.RED, "CHIP");
         Chip chip = new Chip(customShape);
         parent.getChildren().add(chip);
     }
