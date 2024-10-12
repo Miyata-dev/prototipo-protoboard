@@ -29,7 +29,7 @@ public class Chip extends Group {
         int initailX = 4;
         int initialY = 7;
         int incrementX = 18; //12 -> 18 6 * 4
-        int heightDifference = 29; //para poder crear las patas de artriba y abajo se tiene la diferencia de altura.
+        double heightDifference = customShape.getHeight() + 7; //para poder crear las patas de artriba y abajo se tiene la diferencia de altura.
 
         //primer for para crear las patas de arriba
         for (int i = 0; i < 4; i++) {
@@ -43,7 +43,7 @@ public class Chip extends Group {
         System.out.println("width: " + customShape.getWidth() + ", height: " + customShape.getHeight());
     }
 
-    public void crearPatita(CustomShape customShape, double xOffSet, double yOffSet) {
+    private void crearPatita(CustomShape customShape, double xOffSet, double yOffSet) {
         double widthX = customShape.getX();
         double heightY = customShape.getY();
 

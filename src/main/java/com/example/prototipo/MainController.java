@@ -84,7 +84,7 @@ public class MainController {
     }
     //in mainController
     public void createChip() {
-        CustomShape customShape = new CustomShape(720, 554, 70, 22, Color.RED, "CHIP");
+        CustomShape customShape = new CustomShape(720, 554, 70, 34, Color.BLACK, "CHIP");
         Chip chip = new Chip(customShape);
         parent.getChildren().add(chip);
     }
