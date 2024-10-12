@@ -6,6 +6,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.BiConsumer;
 
 public class GridPaneObserver {

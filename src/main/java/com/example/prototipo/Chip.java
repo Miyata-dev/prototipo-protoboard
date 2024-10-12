@@ -1,6 +1,7 @@
 package com.example.prototipo;
 
 import javafx.scene.Group;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 public class Chip extends Group {
     private ArrayList<Rectangle> patitas = new ArrayList<>();
 
-    public Chip(CustomShape customShape) {
+    public Chip(CustomShape customShape, Basurero basurero, AnchorPane root) {
         super(customShape);
         addPatitas(customShape);
         this.setTranslateY(-100);
@@ -17,6 +18,11 @@ public class Chip extends Group {
 
         this.setOnMouseClicked(e -> {
             Utils.makeUndraggableNode(this);
+
+            if (basurero.getIsActive()) {
+                root.getChildren().remove(this);
+            }
+
         });
 
         patitas.forEach(pata -> {
