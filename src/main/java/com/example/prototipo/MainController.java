@@ -52,7 +52,8 @@ public class MainController {
             new GridPaneTrailController(Matriz1,gridNames[0]),
             new GridPaneTrailController(Matriz2,gridNames[1]),
             new GridPaneController(MatrizCarga1, gridNames[2]),
-            new GridPaneController(MatrizCarga2, gridNames[3])
+            new GridPaneController(MatrizCarga2, gridNames[3]),
+            parent
         );
 
         this.bateria = new Bateria(new Image(getClass().getResource("bateria.png").toExternalForm()));

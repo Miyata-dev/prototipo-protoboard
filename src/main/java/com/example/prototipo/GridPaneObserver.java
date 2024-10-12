@@ -34,11 +34,12 @@ public class GridPaneObserver {
         "gridVolt"
     };
 
-    public GridPaneObserver(GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, GridPaneController firstGridPaneVolt, GridPaneController secondGridPaneVolt) {
+    public GridPaneObserver(GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, GridPaneController firstGridPaneVolt, GridPaneController secondGridPaneVolt, AnchorPane root) {
         this.firstGridPane = firstGridPane;
         this.secondGridPane = secondGridPane;
         this.firstGridPaneVolt = firstGridPaneVolt;
         this.secondGridPaneVolt = secondGridPaneVolt;
+        this.root = root;
         this.CirclesCollection = createCirclesCollection(this);
     }
 
@@ -216,7 +217,7 @@ public class GridPaneObserver {
         ArrayList<CustomCircle> CircleCollection = new ArrayList<>();
         for(Node node: gridPaneObserver.getRoot().getChildren() ){
             if(node instanceof CustomCircle customCircle){
-                if(customCircle.getID().getGridName().equals("gridTrail1") || customCircle.getID().getGridName().equals("gridTrail2")){
+                if(customCircle.getID().getGridName().contains(gridPaneObserver.getGridTrailPrefix()) || customCircle.getID().getGridName().contains(gridPaneObserver.getGridTrailPrefix())){
                     CircleCollection.add(customCircle);
                 }
             }
