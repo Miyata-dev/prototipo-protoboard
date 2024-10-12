@@ -590,6 +590,27 @@ public class Utils {
         node.setOnMouseDragged(null);
     }
 
+    public static int findNearestNumber(int[] arr, int num) {
+        if (arr == null || arr.length == 0) {
+            //throw new IllegalArgumentException("El arreglo no puede estar vacío.");
+            System.out.println("El arreglo no puede estar vacío.");
+            return 0;
+        }
+
+        int closestNumber = arr[0];
+        int difference = Math.abs(closestNumber - num);
+
+        for (int i = 1; i < arr.length; i++) {
+            int currentDifference = Math.abs(arr[i] - num);
+
+            if (currentDifference < difference) {
+                difference = currentDifference;
+                closestNumber = arr[i];
+            }
+        }
+
+        return closestNumber;
+    }
 
     public static String createRandomID() {return UUID.randomUUID().toString();}
 }

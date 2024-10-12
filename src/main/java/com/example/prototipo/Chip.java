@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class Chip extends Group {
     private ArrayList<Rectangle> patitas = new ArrayList<>();
+    private ArrayList<Double[]> coords = new ArrayList<>(); // coords.get(0) = x, coords.get(1) = y
 
     public Chip(CustomShape customShape, Basurero basurero, AnchorPane root) {
         super(customShape);
@@ -25,9 +26,16 @@ public class Chip extends Group {
 
         });
 
-        patitas.forEach(pata -> {
+        this.setOnMouseReleased(e -> {
+            patitas.forEach(pata -> {
+                //se obtienen las coordenadas de la pata que se mira del chip para agregarlas a la colección de coordenadas.
+                double coordX = pata.localToScene(pata.getX(), pata.getY()).getX();
+                double coordY = pata.localToScene(pata.getX(), pata.getY()).getY();
 
-            System.out.println(pata.getBoundsInParent());
+                Double[] currentCoords = new Double[]{ coordX, coordY };
+
+                coords.add(currentCoords);
+            });
         });
     }
 
