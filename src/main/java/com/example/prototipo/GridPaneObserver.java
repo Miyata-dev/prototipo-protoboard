@@ -1,5 +1,10 @@
 package com.example.prototipo;
 
+import javafx.scene.Node;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Circle;
+
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 
@@ -16,6 +21,8 @@ public class GridPaneObserver {
     //aqui se guardan las columnas quemadas.
     private ArrayList<ArrayList<CustomCircle>> burnedCircles = new ArrayList<>();
     private boolean isEnergyActivated = true; //al principio, el protoboard no está apagado.
+    private ArrayList<CustomCircle> CirclesCollection = new ArrayList<>();
+    private AnchorPane root;
 
     private String[] elementIDsPrefix = {
         "LedVolt",
@@ -32,6 +39,7 @@ public class GridPaneObserver {
         this.secondGridPane = secondGridPane;
         this.firstGridPaneVolt = firstGridPaneVolt;
         this.secondGridPaneVolt = secondGridPaneVolt;
+        this.CirclesCollection = createCirclesCollection(this);
     }
 
     //Setters, adds y removes de elementos del Protoboard
@@ -204,6 +212,26 @@ public class GridPaneObserver {
         }
     }
 
+    public ArrayList<CustomCircle> createCirclesCollection(GridPaneObserver gridPaneObserver){
+        ArrayList<CustomCircle> CircleCollection = new ArrayList<>();
+        for(Node node: gridPaneObserver.getRoot().getChildren() ){
+            if(node instanceof CustomCircle customCircle){
+                if(customCircle.getID().getGridName().equals("gridTrail1") || customCircle.getID().getGridName().equals("gridTrail2")){
+                    CircleCollection.add(customCircle);
+                }
+            }
+        }
+        return CircleCollection;
+    }
+
+    public void setRoot(AnchorPane root){
+        this.root = root;
+    }
+
+    public void setCirclesCollection(ArrayList<CustomCircle> circlesCollection){
+        this.CirclesCollection = circlesCollection;
+    }
+
     public void setIsEnergyActivated(boolean isEnergyActivated) {
         this.isEnergyActivated = isEnergyActivated;
     }
@@ -305,5 +333,13 @@ public class GridPaneObserver {
 
     public String getGridVoltPrefix() {
         return gridNamePrefixes[1];
+    }
+
+    public AnchorPane getRoot(){
+        return this.root;
+    }
+
+    public ArrayList<CustomCircle> getCirclesCollection(){
+        return this.CirclesCollection;
     }
 }
