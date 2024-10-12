@@ -59,7 +59,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
                     this.ChargePass(this.gridPaneObserver.getCables());
                 }
                 //Llamamos al metodo para eliminar los cables que pueden pertenecer al Switch y despues borrar este mismo
-                basurero.EliminateElements(customShape, e, root, this.gridPaneObserver, this);
+                basurero.EliminateElements(customShape, e, root, this.gridPaneObserver);
                 this.gridPaneObserver.removeSwitches(this);
                 root.getChildren().remove(this);
             }

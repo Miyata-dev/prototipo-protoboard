@@ -52,7 +52,7 @@ public class Basurero extends ImageView {
     }
 
     //Este metodo lo que hace es eliminar los cables que pertenecen a un elemento del Protoboard que puede ser un Switch o un LED
-    public void EliminateElements(CustomShape customShape, MouseEvent e, AnchorPane root, GridPaneObserver gridPaneObserver, Switch switch1){
+    public void EliminateElements(CustomShape customShape, MouseEvent e, AnchorPane root, GridPaneObserver gridPaneObserver){
         Node node = (Node) e.getTarget();
 
         if (customShape.getLeg2().hasCable()) {
@@ -62,6 +62,8 @@ public class Basurero extends ImageView {
                 Utils.ResetStateCustomCircles(cableToRemove);
                 return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
             });
+            //Despues de eliminar el cable del elemento los eliminamos tambien de la colección del griPaneObserver
+            gridPaneObserver.removeCable(cableToRemove);
         }
         if (customShape.getLeg1().hasCable()) {
             Cable cableToRemove = customShape.getLeg1().getCable();
@@ -70,30 +72,8 @@ public class Basurero extends ImageView {
                 Utils.ResetStateCustomCircles(cableToRemove);
                 return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
             });
-
-        }
-
-    }
-
-    public void EliminateElements(CustomShape customShape, MouseEvent e, AnchorPane root, GridPaneObserver gridPaneObserver, LED led){
-        Node node = (Node) e.getTarget();
-
-        if (customShape.getLeg2().hasCable()) {
-            Cable cableToRemove = customShape.getLeg2().getCable();
-            //Se realiza un eliminacion si el elemento es un cable y ademas las ID son iguales al cable a remover del Elemento Correspondiente
-            root.getChildren().removeIf(element -> {
-                Utils.ResetStateCustomCircles(cableToRemove);
-                return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
-            });
-        }
-        if (customShape.getLeg1().hasCable()) {
-            Cable cableToRemove = customShape.getLeg1().getCable();
-            //Se realiza un eliminacion si el elemento es un cable y ademas las ID son iguales al cable a remover del Elemento Correspondiente
-            root.getChildren().removeIf(element -> {
-                Utils.ResetStateCustomCircles(cableToRemove);
-                return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
-            });
-
+            //Despues de eliminar el cable del elemento los eliminamos tambien de la colección del griPaneObserver
+            gridPaneObserver.removeCable(cableToRemove);
         }
     }
 

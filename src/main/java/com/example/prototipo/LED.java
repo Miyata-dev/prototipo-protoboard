@@ -3,7 +3,6 @@ package com.example.prototipo;
 import javafx.scene.Group;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LED extends Group {
@@ -13,11 +12,16 @@ public class LED extends Group {
     private CustomCircle[] legs;
     private String UniqueId;
     private CustomShape shape;
+    private CustomCircle LegPositive, LegNegative;
+    private boolean isBurned;
 
     public LED(boolean state, CustomShape customShape, Basurero basurero, AnchorPane root, GridPaneObserver gridPaneObserver) {
         super(customShape);
         this.shape = customShape;
         this.state = state;
+        this.LegPositive= customShape.getLeg1();
+        this.LegNegative = customShape.getLeg2();
+        this.isBurned=false;
         this.legs = new CustomCircle[] {
             customShape.getLeg1(),
             customShape.getLeg2()
@@ -50,7 +54,7 @@ public class LED extends Group {
 
             if (basurero.getIsActive() && customShape.getHasMoved()) {
                 //Llamamos al metodo del Basurero para borrar los cables que pueden tener el LED y despues borrar este mismo
-                basurero.EliminateElements(customShape, e, root, gridPaneObserver, this);
+                basurero.EliminateElements(customShape, e, root, gridPaneObserver);
                 gridPaneObserver.removeLeds(this);
                 root.getChildren().remove(this);
             }
@@ -92,12 +96,16 @@ public class LED extends Group {
 
     //Este metodo lo que hace es cambiar el color del LED cuando Cambia su estado
     public void LedFunction() {
-        //false -> apagado      true-> encendido
-        if (GetState()) {
-            //Cuando el LED esta encendido el relleno se mostrara Verde y si esta apagado sera Rojo
-            this.shape.setFill(Color.GREEN);
+        if(this.isBurned){
+            this.shape.setFill(Color.BLACK);
         } else {
-            this.shape.setFill(Color.RED);
+            //false -> apagado      true-> encendido
+            if (GetState()) {
+                //Cuando el LED esta encendido el relleno se mostrara Verde y si esta apagado sera Rojo
+                this.shape.setFill(Color.GREEN);
+            } else {
+                this.shape.setFill(Color.RED);
+            }
         }
     }
 
@@ -111,12 +119,13 @@ public class LED extends Group {
             //Preguntamos si es que las dos patas tienen energia
             if( this.shape.getLeg1().hasEnergy() && this.shape.getLeg2().hasEnergy()){
                 //Vemos si el estado de las 2 patas son distintas entre si
-                if(this.shape.getLeg2().getState() != this.shape.getLeg1().getState()){
+                if(this.shape.getLeg2().getState() == 1 &&  this.shape.getLeg1().getState() == -1){
                     //al ser distintas actualizamos el estado a true que es igual a encendido
                     SetState(true);
                     //Y lo cambiamos para que se vea graficamente
                     LedFunction();
                 } else {
+                    setBurned(true);
                     SetState(false );
                     LedFunction();
                 }
@@ -193,6 +202,9 @@ public class LED extends Group {
         return this.state;
     }
 
+    public void setBurned(boolean state){
+        this.isBurned = true;
+    }
     public CustomShape getCustomShape() {
         return (CustomShape) this.getChildren().get(0);
     }

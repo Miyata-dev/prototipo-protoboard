@@ -7,7 +7,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class ClickLine {
     private Cable CurrentLine;
@@ -27,7 +26,6 @@ public class ClickLine {
         this.gridPaneObserver = gridPaneObserver;
         this.basurero = basurero;
         this.bateria = bateria;
-        //this.cables = cables;
         gridPaneObserver.setCables(cables);
         gridPaneObserver.setLeds(leds);
         gridPaneObserver.setSwitches(switches);
@@ -220,34 +218,8 @@ public class ClickLine {
 
         StartHandler.setCable(current);
         EndHandler.setCable(current);
-        //cables.add(current);
         gridPaneObserver.addCable(current);
 
-        /*
-        if (rec != null && !StartHandler.getID().getIsForGridpane()) {
-            System.out.println("pata 1 del led");
-            if (StartHandler.getID().getIndexRow() == 1) {
-                System.out.println("ID 1");
-                rec.setLeg1(StartHandler);
-                System.out.println(StartHandler.getCable());
-            } else if (StartHandler.getID().getIndexRow() == 2) {
-                System.out.println("ID 2");
-                rec.setLeg2(StartHandler);
-                System.out.println(StartHandler.getCable());
-            }
-
-        } else if (rec != null && !EndHandler.getID().getIsForGridpane()) {
-            System.out.println("pata 2 del led");
-            if (EndHandler.getID().getIndexRow() == 1) {
-                System.out.println("ID 1");
-                rec.setLeg1(EndHandler);
-                System.out.println(EndHandler.getCable());
-            } else if (EndHandler.getID().getIndexRow() == 2) {
-                System.out.println("ID 2");
-                rec.setLeg2(EndHandler);
-                System.out.println(EndHandler.getCable());
-            }
-        } */
 
         if ( ( !StartHandler.hasEnergy() && StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane() ) || (EndHandler.getID().getGridName()).equals(edgeCases[2]) ) { // PREGUNTA SI DONDE EMPIEZA Y DONDE TERMINA ES PARA UN GRIDPANE, ADEMAS DE PREGUNTAR SI DONDE TERMINA ES UNA BATERIA
             String startCircleGridName = StartHandler.getID().getGridName();
