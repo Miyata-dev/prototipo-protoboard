@@ -3,7 +3,6 @@ package com.example.prototipo;
 import javafx.scene.Group;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LED extends Group {
@@ -55,7 +54,7 @@ public class LED extends Group {
 
             if (basurero.getIsActive() && customShape.getHasMoved()) {
                 //Llamamos al metodo del Basurero para borrar los cables que pueden tener el LED y despues borrar este mismo
-                basurero.EliminateElements(customShape, e, root, gridPaneObserver, this);
+                basurero.EliminateElements(customShape, e, root, gridPaneObserver);
                 gridPaneObserver.removeLeds(this);
                 root.getChildren().remove(this);
             }
