@@ -192,6 +192,7 @@ public class GridPaneObserver {
     public static void refreshCables(GridPaneObserver gridPaneObserver){
 
         for(Cable cable: gridPaneObserver.getCables()){
+            //si los 2 tienen la misma energía se mira que no tengan más de un cable en una de las columnas.
             if(cable.getFirstCircle().getState() == cable.getSecondCircle().getState()){
                 cable.setTipodecarga(cable.getFirstCircle().getState());
             } else {
@@ -202,11 +203,9 @@ public class GridPaneObserver {
                     //se mira que los círculos tengan carga distinta.
                     System.out.println("corto circuito");
 
-                    ArrayList<CustomCircle> firstColumn = Utils.getColumnOfCustomCircles(gridPaneObserver, firstCircle.getID());
-                    ArrayList<CustomCircle> secondColumn = Utils.getColumnOfCustomCircles(gridPaneObserver, secondCircle.getID());
+                    ArrayList<CustomCircle> secondColumn = GridPaneObserver.getCircles(gridPaneObserver, secondCircle.getID());
 
-                    //se queman los círculos.
-                    firstColumn.forEach(CustomCircle::setBurned);
+                    //se donde se soltó el cable.
                     secondColumn.forEach(CustomCircle::setBurned);
 
                 }

@@ -44,6 +44,7 @@ public class CustomCircle extends Circle {
         //si el círculo está quemado sin importar la carga que tenga se coloca como negro pq está qyemado.
         if (isBurned) {
             this.setFill(Color.BLACK);
+            this.state = 0;
             return;
         }; //si está quemado no se pasa el estado.
 

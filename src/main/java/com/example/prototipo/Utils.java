@@ -17,11 +17,28 @@ public class Utils {
     public Utils() {
     }
 
+    public static ArrayList<Cable> getCablesFromColumn(ArrayList<CustomCircle> column) {
+        ArrayList<Cable> cablesFromColumn = new ArrayList<>();
+
+        for (CustomCircle c : column) {
+            if (c.hasCable()) {
+                cablesFromColumn.add(c.getCable());
+            }
+        }
+        return cablesFromColumn;
+    }
+
     //pinta una columna dependiendo del estado, este método se creó para mejorar la legibilidad del código.
     public static void paintCirclesCollection(GridPaneObserver gridPaneObserver, ArrayList<CustomCircle> column, int state) {
         if (!gridPaneObserver.getIsEnergyActivated()) return;
 
         System.out.println("is activated?: " + gridPaneObserver.getIsEnergyActivated());
+
+        if (column.get(0).getState() == state) {
+            column.forEach(CustomCircle::setBurned);
+            return;
+        }
+
         column.forEach(circle -> {
             circle.setState(state);
         });
