@@ -188,10 +188,10 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         //si la id dada es del primer gridpane, entonces...
         if ("gridTrail1".equals(id.getGridName())) {
             // Llamamos a la función de Despintar
-            Utils.unPaintCircles(this.gridPaneObserver, circle, true);
+            Utils.unPaintCircles(this.gridPaneObserver, circle/*, true*/);
             Leg.removeEnergy();
         } else if ("gridTrail2".equals(id.getGridName())) {
-            Utils.unPaintCircles(this.gridPaneObserver, circle, true);
+            Utils.unPaintCircles(this.gridPaneObserver, circle /*, true*/);
             Leg.removeEnergy();
         } else if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
             // En el caso que el nombre del Grid no es de ninguno de los Gridpane entonces debe ser de Automaticamente del una bateria, LED o Switch.
