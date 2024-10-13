@@ -70,12 +70,12 @@ public class GridPaneObserver {
 
     public void removeColumn(ArrayList<CustomCircle> column) {
         //se elimina la columna que tenga la misma id que la columna que se pasa por parametro.
-        energizedColumns.forEach(el -> {
-            System.out.println("second value: " + el.getSecondValue());
-        });
+//        energizedColumns.forEach(el -> {
+//            System.out.println("second value: " + el.getSecondValue());
+//        });
 
         energizedColumns.removeIf(el -> {
-            System.out.println("EL: "+ el.getSecondValue());
+//            System.out.println("EL: "+ el.getSecondValue());
             ID elementID = el.getSecondValue().get(0).getID(); //
             ID columnID = column.get(0).getID(); //se obtiene la id de la columna a partir
 
@@ -113,7 +113,7 @@ public class GridPaneObserver {
 
             col.forEach(cir -> cir.setState(energy));
         });
-
+        
         gridPane.getCables().forEach(cable -> {
             //se obtienen los circulos que están conectados al cable.
             CustomCircle firstCol = cable.getFirstCircle();
@@ -130,7 +130,6 @@ public class GridPaneObserver {
                     firstCol.setState(el.getState());
                 }
             });
-
             secondCircles.forEach(el -> {
                 if (el.equals(secondCol)) {
                     secondCol.setState(el.getState());
@@ -138,17 +137,18 @@ public class GridPaneObserver {
             });
             //en caso de tener una columna sin energía conectada a otra CON ENERGÍA, esta se registra en el
             //registro de pares <Energía, Columna> (esto es lo que ocurre en los 2 condicionales)
-            if (firstCol.getState() != 0 && secondCol.getState() == 0) {
-                ArrayList<CustomCircle> circles = getCircles(gridPane,secondCol.getID());
-                //Utils.paintCirclesCollection(this, circles, firstCol.getState());
-                GridPaneObserver.addColumn(gridPane, circles, firstCol.getState());
-            }
 
-            if (secondCol.getState() != 0 && firstCol.getState() == 0) {
-                ArrayList<CustomCircle> circles = getCircles(gridPane,firstCol.getID());
-                //Utils.paintCirclesCollection(this, circles, secondCol.getState());
-                GridPaneObserver.addColumn(gridPane, circles, secondCol.getState());
-            }
+               if (firstCol.getState() != 0 && secondCol.getState() == 0) {
+                   ArrayList<CustomCircle> circles = getCircles(gridPane, secondCol.getID());
+                   //Utils.paintCirclesCollection(this, circles, firstCol.getState());
+                   GridPaneObserver.addColumn(gridPane, circles, firstCol.getState());
+               }
+
+               if (secondCol.getState() != 0 && firstCol.getState() == 0) {
+                   ArrayList<CustomCircle> circles = getCircles(gridPane, firstCol.getID());
+                   //Utils.paintCirclesCollection(this, circles, secondCol.getState());
+                   GridPaneObserver.addColumn(gridPane, circles, secondCol.getState());
+               }
         });
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
         gridPane.getEnergizedColumns().forEach(pair -> {
