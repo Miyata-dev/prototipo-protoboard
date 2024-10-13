@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -52,7 +53,8 @@ public class MainController {
             new GridPaneTrailController(Matriz1,gridNames[0]),
             new GridPaneTrailController(Matriz2,gridNames[1]),
             new GridPaneController(MatrizCarga1, gridNames[2]),
-            new GridPaneController(MatrizCarga2, gridNames[3])
+            new GridPaneController(MatrizCarga2, gridNames[3]),
+                parent
         );
 
         this.bateria = new Bateria(new Image(getClass().getResource("bateria.png").toExternalForm()));
@@ -78,8 +80,13 @@ public class MainController {
     }
 
     public void CreateSwitch(){
+        ImageView image = new ImageView(getClass().getResource("Switch.png").toExternalForm());
+        image.setFitHeight(31);
+        image.setFitWidth(31);
+        image.setX(720);
+        image.setY(554);
         CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE, "Switch");
-        Switch switch1 = new Switch(true, customShape, gridPaneObserver, basurero, parent, cables);
+        Switch switch1 = new Switch(true, customShape, gridPaneObserver, basurero, parent, cables, image);
         parent.getChildren().add(switch1);
     }
     //in mainController

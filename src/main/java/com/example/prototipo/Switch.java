@@ -2,11 +2,13 @@ package com.example.prototipo;
 
 
 import javafx.scene.Group;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 
 
 public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuadrado
@@ -18,11 +20,12 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
     private ArrayList<Cable> cables;
     private String UniqueId;
     private CustomCircle[] customCircles;
-    private CustomShape shape;
+    private CustomShape shape;//TODO QUITAR EL CUSTOMSHAPE
+    private ImageView shaping;
 
 
-    public Switch(boolean PasoDeCarga, CustomShape customShape, GridPaneObserver gridPaneObserver, Basurero basurero, AnchorPane root, ArrayList<Cable> cables) {
-        super(customShape);
+    public Switch(boolean PasoDeCarga, CustomShape customShape, GridPaneObserver gridPaneObserver, Basurero basurero, AnchorPane root, ArrayList<Cable> cables, ImageView image) {
+        super(customShape, image);
         this.PasoDeCarga = true;
         this.basurero = basurero;
         this.gridPaneObserver = gridPaneObserver;
@@ -32,6 +35,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
         this.customCircles = new CustomCircle[]{customShape.getLeg1(), customShape.getLeg2()};
         this.EndLeg = null;
         this.shape = customShape;
+        this.shaping = image;
 
         Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());//Llamamos a la clase Util para poder convertir el Switch en un nodo movible.
         Init(customShape);

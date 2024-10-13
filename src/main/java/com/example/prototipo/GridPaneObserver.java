@@ -34,11 +34,12 @@ public class GridPaneObserver {
         "gridVolt"
     };
 
-    public GridPaneObserver(GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, GridPaneController firstGridPaneVolt, GridPaneController secondGridPaneVolt) {
+    public GridPaneObserver(GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, GridPaneController firstGridPaneVolt, GridPaneController secondGridPaneVolt, AnchorPane root) {
         this.firstGridPane = firstGridPane;
         this.secondGridPane = secondGridPane;
         this.firstGridPaneVolt = firstGridPaneVolt;
         this.secondGridPaneVolt = secondGridPaneVolt;
+        this.root = root;
         this.CirclesCollection = createCirclesCollection(this);
     }
 
