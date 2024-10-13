@@ -216,13 +216,10 @@ public class GridPaneObserver {
 
     public ArrayList<CustomCircle> createCirclesCollection(GridPaneObserver gridPaneObserver){
         ArrayList<CustomCircle> CircleCollection = new ArrayList<>();
-        for(Node node: gridPaneObserver.getRoot().getChildren() ){
-            if(node instanceof CustomCircle customCircle){
-                if(customCircle.getID().getGridName().contains(gridPaneObserver.getGridTrailPrefix()) || customCircle.getID().getGridName().contains(gridPaneObserver.getGridTrailPrefix())){
-                    CircleCollection.add(customCircle);
-                }
-            }
-        }
+
+        CircleCollection.addAll(firstGridPane.getCircles());
+        CircleCollection.addAll(secondGridPane.getCircles());
+
         return CircleCollection;
     }
 
