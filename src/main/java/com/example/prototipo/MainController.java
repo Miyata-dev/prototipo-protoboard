@@ -1,16 +1,22 @@
 package com.example.prototipo;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
+import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class MainController {
     @FXML
@@ -69,7 +75,27 @@ public class MainController {
                 switches
         );
         clickLineMatrizUno.CircleAsignator();
-        System.out.println("controller: " + basurero.getParent());
+
+        //se calculan las coordenadas de los círculos de los gridTrails
+        //después de que se renderizen los nodos.
+        Platform.runLater(() -> {
+            //toma un gridTrial y le setea las coordenadas a los circulos uno por uno.
+            Consumer<GridPaneTrailController> addCoords = (gridTrail) -> {
+                gridTrail.getGridPane().getChildren().forEach(child -> {
+                    if (child instanceof CustomCircle circ) {
+                        Bounds boundsInScene = circ.localToScene(circ.getBoundsInLocal());
+                        double x = boundsInScene.getCenterX();
+                        double y = boundsInScene.getCenterY();
+
+                        circ.setCoords(x, y);
+                    }
+                });
+            };
+            System.out.println("size of circle: " + matrizCirculosUnoController.getCircles().get(0).getRadius());
+            // Código para actualizar la UIA
+            addCoords.accept(matrizCirculosUnoController);
+            addCoords.accept(matrizCirculosDosController);
+        });
     }
 
     public void crearLed() {
@@ -86,7 +112,7 @@ public class MainController {
     //in mainController
     public void createChip() {
         CustomShape customShape = new CustomShape(720, 554, 70, 34, Color.BLACK, "CHIP");
-        Chip chip = new Chip(customShape);
+        Chip chip = new Chip(customShape, basurero, gridPaneObserver);
         parent.getChildren().add(chip);
     }
 

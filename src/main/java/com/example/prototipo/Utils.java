@@ -579,6 +579,27 @@ public class Utils {
         node.setOnMouseDragged(null);
     }
 
+    public static double findNearestNumber(List<Double> arr, double num) {
+        if (arr == null || arr.isEmpty()) {
+            //throw new IllegalArgumentException("El arreglo no puede estar vacío.");
+            System.out.println("El arreglo no puede estar vacío.");
+            return 0;
+        }
+
+        double closestNumber = arr.get(0);
+        double difference = Math.abs(closestNumber - num);
+
+        for (int i = 1; i < arr.size(); i++) {
+            double currentDifference = Math.abs(arr.get(i) - num);
+
+            if (currentDifference < difference) {
+                difference = currentDifference;
+                closestNumber = arr.get(i);
+            }
+        }
+
+        return closestNumber;
+    }
 
     public static String createRandomID() {return UUID.randomUUID().toString();}
 }

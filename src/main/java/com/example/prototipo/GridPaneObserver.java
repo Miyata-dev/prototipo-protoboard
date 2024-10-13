@@ -6,6 +6,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.BiConsumer;
 
 public class GridPaneObserver {
@@ -215,13 +216,10 @@ public class GridPaneObserver {
 
     public ArrayList<CustomCircle> createCirclesCollection(GridPaneObserver gridPaneObserver){
         ArrayList<CustomCircle> CircleCollection = new ArrayList<>();
-        for(Node node: gridPaneObserver.getRoot().getChildren() ){
-            if(node instanceof CustomCircle customCircle){
-                if(customCircle.getID().getGridName().contains(gridPaneObserver.getGridTrailPrefix()) || customCircle.getID().getGridName().contains(gridPaneObserver.getGridTrailPrefix())){
-                    CircleCollection.add(customCircle);
-                }
-            }
-        }
+
+        CircleCollection.addAll(firstGridPane.getCircles());
+        CircleCollection.addAll(secondGridPane.getCircles());
+
         return CircleCollection;
     }
 

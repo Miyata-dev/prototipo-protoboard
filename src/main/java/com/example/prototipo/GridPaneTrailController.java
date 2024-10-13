@@ -3,11 +3,14 @@ package com.example.prototipo;
 
 import javafx.scene.layout.GridPane;
 
+import java.util.ArrayList;
+
 
 public class GridPaneTrailController {
     final private static String CSS_CLASS = "custom-content";
     private GridPane gridPane;
     private String name;
+    private ArrayList<CustomCircle> circles = new ArrayList<>();
 
     public GridPaneTrailController(GridPane gridPane, String name) {
         this.gridPane = gridPane;
@@ -26,6 +29,7 @@ public class GridPaneTrailController {
 
                 circle.setId(temporaryID.getGeneratedID());
                 gridPane.add(circle, j, i); //(column, row)
+                circles.add(circle);
             }
         }
     }
@@ -34,7 +38,9 @@ public class GridPaneTrailController {
     public GridPane getGridPane() {
         return gridPane;
     }
-
+    public ArrayList<CustomCircle> getCircles() {
+        return circles;
+    }
     public String getName() {
         return name;
     }
