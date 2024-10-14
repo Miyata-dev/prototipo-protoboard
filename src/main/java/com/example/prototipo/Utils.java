@@ -217,7 +217,6 @@ public class Utils {
 
     public static void unPaintCircles(GridPaneObserver gridPaneObserver, CustomCircle circle/*, boolean ignoreVoltCables*/) {
         ID circleID = circle.getID();
-        System.out.println("Gridname: "+ circleID.getGridName());
 
         ArrayList<CustomCircle> circles = gridPaneObserver.getCircles(gridPaneObserver, circleID);
 //        if (hasVoltCable(circles) && ignoreVoltCables) return;
@@ -235,6 +234,7 @@ public class Utils {
         if(!circleID.getGridName().equals("BateryVolt")){
             gridPaneObserver.removeColumn(circles);
         }
+
         circles.forEach(CustomCircle::removeEnergy);
     }
 //    public static void unPaintCirclesVolt(GridPaneObserver grid, CustomCircle circle) {
@@ -532,10 +532,8 @@ public class Utils {
     }
 
     public static void ResetStateCustomCircles(Cable pressedCable) {
-
         pressedCable.Getcircles()[0].setisTaken(false);
         pressedCable.Getcircles()[1].setisTaken(false);
-
         pressedCable.Getcircles()[0].setCable(null);
         pressedCable.Getcircles()[1].setCable(null);
 

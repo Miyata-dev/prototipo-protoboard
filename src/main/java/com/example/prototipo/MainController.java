@@ -50,6 +50,7 @@ public class MainController {
                 "gridVolt2",
         };
 
+        this.bateria = new Bateria(new Image(getClass().getResource("bateria.png").toExternalForm()));
         matrizCirculosUnoController = new GridPaneTrailController(Matriz1,gridNames[0]);
         matrizCirculosDosController = new GridPaneTrailController(Matriz2,gridNames[1]);
         matrizCargaUno = new GridPaneController(MatrizCarga1, gridNames[2]);
@@ -60,10 +61,10 @@ public class MainController {
             new GridPaneTrailController(Matriz2,gridNames[1]),
             new GridPaneController(MatrizCarga1, gridNames[2]),
             new GridPaneController(MatrizCarga2, gridNames[3]),
+                bateria,
                 parent
         );
 
-        this.bateria = new Bateria(new Image(getClass().getResource("bateria.png").toExternalForm()));
 
         parent.getChildren().addAll(basurero, basurero.getLabel(), bateria.getImage(), bateria.getPolos());
         ClickLine clickLineMatrizUno = new ClickLine(

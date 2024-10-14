@@ -2,8 +2,7 @@ package com.example.prototipo;
 
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.shape.Circle;
+import jdk.jshell.execution.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,23 +23,25 @@ public class GridPaneObserver {
     private boolean isEnergyActivated = true; //al principio, el protoboard no está apagado.
     private ArrayList<CustomCircle> CirclesCollection = new ArrayList<>();
     private AnchorPane root;
+    private static Bateria bateria;
 
     private String[] elementIDsPrefix = {
-        "LedVolt",
-        "switchvolt"
+            "LedVolt",
+            "switchvolt",
+            "BateryVolt"
     };
-
     private String[] gridNamePrefixes = {
         "gridTrail",
         "gridVolt"
     };
 
-    public GridPaneObserver(GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, GridPaneController firstGridPaneVolt, GridPaneController secondGridPaneVolt, AnchorPane root) {
+    public GridPaneObserver(GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, GridPaneController firstGridPaneVolt, GridPaneController secondGridPaneVolt,Bateria bateria, AnchorPane root) {
         this.firstGridPane = firstGridPane;
         this.secondGridPane = secondGridPane;
         this.firstGridPaneVolt = firstGridPaneVolt;
         this.secondGridPaneVolt = secondGridPaneVolt;
         this.root = root;
+        this.bateria = bateria;
         this.CirclesCollection = createCirclesCollection(this);
     }
 
@@ -111,19 +112,16 @@ public class GridPaneObserver {
         gridPane.getEnergizedColumns().forEach(pair -> {
             Integer energy = pair.getFirstValue();
             ArrayList<CustomCircle> col = pair.getSecondValue();
-
             col.forEach(cir -> cir.setState(energy));
         });
-        
+
         gridPane.getCables().forEach(cable -> {
             //se obtienen los circulos que están conectados al cable.
             CustomCircle firstCol = cable.getFirstCircle();
             CustomCircle secondCol = cable.getSecondCircle();
-
             //se obtiene las columnas de los circulos que tiene el cables
-            ArrayList<CustomCircle> firstCircles = getCircles(gridPane,firstCol.getID());
-            ArrayList<CustomCircle> secondCircles = getCircles(gridPane,secondCol.getID());
-
+            ArrayList<CustomCircle> firstCircles = getCircles(gridPane, firstCol.getID());
+            ArrayList<CustomCircle> secondCircles = getCircles(gridPane, secondCol.getID());
             //como los circulos conectados al cable no se actualiza bn su estado, se actualiza manualmente a traves de
             //las columnas del gridpane.
             firstCircles.forEach(el -> {
@@ -136,31 +134,46 @@ public class GridPaneObserver {
                     secondCol.setState(el.getState());
                 }
             });
+            if(!bateria.getPositivePole().hasCable()) {
+                cleanCircles(gridPane,1);
+            }if(!bateria.getNegativePole().hasCable()) {
+                cleanCircles(gridPane,-1);
+            }
+
             //en caso de tener una columna sin energía conectada a otra CON ENERGÍA, esta se registra en el
             //registro de pares <Energía, Columna> (esto es lo que ocurre en los 2 condicionales)
-
-               if (firstCol.getState() != 0 && secondCol.getState() == 0) {
-                   ArrayList<CustomCircle> circles = getCircles(gridPane, secondCol.getID());
-                   //Utils.paintCirclesCollection(this, circles, firstCol.getState());
-                   GridPaneObserver.addColumn(gridPane, circles, firstCol.getState());
-               }
-
-               if (secondCol.getState() != 0 && firstCol.getState() == 0) {
-                   ArrayList<CustomCircle> circles = getCircles(gridPane, firstCol.getID());
-                   //Utils.paintCirclesCollection(this, circles, secondCol.getState());
-                   GridPaneObserver.addColumn(gridPane, circles, secondCol.getState());
-               }
+            if (firstCol.getState() != 0 && secondCol.getState() == 0) {
+                ArrayList<CustomCircle> circles = getCircles(gridPane, secondCol.getID());
+                //Utils.paintCirclesCollection(this, circles, firstCol.getState());
+                GridPaneObserver.addColumn(gridPane, circles, firstCol.getState());
+            }
+            if (secondCol.getState() != 0 && firstCol.getState() == 0) {
+                ArrayList<CustomCircle> circles = getCircles(gridPane, firstCol.getID());
+                //Utils.paintCirclesCollection(this, circles, secondCol.getState());
+                GridPaneObserver.addColumn(gridPane, circles, secondCol.getState());
+            }
         });
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
         gridPane.getEnergizedColumns().forEach(pair -> {
             Integer energy = pair.getFirstValue();
             ArrayList<CustomCircle> col = pair.getSecondValue();
-
             col.forEach(cir -> cir.setState(energy));
         });
         //Actualizamos todos los elementos del GridPaneObserver despues de pintar todos los circulos.
         RefreshElements(gridPane.getSwitches(), gridPane.getLeds(), gridPane.getCables());
         refreshCables(gridPane);
+    }
+    public static void cleanCircles(GridPaneObserver gridPane, int polo) {
+        ArrayList<Cable> cables = gridPane.getCables();
+        for (Cable cable : cables) {
+            CustomCircle firstC = cable.getFirstCircle();
+            CustomCircle secondC = cable.getSecondCircle();
+            if(cable.getTipodecarga() == polo) {
+                Utils.unPaintCircles(gridPane,firstC);
+                Utils.unPaintCircles(gridPane,secondC);
+                cable.removeTipodecarga();
+            }
+        }
     }
 
     public static ArrayList<CustomCircle> getCircles(GridPaneObserver gridPaneObserver, ID id){
@@ -186,7 +199,6 @@ public class GridPaneObserver {
             led.ONorOFF();
         }
     }//Actualizamos todos los switchs
-
 
     //Este metodo lo que hace es refrescar todos los tipo de carga
     public static void refreshCables(GridPaneObserver gridPaneObserver){
@@ -325,7 +337,12 @@ public class GridPaneObserver {
     public String getSwitchIdPrefix() {
         return elementIDsPrefix[1];
     }
-
+    public String getBateryIdPrefix() {
+        return elementIDsPrefix[2];
+    }
+    public Bateria getBatery(){
+        return bateria;
+    }
     public String getGridTrailPrefix() {
         return gridNamePrefixes[0];
     }
