@@ -169,12 +169,15 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
     //Este metodo lo que hace es pintar El gridpane segun el GridPane que corresponda
     public  void PaintSwitch(ID id, CustomShape customShape, CustomCircle Leg, ArrayList<Cable> cables) {
-        if (this.gridPaneObserver.getFirstGridPaneTrail().getName().equals(id.getGridName())) {
-            //Llamamos a la funcion de Pintar
-            Utils.paintCircles(this.gridPaneObserver, id, Leg.getState());
-        } else if (this.gridPaneObserver.getSecondGridPaneTrail().getName().equals(id.getGridName())) {
-            Utils.paintCircles(this.gridPaneObserver, id, Leg.getState());
-        } else if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
+
+        Utils.paintCircles(this.gridPaneObserver, id, Leg.getState());
+//        if (this.gridPaneObserver.getFirstGridPaneTrail().getName().equals(id.getGridName())) {
+//            //Llamamos a la funcion de Pintar
+//            Utils.paintCircles(this.gridPaneObserver, id, Leg.getState());
+//        } else if (this.gridPaneObserver.getSecondGridPaneTrail().getName().equals(id.getGridName())) {
+//            Utils.paintCircles(this.gridPaneObserver, id, Leg.getState());
+/*        } else*/
+        if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
             //En el caso que el nombre del Grid no es de ninguno de los Gridpane entonces debe ser de Automaticamente del una bateria, LED o Switch.
             if (ID.isSameID(Leg.getID(), Leg.getCable().Getcircles()[0].getID())) {
                 Leg.getCable().Getcircles()[1].setState(Leg.getState());
@@ -189,15 +192,19 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
     public  void UnPaintSwitch(CustomCircle circle, CustomShape customShape, CustomCircle Leg) {
         ID id = circle.getID();
 
+        Utils.unPaintCircles(this.gridPaneObserver, circle/*, true*/);
+        Leg.removeEnergy();
         //si la id dada es del primer gridpane, entonces...
-        if ("gridTrail1".equals(id.getGridName())) {
-            // Llamamos a la función de Despintar
-            Utils.unPaintCircles(this.gridPaneObserver, circle/*, true*/);
-            Leg.removeEnergy();
-        } else if ("gridTrail2".equals(id.getGridName())) {
-            Utils.unPaintCircles(this.gridPaneObserver, circle /*, true*/);
-            Leg.removeEnergy();
-        } else if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
+
+//        if ("gridTrail1".equals(id.getGridName())) {
+//            // Llamamos a la función de Despintar
+//            Utils.unPaintCircles(this.gridPaneObserver, circle/*, true*/);
+//            Leg.removeEnergy();
+//        } else if ("gridTrail2".equals(id.getGridName())) {
+//            Utils.unPaintCircles(this.gridPaneObserver, circle /*, true*/);
+//            Leg.removeEnergy();
+/*         else*/
+        if ((id.getGridName().equals("LedVolt1")) || (id.getGridName().equals("switchvolt1"))) {
             // En el caso que el nombre del Grid no es de ninguno de los Gridpane entonces debe ser de Automaticamente del una bateria, LED o Switch.
             if (ID.isSameID(Leg.getID(), Leg.getCable().Getcircles()[0].getID())) {
                 Leg.getCable().Getcircles()[1].removeEnergy();
@@ -207,8 +214,6 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
 
         }
     }
-
-
 
     //Este metodo lo que realiza es decidir la pata a la cual sabremos hacia donde se quitara la energía
     public void DecideEndLeg(CustomShape customShape){

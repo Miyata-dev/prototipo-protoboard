@@ -224,22 +224,24 @@ public class ClickLine {
 
 
         if ( ( !StartHandler.hasEnergy() && StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane() ) || (EndHandler.getID().getGridName()).equals(edgeCases[2]) ) { // PREGUNTA SI DONDE EMPIEZA Y DONDE TERMINA ES PARA UN GRIDPANE, ADEMAS DE PREGUNTAR SI DONDE TERMINA ES UNA BATERIA
-            String startCircleGridName = StartHandler.getID().getGridName();
-            if(Arrays.asList(gridTrails).contains(startCircleGridName)){
-                Utils.paintCircles(gridPaneObserver, ids[0], EndHandler.getState());
-            }else if(Arrays.asList(gridNames).contains(startCircleGridName)){
-                Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
-            }
+//            String startCircleGridName = StartHandler.getID().getGridName();
+            Utils.paintCircles(gridPaneObserver, ids[0], EndHandler.getState());
+//            if(Arrays.asList(gridTrails).contains(startCircleGridName)){
+//                Utils.paintCircles(gridPaneObserver, ids[0], EndHandler.getState());
+//            }else if(Arrays.asList(gridNames).contains(startCircleGridName)){
+//                Utils.paintCirclesVolt(gridPaneObserver,ids[0],EndHandler.getState());
+//            }
             EndHandler.setisTaken(true);
         } else {
             //recuperamos el nombre del gridName para ver en cual gridpane pintar
             if ( (StartHandler.getID().getIsForGridpane() && EndHandler.getID().getIsForGridpane()) || (StartHandler.getID().getGridName()).equals(edgeCases[2]) ) { // Pregunta si el gridname es igual al gridname de la bateria
-                String endCircleGridName = EndHandler.getID().getGridName();
-                if(Arrays.asList(gridTrails).contains(endCircleGridName)){
-                    Utils.paintCircles(gridPaneObserver, ids[1], StartHandler.getState());
-                } else if(Arrays.asList(gridNames).contains(endCircleGridName)){
-                    Utils.paintCirclesVolt(gridPaneObserver,ids[1],StartHandler.getState());
-                }
+//                String endCircleGridName = EndHandler.getID().getGridName();
+                Utils.paintCircles(gridPaneObserver, ids[1], StartHandler.getState());
+//                if(Arrays.asList(gridTrails).contains(endCircleGridName)){
+//                    Utils.paintCircles(gridPaneObserver, ids[1], StartHandler.getState());
+//                } else if(Arrays.asList(gridNames).contains(endCircleGridName)){
+//                    Utils.paintCirclesVolt(gridPaneObserver,ids[1],StartHandler.getState());
+//                }
                 EndHandler.setisTaken(true);
             }
         }
