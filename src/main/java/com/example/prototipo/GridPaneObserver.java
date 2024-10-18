@@ -214,8 +214,8 @@ public class GridPaneObserver {
                     //se mira que los círculos tengan carga distinta.
                     System.out.println("corto circuito");
 
-                    ArrayList<CustomCircle> firstColumn = Utils.getColumnOfCustomCircles(gridPaneObserver, firstCircle.getID());
-                    ArrayList<CustomCircle> secondColumn = Utils.getColumnOfCustomCircles(gridPaneObserver, secondCircle.getID());
+                    ArrayList<CustomCircle> firstColumn = getCircles(gridPaneObserver, firstCircle.getID());
+                    ArrayList<CustomCircle> secondColumn = getCircles(gridPaneObserver, secondCircle.getID());
 
                     //se queman los círculos.
                     firstColumn.forEach(CustomCircle::setBurned);
