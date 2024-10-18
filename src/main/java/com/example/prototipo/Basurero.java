@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 
 public class Basurero extends ImageView {
     private Image image;
@@ -41,10 +42,12 @@ public class Basurero extends ImageView {
                 popup.setHeader("Haz activado el basurero");
                 popup.setContent("Para desactivarlo debes darle click de nuevo");
                 label.setText("Desactivar");
+                label.setTextFill(Color.BLACK);
             } else {
                 popup.setHeader("Haz desactivado el basurero");
                 popup.setContent("Para activarlo debes darle click de nuevo");
                 label.setText("Activar");
+                label.setTextFill(Color.BLACK);
             }
             popup.show();
             this.isActive = !this.isActive;

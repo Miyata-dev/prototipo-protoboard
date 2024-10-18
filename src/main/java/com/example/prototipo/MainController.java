@@ -30,10 +30,7 @@ public class MainController {
     public GridPaneTrailController matrizCirculosDosController;
     public GridPaneController matrizCargaUno;
     public GridPaneController matrizCargaDos;
-    public Basurero basurero = new Basurero(
-            new Image(getClass().getResource("basurero.png").toExternalForm()),
-            new Label("Activar")
-    );
+    public Basurero basurero;
     GridPaneObserver gridPaneObserver;
     //se coloca esta variable en el controlador par poder darle acceso los switches y leds.
     public ArrayList<Cable> cables = new ArrayList<>();
@@ -42,6 +39,16 @@ public class MainController {
     public ArrayList<Switch> switches = new ArrayList<>();
     public Bateria bateria;
     public void initialize() {
+
+        //Creamos un label para poder cambiarle el color al texto a NEGRO
+        Label label = new Label("Activar");
+        label.setStyle("-fx-text-fill: black;");
+        this.basurero = new Basurero(
+                new Image(getClass().getResource("basurero.png").toExternalForm()),
+                label
+        );
+
+
         //nombres para cada grid para los identificadores unicos.
         String[] gridNames = {
                 "gridTrail1",
@@ -107,14 +114,16 @@ public class MainController {
     }
 
     public void CreateSwitch(){
-        ImageView image = new ImageView(getClass().getResource("Switch.png").toExternalForm());
-        image.setFitHeight(31);
-        image.setFitWidth(31);
-        image.setX(720);
-        image.setY(554);
-        CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE, "Switch");
-        Switch switch1 = new Switch(true, customShape, gridPaneObserver, basurero, parent, cables, image);
-        parent.getChildren().add(switch1);
+
+        Switch2 switch2 = new Switch2(false, gridPaneObserver, parent, basurero);
+//        ImageView image = new ImageView(getClass().getResource("Switch.png").toExternalForm());
+//        image.setFitHeight(31);
+//        image.setFitWidth(31);
+//        image.setX(720);
+//        image.setY(554);
+//        CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE, "Switch");
+//        Switch switch1 = new Switch(true, customShape, gridPaneObserver, basurero, parent, cables, image);
+        parent.getChildren().add(switch2);
     }
     //in mainController
     public void createChip() {
