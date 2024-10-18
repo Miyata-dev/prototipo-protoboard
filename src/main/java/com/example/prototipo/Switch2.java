@@ -8,12 +8,12 @@ import javafx.scene.layout.AnchorPane;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Switch2 extends Group {
+    private ImageView Shape;
     private CustomCircle Leg1;
     private CustomCircle Leg2;
     private CustomCircle Leg3;
     private CustomCircle Leg4;
 
-    private ImageView Shape;
     private Boolean ChargePass;
     private String UniqueId;
     private GridPaneObserver gridPaneObserver;
@@ -51,13 +51,58 @@ public class Switch2 extends Group {
         //Declaramos su tamaño y su ubicación para despues agregarlo al grupo
         this.Shape.setFitWidth(50);
         this.Shape.setFitHeight(50);
+        double x = 720 + 25;
+        double y = 554 + 25;
         Shape.setX(720);
         Shape.setY(554);
 
 
 
+        //Ahora viene agregar las 4 patas que tiene el Switch
 
+        //Creamos ID's para cada pata del Switch nuevo
+        ID idOne = new ID (1,1, "switchvolt1");
+        ID idTwo = new ID (1,2, "switchvolt1");
+        ID idThree = new ID (1,3, "switchvolt1");
+        ID idFour = new ID(1,4, "switchvolt1");
+
+        //Le damos a las id de las patas que no son para gridPane
+        idOne.setIsForGridpane(false);
+        idTwo.setIsForGridpane(false);
+        idThree.setIsForGridpane(false);
+        idFour.setIsForGridpane(false);
+
+        //Creamos las patas
+        this.Leg1 = new CustomCircle(4, idOne, 0);
+        this.Leg2 = new CustomCircle(4, idTwo, 0);
+        this.Leg3 = new CustomCircle(4, idThree, 0 );
+        this.Leg4 = new CustomCircle(4, idFour, 0);
+
+        //Lo que hacemos es dejarlos como tomados ya que no sera necesario el que tiren cables
+        this.Leg1.setisTaken(true);
+        this.Leg2.setisTaken(true);
+        this.Leg3.setisTaken(true);
+        this.Leg4.setisTaken(true);
+
+        //Ahora movemos los circulos en X
+        this.Leg1.setTranslateX(x-15);
+        this.Leg2.setTranslateX(x+15);
+        this.Leg3.setTranslateX(x-15);
+        this.Leg4.setTranslateX(x+15);
+
+        //Ahora movemos los circulos en Y
+        this.Leg1.setTranslateY(y+20);
+        this.Leg2.setTranslateY(y+20);
+        this.Leg3.setTranslateY(y-20);
+        this.Leg4.setTranslateY(y-20);
+
+
+        //Agregamos la Imagen y los CustomCircle al grupo del Switch
         this.getChildren().add(this.Shape);
+        this.getChildren().add(this.Leg1);
+        this.getChildren().add(this.Leg2);
+        this.getChildren().add(this.Leg3);
+        this.getChildren().add(this.Leg4);
     }
 
 

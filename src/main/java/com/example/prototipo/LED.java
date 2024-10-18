@@ -12,7 +12,7 @@ public class LED extends Group {
     private CustomCircle[] legs;
     private String UniqueId;
     private CustomShape shape;
-    private CustomCircle LegPositive, LegNegative;
+    private CustomCircle LegPositive, LegNegative; //Pata positiva -> derecha, Pata negativa-> izquierda
     private boolean isBurned;
 
     public LED(boolean state, CustomShape customShape, Basurero basurero, AnchorPane root, GridPaneObserver gridPaneObserver) {
@@ -47,10 +47,6 @@ public class LED extends Group {
                 customShape.getLeg2().setisTaken(false);
                 LegTaken.set(false);
             }
-            //fuciona las dos ids de las patas y crea una ID a partir de las 2.
-
-            System.out.println("pata 1: " + customShape.getLeg1().getID().getGeneratedID());
-            System.out.println("pata 2: " + customShape.getLeg2().getID().getGeneratedID());
 
             if (basurero.getIsActive() && customShape.getHasMoved()) {
                 //Llamamos al metodo del Basurero para borrar los cables que pueden tener el LED y despues borrar este mismo
@@ -79,12 +75,12 @@ public class LED extends Group {
         customShape.setLeg2(new CustomCircle(5, idDos, 0));
         //Creamos la primera pata del LED
         customShape.getLeg1().setisTaken(true);
-        customShape.getLeg1().setFill(Color.ROYALBLUE);
+        customShape.getLeg1().setFill(Color.BLUE);
         customShape.getLeg1().setTranslateX(x - 5);
         customShape.getLeg1().setTranslateY(y + 7.5);
         //Creamos la segunda pata del LED
         customShape.getLeg2().setisTaken(true);
-        customShape.getLeg2().setFill(Color.ROYALBLUE);
+        customShape.getLeg2().setFill(Color.YELLOW);
         customShape.getLeg2().setTranslateX(x + 30);
         customShape.getLeg2().setTranslateY(y + 7.5);
 
@@ -105,6 +101,13 @@ public class LED extends Group {
                 this.shape.setFill(Color.GREEN);
             } else {
                 this.shape.setFill(Color.RED);
+
+
+                //Si el LED no esta quemado entonces se pintan los circulos de los colores que deberia corresponder
+                if(!this.isBurned){
+                    this.shape.getLeg1().setFill(Color.BLUE);
+                    this.shape.getLeg2().setFill(Color.YELLOW);
+                }
             }
         }
     }
@@ -161,7 +164,7 @@ public class LED extends Group {
 
 
 
-    //actualiza el estado del led que se le pase por parametro, es estático puesto que este método sirve para hacer el led reactivo a los cambios de energía del protoboard.
+    //Este modo lo que hace es actualizar el estado del LED que se le pase por parametro, es estatico ya que este metodo sirve para hacer al LED reactivo a los cambios de energia del protoboard
     public static void updateState(LED led, boolean state) {
         System.out.println("leg uno: " + led.getLeg1() + " leg dos: " + led.getLeg2());
         //mira que el led tenga conectado cables.
@@ -183,8 +186,15 @@ public class LED extends Group {
     public static void UpdatingState(LED led, boolean state){
         //si el state pasado es false entonces le quitamos la energia a las patas
         if(!state){
+            //Le quitamos la energia a las patas
             led.shape.getLeg1().removeEnergy();
             led.shape.getLeg2().removeEnergy();
+
+            //Si el LED no esta quemado entonces se pintan los circulos de los colores que deberia corresponder
+            if(!led.isBurned){
+                led.shape.getLeg1().setFill(Color.BLUE);
+                led.shape.getLeg2().setFill(Color.YELLOW);
+            }
         } else{
             //si el led tiene menos de 2 cables se sale.
             if (!led.shape.getLeg1().hasCable() || !led.shape.getLeg2().hasCable()) return;
