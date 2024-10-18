@@ -28,7 +28,10 @@ public class CustomCircle extends Circle {
         return this.Wire;
     }
 
-    public void setisTaken(boolean isTaken) {this.isTaken = isTaken;}
+    public void setisTaken(boolean isTaken) {
+        if (isBurned) return;
+        this.isTaken = isTaken;
+    }
 
     public boolean hasCable() {
         return this.Wire != null;

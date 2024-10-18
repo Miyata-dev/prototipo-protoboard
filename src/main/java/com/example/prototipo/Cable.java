@@ -141,6 +141,14 @@ public class Cable extends Line {
     public CustomCircle[] Getcircles(){
         return this.circles;
     }
+
+    //calcula el largo de la linea
+    public double getLineWidth() {
+        double deltaX = this.getEndX() - this.getStartX();
+        double deltaY = this.getEndY() - this.getStartY();
+        return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    }
+
     //TODO revisar.
     @Override
     public boolean equals(Object obj) {

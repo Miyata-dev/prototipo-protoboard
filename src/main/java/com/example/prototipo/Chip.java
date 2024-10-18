@@ -33,7 +33,6 @@ public class Chip extends Group {
                 gridPaneObserver.getRoot().getChildren().remove(this);
                 closeCircles.forEach(circle -> {
                     circle.setisTaken(false);
-                    circle.setFill(Color.GRAY);
                 });
             }
         });
@@ -61,31 +60,30 @@ public class Chip extends Group {
                 CustomCircle closestCircle = Utils.getClosestCircle(gridPaneObserver.getCirclesCollection(), coord[0], coord[1]);
 
                 double distanceY = Math.abs(coord[1] - closestCircle.getY());
-                //se mira que la distancia entre el las coordenadas x e y
+                //se mira que la distancia entre el las coordenadas x e y sean válidas
                 if (distanceY >= maxRange) {
                     isPlacedCorrectly = false;
                     return;
                 } else {
-                    if (!closeCircles.contains(closestCircle)) {
+                    if (!closeCircles.contains(closestCircle)) { //solo se agregan los circulos si no están repetidos en la colección.
                         closeCircles.add(closestCircle);
                     }
                 };
             }
 
             if (isPlacedCorrectly) {
+                //se toman los gridNames del primer círculo de arriba y el último círculo de abajo.,
                 String firstCircleGridName = closeCircles.get(0).getID().getGridName();
                 String secondCircleGridName = closeCircles.get(closeCircles.size() - 1).getID().getGridName();
 
+                //si pertenecen al mismo gridPane no se suelta el Chip.
                 if (firstCircleGridName.equals(secondCircleGridName)) return;
 
                 if (closeCircles.size() == 8) {
                     //por cada circulo se le setea el estado de ocupado.
                     closeCircles.forEach(circle -> {
-                        circle.setFill(Color.RED);
                         circle.setisTaken(true);
                     });
-
-                    closeCircles.forEach(cir -> System.out.println(cir));
                 }
 
                 Utils.makeUndraggableNode(this);

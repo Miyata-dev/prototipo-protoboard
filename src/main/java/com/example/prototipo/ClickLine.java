@@ -19,6 +19,7 @@ public class ClickLine {
     private Basurero basurero;
     private CustomShape rec;
     private ArrayList<CustomShape> shapes = new ArrayList<>();
+    private boolean isCableFixed = false;
     //private ArrayList<Cable> cables;
 
     public ClickLine(AnchorPane root, GridPaneObserver gridPaneObserver, Basurero basurero, Bateria bateria, ArrayList<Cable> cables, ArrayList<LED> leds, ArrayList<Switch> switches) {
@@ -46,11 +47,12 @@ public class ClickLine {
                 ids[0] = new ID(Circulo.getID().getGeneratedID());
 
                 LinePressed(root,event);
+                isCableFixed = false;
             }
         });
         root.setOnMouseDragged(e -> {
             //se asegura que acabe en un circulo.
-            if (e.getTarget() instanceof Circle) {
+            if (!isCableFixed && e.getTarget() instanceof Circle) {
                 DragLine(e.getX(), e.getY(),e );
             }
         });
@@ -62,6 +64,7 @@ public class ClickLine {
 
             if(!(e.getTarget() instanceof CustomCircle)) return;
             RealizeLine(e);
+            isCableFixed = true;
             //al eliminar un cable, el paso de energía es defectuoso, por ello se llama esta función que se asegura de que esté bn.
             if (gridPaneObserver.getIsEnergyActivated()) {
                 gridPaneObserver.getCables().forEach(n -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
@@ -84,6 +87,7 @@ public class ClickLine {
 
 
             if(e.getTarget() instanceof Cable cable) {
+                System.out.println("im hereeeeeeeeeee");
                 //Buscamos el cable presionado para asi ver despues si el cable pertenece a un elemento del protoboard
                 Cable cablefound = Utils.getCableByID(gridPaneObserver.getCables(), cable);
                 //asignamos los CustomCircles del cable
@@ -155,7 +159,7 @@ public class ClickLine {
                 CurrentLine.setEndX(x);
                 CurrentLine.setEndY(y);
             }
-
+            System.out.println("cable length: " + CurrentLine.getLineWidth());
         }
     }
     //TODO colocar setIsTaken en el deleteCable.
@@ -186,7 +190,7 @@ public class ClickLine {
             if (!circle.getIsTaken()) return;
             if (StartHandler == null && circle.hasEnergy()) return;
 
-            if( ! (( (CustomCircle) e.getTarget() ).hasCable()) ){
+            if( ! (( (CustomCircle) e.getTarget() ).hasCable()) && !isCableFixed){
                 root.getChildren().remove(CurrentLine);
             }
 
