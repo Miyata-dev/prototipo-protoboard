@@ -57,10 +57,10 @@ public class MainController {
         matrizCargaDos = new GridPaneController(MatrizCarga2, gridNames[3]);
 
         gridPaneObserver = new GridPaneObserver(
-            new GridPaneTrailController(Matriz1,gridNames[0]),
-            new GridPaneTrailController(Matriz2,gridNames[1]),
-            new GridPaneController(MatrizCarga1, gridNames[2]),
-            new GridPaneController(MatrizCarga2, gridNames[3]),
+                new GridPaneTrailController(Matriz1,gridNames[0]),
+                new GridPaneTrailController(Matriz2,gridNames[1]),
+                new GridPaneController(MatrizCarga1, gridNames[2]),
+                new GridPaneController(MatrizCarga2, gridNames[3]),
                 bateria,
                 parent
         );
@@ -68,11 +68,11 @@ public class MainController {
 
         parent.getChildren().addAll(basurero, basurero.getLabel(), bateria.getImage(), bateria.getPolos());
         ClickLine clickLineMatrizUno = new ClickLine(
-            parent,
-            gridPaneObserver,
-            basurero,
-            bateria,
-            cables,
+                parent,
+                gridPaneObserver,
+                basurero,
+                bateria,
+                cables,
                 leds,
                 switches
         );
@@ -85,7 +85,7 @@ public class MainController {
             Consumer<GridPaneTrailController> addCoords = (gridTrail) -> {
                 gridTrail.getGridPane().getChildren().forEach(child -> {
                     if (child instanceof CustomCircle circ) {
-                        Bounds boundsInScene = circ.localToScene(circ.getBoundsInLocal());
+                        Bounds boundsInScene = circ.localToScreen(circ.getBoundsInLocal());
                         double x = boundsInScene.getCenterX();
                         double y = boundsInScene.getCenterY();
 

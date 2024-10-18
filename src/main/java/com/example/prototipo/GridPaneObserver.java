@@ -31,8 +31,8 @@ public class GridPaneObserver {
             "BateryVolt"
     };
     private String[] gridNamePrefixes = {
-        "gridTrail",
-        "gridVolt"
+            "gridTrail",
+            "gridVolt"
     };
 
     public GridPaneObserver(GridPaneTrailController firstGridPane, GridPaneTrailController secondGridPane, GridPaneController firstGridPaneVolt, GridPaneController secondGridPaneVolt,Bateria bateria, AnchorPane root) {

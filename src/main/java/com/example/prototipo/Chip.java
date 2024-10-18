@@ -4,11 +4,11 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Chip extends Group {
     private ArrayList<Rectangle> patitas = new ArrayList<>();
     private ArrayList<Double[]> coords = new ArrayList<>(); // coords[0]= x, coords[1] = y
+    private ArrayList<CustomCircle> closeCircles = new ArrayList<>();
     private Basurero basurero;
     private GridPaneObserver gridPaneObserver;
     private boolean isPlacedCorrectly = true;
@@ -27,32 +27,27 @@ public class Chip extends Group {
     private void manageEvents() {
         ArrayList<CustomCircle> circlesFromObserver = gridPaneObserver.getCirclesCollection();
 
-        //se extraen todos las coordenadas X de los circulos de circlesFromObserver.
-        List<Double> coordsXFromObserver = gridPaneObserver.getCirclesCollection()
-                .stream()
-                .map(CustomCircle::getX)
-                .toList();
-        //se extraen todos las coordenadas Y de los circulos de circlesFromObserver.
-        List<Double> coordsYFromObserver = gridPaneObserver.getCirclesCollection()
-                .stream()
-                .map(CustomCircle::getY)
-                .toList();
-
         this.setOnMouseClicked(e -> {
+            //TODO desoc
             if (basurero.getIsActive()) {
                 gridPaneObserver.getRoot().getChildren().remove(this);
+                closeCircles.forEach(circle -> {
+                    circle.setisTaken(false);
+                    circle.setFill(Color.GRAY);
+                });
             }
         });
 
         this.setOnMouseReleased(e -> {
+            closeCircles.clear();
             coords.clear();  // Limpia coords antes de llenarlo de nuevo
             isPlacedCorrectly = true; //para reiniciar la variable.
 
             //por cada pata, se obtienen las coordenadas y se guardan en una colección.
             patitas.forEach(pata -> {
                 //se obtienen las coordenadas de la pata que se mira del chip para agregarlas a la colección de coordenadas.
-                double coordX = pata.localToScene(pata.getX(), pata.getY()).getX();
-                double coordY = pata.localToScene(pata.getX(), pata.getY()).getY();
+                double coordX = pata.localToScreen(pata.getX(), pata.getY()).getX();
+                double coordY = pata.localToScreen(pata.getX(), pata.getY()).getY();
 
                 Double[] currentCoords = new Double[]{ coordX, coordY };
 
@@ -63,20 +58,36 @@ public class Chip extends Group {
             //TODO mejorar el algoritmo.
             for (Double[] coord : coords) {
                 //obtiene los numeros mas cercanos
-                double closestX = Utils.findNearestNumber(coordsXFromObserver, coord[0]);
-                double closestY = Utils.findNearestNumber(coordsYFromObserver, coord[1]);
+                CustomCircle closestCircle = Utils.getClosestCircle(gridPaneObserver.getCirclesCollection(), coord[0], coord[1]);
 
-                //calcula la distancia entre la coordenada que está  siendo iterada y la coordenada más cercana.
-                double distanceX = Math.abs(closestX - coord[0]);
-                double distanceY = Math.abs(closestY - coord[1]);
-
+                double distanceY = Math.abs(coord[1] - closestCircle.getY());
                 //se mira que la distancia entre el las coordenadas x e y
-                if ((distanceX > maxRange) || (distanceY > maxRange)) {
+                if (distanceY >= maxRange) {
                     isPlacedCorrectly = false;
-                }
+                    return;
+                } else {
+                    if (!closeCircles.contains(closestCircle)) {
+                        closeCircles.add(closestCircle);
+                    }
+                };
             }
 
             if (isPlacedCorrectly) {
+                String firstCircleGridName = closeCircles.get(0).getID().getGridName();
+                String secondCircleGridName = closeCircles.get(closeCircles.size() - 1).getID().getGridName();
+
+                if (firstCircleGridName.equals(secondCircleGridName)) return;
+
+                if (closeCircles.size() == 8) {
+                    //por cada circulo se le setea el estado de ocupado.
+                    closeCircles.forEach(circle -> {
+                        circle.setFill(Color.RED);
+                        circle.setisTaken(true);
+                    });
+
+                    closeCircles.forEach(cir -> System.out.println(cir));
+                }
+
                 Utils.makeUndraggableNode(this);
             }
         });

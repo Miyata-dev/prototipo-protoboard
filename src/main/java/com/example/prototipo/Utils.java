@@ -599,5 +599,22 @@ public class Utils {
         return closestNumber;
     }
 
+    public static CustomCircle getClosestCircle(List<CustomCircle> circles, double x, double y) {
+        CustomCircle closestCircle = circles.get(0);
+        double minDistance = Math.sqrt(Math.pow(closestCircle.getX() - x, 2) + Math.pow(closestCircle.getY() - y, 2));
+
+        for (int i = 1; i < circles.size(); i++) {
+            double currentDistance = Math.sqrt(Math.pow(circles.get(i).getX() - x, 2) + Math.pow(circles.get(i).getY() - y, 2));
+
+            if (currentDistance < minDistance) {
+                minDistance = currentDistance;
+                closestCircle = circles.get(i);
+            }
+        }
+
+        return closestCircle;
+    }
+
+
     public static String createRandomID() {return UUID.randomUUID().toString();}
 }
