@@ -14,12 +14,13 @@ public class GridPaneTrailController {
 
     public GridPaneTrailController(GridPane gridPane, String name) {
         this.gridPane = gridPane;
-
         this.name = name;
         fillGridPaneWithCircles();
     }
     //toma un gridPane y agrega circulos con la clase CustomCircle.
     private void fillGridPaneWithCircles() {
+        gridPane.setHgap(8);
+        gridPane.setVgap(1);
         for (int i = 0; i < gridPane.getRowCount(); i++) { //row
             for (int j = 0; j < gridPane.getColumnCount(); j++) { //column
                 ID temporaryID = new ID(i, j, name); // (column, row)
