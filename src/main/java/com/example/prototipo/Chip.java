@@ -78,15 +78,18 @@ public class Chip extends Group {
 
                 //si pertenecen al mismo gridPane no se suelta el Chip.
                 if (firstCircleGridName.equals(secondCircleGridName)) return;
+                //mira si alguno de los elementos de closeCircles tiene un cable.
+                boolean someHaveCables = closeCircles.stream().anyMatch(CustomCircle::hasCable);
 
-                if (closeCircles.size() == 8) {
+                //solo suelta el chip si hay 8 circulos en la colección y no tienen cables.
+                if (closeCircles.size() == 8 && !someHaveCables) {
                     //por cada circulo se le setea el estado de ocupado.
                     closeCircles.forEach(circle -> {
                         circle.setisTaken(true);
                     });
-                }
 
-                Utils.makeUndraggableNode(this);
+                    Utils.makeUndraggableNode(this);
+                }
             }
         });
     }
