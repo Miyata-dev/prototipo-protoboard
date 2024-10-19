@@ -29,12 +29,11 @@ public class LED extends Group {
         this.UniqueId = customShape.getUniqueID();
         this.basurero = basurero;
         this.root = root;
-        LedFunction();
 
         Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());
         init(customShape);
         gridPaneObserver.addLeds(this);
-
+        LedFunction();
 
         //Este AtomicBoolean lo que hace es que cada vez que se haga click en el LED el setisTaken sea siempre false
         AtomicBoolean LegTaken = new AtomicBoolean(true);

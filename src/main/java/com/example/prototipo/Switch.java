@@ -170,7 +170,7 @@ public class Switch extends Group {//Se utiliza un rectangulo para hacer un cuad
     //Este metodo lo que hace es pintar El gridpane segun el GridPane que corresponda
     public  void PaintSwitch(ID id, CustomShape customShape, CustomCircle Leg, ArrayList<Cable> cables) {
 
-        Utils.paintCircles(this.gridPaneObserver, id, Leg.getState());
+        //Utils.paintCircles(this.gridPaneObserver, id, Leg.getState());
 //        if (this.gridPaneObserver.getFirstGridPaneTrail().getName().equals(id.getGridName())) {
 //            //Llamamos a la funcion de Pintar
 //            Utils.paintCircles(this.gridPaneObserver, id, Leg.getState());

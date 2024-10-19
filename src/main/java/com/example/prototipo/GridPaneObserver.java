@@ -67,7 +67,14 @@ public class GridPaneObserver {
     }
 
     public static void addColumn(GridPaneObserver gridPaneObserver, ArrayList<CustomCircle> column, Integer energy) {
-        gridPaneObserver.addColumn(column, energy);
+        if (column.isEmpty()) return;
+
+        //solo se agrega la columna si no está quemada.
+        if (!column.get(0).getIsBurned()) {
+            gridPaneObserver.addColumn(column, energy);
+        }
+
+        //gridPaneObserver.addColumn(column, energy);
     }
 
     public void removeColumn(ArrayList<CustomCircle> column) {
@@ -207,20 +214,14 @@ public class GridPaneObserver {
             if(cable.getFirstCircle().getState() == cable.getSecondCircle().getState()){
                 cable.setTipodecarga(cable.getFirstCircle().getState());
             } else {
-                CustomCircle firstCircle = cable.getFirstCircle();
-                CustomCircle secondCircle = cable.getSecondCircle();
-                //Cuando los estados de los circulos son distintos, deberia suceder el cortocircuito
-                if(firstCircle.hasEnergy() && secondCircle.hasEnergy()){ //TODO implementar el corto circuito en todos los casos.
-                    //se mira que los círculos tengan carga distinta.
-                    System.out.println("corto circuito");
+                //quema arbitrariamente la segunda.
+                if (cable.getFirstCircle().hasEnergy() && cable.getSecondCircle().hasEnergy()) {
+                    ArrayList<CustomCircle> circleToBurn = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
 
-                    ArrayList<CustomCircle> firstColumn = getCircles(gridPaneObserver, firstCircle.getID());
-                    ArrayList<CustomCircle> secondColumn = getCircles(gridPaneObserver, secondCircle.getID());
+                    circleToBurn.forEach(CustomCircle::setBurned);
 
-                    //se queman los círculos.
-                    firstColumn.forEach(CustomCircle::setBurned);
-                    secondColumn.forEach(CustomCircle::setBurned);
-
+                    System.out.println("quemando columna...");
+                    return;
                 }
             }
         }

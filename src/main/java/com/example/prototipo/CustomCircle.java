@@ -43,12 +43,13 @@ public class CustomCircle extends Circle {
 
 
     public void setState(int state) {
-        if (state == 0) return; //si el estado es igual a 0, entonces no se toma encuanta como un vaLor valido.
         //si el círculo está quemado sin importar la carga que tenga se coloca como negro pq está qyemado.
         if (isBurned) {
             this.setFill(Color.BLACK);
             return;
         }; //si está quemado no se pasa el estado.
+
+        if (state == 0) return; //si el estado es igual a 0, entonces no se toma encuanta como un vaLor valido.
 
         this.state = state;
 
