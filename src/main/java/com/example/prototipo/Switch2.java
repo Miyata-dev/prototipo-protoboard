@@ -7,6 +7,7 @@ import javafx.scene.layout.AnchorPane;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+
 public class Switch2 extends Group {
     private ImageView Shape;
     private CustomCircle Leg1;
@@ -27,6 +28,8 @@ public class Switch2 extends Group {
         this.gridPaneObserver = gridPaneObserver;
         this.root = root;
         this.basurero = basurero;
+
+        //Se crea la figura
         this.init();
 
 
@@ -85,10 +88,10 @@ public class Switch2 extends Group {
         this.Leg4.setisTaken(true);
 
         //Ahora movemos los circulos en X
-        this.Leg1.setTranslateX(x-15);
-        this.Leg2.setTranslateX(x+15);
-        this.Leg3.setTranslateX(x-15);
-        this.Leg4.setTranslateX(x+15);
+        this.Leg1.setTranslateX(x-17.5);
+        this.Leg2.setTranslateX(x+17.5);
+        this.Leg3.setTranslateX(x-17.5);
+        this.Leg4.setTranslateX(x+17.5);
 
         //Ahora movemos los circulos en Y
         this.Leg1.setTranslateY(y+20);
@@ -96,6 +99,7 @@ public class Switch2 extends Group {
         this.Leg3.setTranslateY(y-20);
         this.Leg4.setTranslateY(y-20);
 
+        //A los circulos se le asignaran sus coordenadas cuando el elemento ya no sea draggable por el UnDragglableNode del Utils
 
         //Agregamos la Imagen y los CustomCircle al grupo del Switch
         this.getChildren().add(this.Shape);
@@ -103,6 +107,11 @@ public class Switch2 extends Group {
         this.getChildren().add(this.Leg2);
         this.getChildren().add(this.Leg3);
         this.getChildren().add(this.Leg4);
+    }
+
+    //Este metodo lo que hara
+    public void snapFigure(){
+
     }
 
 
