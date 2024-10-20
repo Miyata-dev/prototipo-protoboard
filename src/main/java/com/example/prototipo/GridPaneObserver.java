@@ -55,6 +55,14 @@ public class GridPaneObserver {
         cables.add(cable);
     }
 
+    public void addResisencia(Resistencia resistencia) {
+        resistencias.add(resistencia);
+    }
+
+    public void removeResisencia(Resistencia resistencia) {
+        resistencias.remove(resistencia);
+    }
+
     public void removeCable(Cable cable) {
         cables.remove(cable);
     }
@@ -308,6 +316,10 @@ public class GridPaneObserver {
 
     public ArrayList<Cable> getCables() {
         return cables;
+    }
+
+    public ArrayList<Resistencia> getResistencias() {
+        return resistencias;
     }
 
     public ArrayList<LED> getLeds(){

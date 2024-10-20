@@ -64,6 +64,10 @@ public class Cable extends Line {
         this.randomID = Utils.createRandomID();
     }
 
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
     public void setLine(double startX, double startY, double endX, double endY) {
         setStartX(startX);
         setStartY(startY);
@@ -141,6 +145,10 @@ public class Cable extends Line {
 
     public CustomCircle[] Getcircles(){
         return this.circles;
+    }
+
+    public String getTipo() {
+        return tipo;
     }
 
     //calcula el largo de la linea

@@ -139,10 +139,6 @@ public class ClickLine {
             int carga;
             carga = CurrentLine.getTipodecarga();
             //String previousID = CurrentLine.getRandomID();
-            CurrentLine = new Cable(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
-            CurrentLine.setTipodecarga(carga);
-            CurrentLine.setStrokeWidth(5);
-            CurrentLine.setRandomID();
 
             if (isResistenciaModeActive) {
                 resistencia = new Resistencia(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY(), 10);
@@ -151,6 +147,10 @@ public class ClickLine {
                 resistencia.setRandomID();
                 root.getChildren().add(resistencia);
             } else {
+                CurrentLine = new Cable(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY());
+                CurrentLine.setTipodecarga(carga);
+                CurrentLine.setStrokeWidth(5);
+                CurrentLine.setRandomID();
                 root.getChildren().add(CurrentLine);
             }
         }
@@ -271,6 +271,11 @@ public class ClickLine {
 
         if (isResistenciaModeActive) {
             resistencia.createRectangle();
+            gridPaneObserver.addResisencia(resistencia);
+            resistencia.SetCircles(new CustomCircle[] {
+                    StartHandler,
+                    EndHandler
+            });
         }
 
         EndHandler.setisTaken(true);

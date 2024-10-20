@@ -2,16 +2,17 @@ package com.example.prototipo;
 
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 public class Resistencia extends Cable {
     private double voltaje;
+    private Rectangle rec;
 
     public Resistencia(double voltaje){
         this.voltaje = voltaje;
         this.setStroke(Color.RED);
         this.setStrokeWidth(5);
+        this.setTipo("resistencia");
     }
 
     public Resistencia(double startX, double startY, double endX, double endY, double voltaje) {
@@ -22,10 +23,11 @@ public class Resistencia extends Cable {
         this.setStroke(Color.RED);
         this.setStrokeWidth(5);
         this.setRandomID();
+        this.setTipo("resistencia");
     }
 
     public void createRectangle() {
-        Rectangle rectangle = new Rectangle(14, 14);
+        rec = new Rectangle(14, 14);
 
         //coloca el angulo de forma correcta.
         double deltaX = this.getEndX() - this.getStartX();
@@ -36,14 +38,14 @@ public class Resistencia extends Cable {
         double medioY = (this.getStartY() + this.getEndY()) / 2;
 
         // Posicionar el rectángulo en el punto medio de la línea
-        rectangle.setX(medioX - rectangle.getWidth() / 2);
-        rectangle.setY(medioY - rectangle.getHeight() / 2);
+        rec.setX(medioX - rec.getWidth() / 2);
+        rec.setY(medioY - rec.getHeight() / 2);
 
         // Rotar el rectángulo para que siga el ángulo de la línea
-        rectangle.setRotate(angle);
-        rectangle.setFill(Color.BLACK);
+        rec.setRotate(angle);
+        rec.setFill(Color.BLACK);
 
-        ((AnchorPane) this.getParent()).getChildren().add(rectangle);
+        ((AnchorPane) this.getParent()).getChildren().add(rec);
     }
 
     public void setVoltaje(double voltaje) {
@@ -51,5 +53,18 @@ public class Resistencia extends Cable {
     }
     public double getVoltaje(){
         return voltaje;
+    }
+    public Rectangle getRec() {
+        return rec;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof Resistencia)) return false;
+
+        Resistencia other = (Resistencia) obj;
+
+        return this.getRandomID().equals(other.getRandomID());
     }
 }

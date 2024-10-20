@@ -17,17 +17,6 @@ public class Utils {
     public Utils() {
     }
 
-    //pinta una columna dependiendo del estado, este método se creó para mejorar la legibilidad del código.
-    public static void paintCirclesCollection(GridPaneObserver gridPaneObserver, ArrayList<CustomCircle> column, int state) {
-        if (!gridPaneObserver.getIsEnergyActivated()) return;
-
-        System.out.println("is activated?: " + gridPaneObserver.getIsEnergyActivated());
-        column.forEach(circle -> {
-            circle.setState(state);
-        });
-        //se registra en el gridPane la columna afectada.
-        gridPaneObserver.addColumn(column, state);
-    }
     //este método agrega un círclo a la colección que recibe como parámetro solo si son de la misma columna.
     private static void addCirclesFromSameColumn(ID id, Iterator<Node> fristCircleToPaint, ArrayList<CustomCircle> circles) {
         while(fristCircleToPaint.hasNext()) {
@@ -220,15 +209,12 @@ public class Utils {
         //se recupera el nodo que se presiona.
         Node pressedNode = (Node) e.getTarget();
         if (!(e.getTarget() instanceof Cable pressedCable)) return;
-        //se tiene que obtener el cable de la coleccion, sino la información de los círculos se pierde.
-        Cable cableFound = getCableByID(cables, pressedCable);
+
+        System.out.println("id from node presses: " + pressedCable.getRandomID());
+
         //se recupera las ids del cable para poder ver donde pasar la energia.
         ID firstID = pressedCable.getIds()[0]; //firstCircle = pressedCable.getFirstCircle();
         ID secondID = pressedCable.getIds()[1];
-
-        //se obtiene
-        CustomCircle firstCircle = cableFound.getFirstCircle();
-        CustomCircle secondCircle = cableFound.getSecondCircle();
 
         //como se llama a esta instrucción muchas veecs dentro del programa y no es necesario
         //un método para la instrucción, entonces se ocupa el Consumer.
@@ -238,57 +224,87 @@ public class Utils {
             ((AnchorPane) pressedNode.getParent()).getChildren().remove(cable);
         };
 
-        //se mira el caso específico que el cable esté conectado gridVolt -> led o led -> gridVolt.
-        if (firstID.getGridName().contains(gridPaneObserver.getGridVoltPrefix()) && secondID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
-            deleteCableFromGridPane.accept(cableFound);
-            return;
-        } else if (secondID.getGridName().contains(gridPaneObserver.getGridVoltPrefix()) && firstID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
-            deleteCableFromGridPane.accept(cableFound);
-            return;
-        }
+        Consumer<Resistencia> deleteResistenciaFromGridPane = (resistencia) -> {
+            ResetStateCustomCircles(resistencia);
+            gridPaneObserver.removeResisencia(resistencia);
+            gridPaneObserver.removeCable(resistencia);
+            ((AnchorPane) resistencia.getParent()).getChildren().remove(resistencia.getRec());
+            ((AnchorPane) resistencia.getParent()).getChildren().remove(resistencia);
+        };
 
-        //se mira el caso específico que el cable esté conectado gridVolt -> switch o switch -> gridVolt.
-        if (firstID.getGridName().contains(gridPaneObserver.getGridVoltPrefix()) && secondID.getGridName().contains(gridPaneObserver.getSwitchIdPrefix())) {
-            deleteCableFromGridPane.accept(cableFound);
-            return;
-        } else if (secondID.getGridName().contains(gridPaneObserver.getGridVoltPrefix()) && firstID.getGridName().contains(gridPaneObserver.getSwitchIdPrefix())) {
-            deleteCableFromGridPane.accept(cableFound);
-            return;
-        }
+        //si es un cable entra aquí.
+        if (pressedCable.getTipo() == null) {
+            //se tiene que obtener el cable de la coleccion, sino la información de los círculos se pierde.
+            Cable cableFound = getCableByID(cables, pressedCable);
+            //se obtiene
+            CustomCircle firstCircle = cableFound.getFirstCircle();
+            CustomCircle secondCircle = cableFound.getSecondCircle();
 
-        //antes de entrar a los casos de gridPanes, se mira que uno de los cables esté conectado a un led.
-        if (firstID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
-            System.out.println("first id is from a led");
-            unPaintCircles(gridPaneObserver, secondCircle);
-            deleteCableFromGridPane.accept(cableFound);
-            return;
-        } else if (secondID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
-            System.out.println("second id is from a led");
-            unPaintCircles(gridPaneObserver, firstCircle);
-            deleteCableFromGridPane.accept(cableFound);
-            return;
-        }
-        //mira si la primera ID pertenece a un switch, si pertenece a uno, entonces
-        if (firstID.getGridName().contains(gridPaneObserver.getSwitchIdPrefix())) {
-            System.out.println("first id is from a switch");
-            unPaintCircles(gridPaneObserver, secondCircle);
-            deleteCableFromGridPane.accept(cableFound);
-            return;
-        } else if (secondID.getGridName().contains(gridPaneObserver.getSwitchIdPrefix())) {
-            System.out.println("second id is from a switch");
-            unPaintCircles(gridPaneObserver, firstCircle);
-            deleteCableFromGridPane.accept(cableFound);
-            return;
-        }
-        ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable, false);
+            //se mira el caso específico que el cable esté conectado gridVolt -> led o led -> gridVolt.
+            if (firstID.getGridName().contains(gridPaneObserver.getGridVoltPrefix()) && secondID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
+                deleteCableFromGridPane.accept(cableFound);
+                return;
+            } else if (secondID.getGridName().contains(gridPaneObserver.getGridVoltPrefix()) && firstID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
+                deleteCableFromGridPane.accept(cableFound);
+                return;
+            }
 
-        for (Cable cable : connectedCables) {
-            unPaintCircles(gridPaneObserver, cable.getSecondCircle());
-            unPaintCircles(gridPaneObserver, cable.getFirstCircle());
+            //se mira el caso específico que el cable esté conectado gridVolt -> switch o switch -> gridVolt.
+            if (firstID.getGridName().contains(gridPaneObserver.getGridVoltPrefix()) && secondID.getGridName().contains(gridPaneObserver.getSwitchIdPrefix())) {
+                deleteCableFromGridPane.accept(cableFound);
+                return;
+            } else if (secondID.getGridName().contains(gridPaneObserver.getGridVoltPrefix()) && firstID.getGridName().contains(gridPaneObserver.getSwitchIdPrefix())) {
+                deleteCableFromGridPane.accept(cableFound);
+                return;
+            }
+
+            //antes de entrar a los casos de gridPanes, se mira que uno de los cables esté conectado a un led.
+            if (firstID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
+                System.out.println("first id is from a led");
+                unPaintCircles(gridPaneObserver, secondCircle);
+                deleteCableFromGridPane.accept(cableFound);
+                return;
+            } else if (secondID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
+                System.out.println("second id is from a led");
+                unPaintCircles(gridPaneObserver, firstCircle);
+                deleteCableFromGridPane.accept(cableFound);
+                return;
+            }
+            //mira si la primera ID pertenece a un switch, si pertenece a uno, entonces
+            if (firstID.getGridName().contains(gridPaneObserver.getSwitchIdPrefix())) {
+                System.out.println("first id is from a switch");
+                unPaintCircles(gridPaneObserver, secondCircle);
+                deleteCableFromGridPane.accept(cableFound);
+                return;
+            } else if (secondID.getGridName().contains(gridPaneObserver.getSwitchIdPrefix())) {
+                System.out.println("second id is from a switch");
+                unPaintCircles(gridPaneObserver, firstCircle);
+                deleteCableFromGridPane.accept(cableFound);
+                return;
+            }
+            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable, false);
+
+            for (Cable cable : connectedCables) {
+                unPaintCircles(gridPaneObserver, cable.getSecondCircle());
+                unPaintCircles(gridPaneObserver, cable.getFirstCircle());
+            }
+            ResetStateCustomCircles(cableFound);
+            gridPaneObserver.removeCable(cableFound);
+            ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
+        } else {
+            System.out.println("removing resistencia...");
+
+            Resistencia recistenciaFound = null;
+
+            for (Resistencia c : gridPaneObserver.getResistencias()) {
+                System.out.println("resistencia: " + c + " id: " + c.getRandomID());
+                if (c.equals(pressedCable)) {
+                    recistenciaFound = c;
+                }
+            }
+            deleteResistenciaFromGridPane.accept(recistenciaFound);
+
         }
-        ResetStateCustomCircles(cableFound);
-        gridPaneObserver.removeCable(cableFound);
-        ((AnchorPane) pressedNode.getParent()).getChildren().remove(pressedNode);
     }
 
     public static void ResetStateCustomCircles(Cable pressedCable) {
