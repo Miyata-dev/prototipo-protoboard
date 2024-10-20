@@ -139,6 +139,7 @@ public class Switch2 extends Group {
         });
         this.setOnMouseReleased(e->{
             closestCircles.clear();
+            //isPlacedCorrectly = false;
 
             //Obtenemos la ubicacion de la imagen del Switch para asi asignarle las coordenadas al cada pata
             double x = Shape.localToScreen(Shape.getX(), Shape.getY()).getX() + 25;
@@ -155,6 +156,7 @@ public class Switch2 extends Group {
             for (CustomCircle leg : Legs) {
                 CustomCircle circleFound = Utils.getClosestCircle(circlesCollecition,leg.getX(), leg.getY());
 
+                if(circleFound.hasCable()) return;
 
                 double distanceY = Math.abs(leg.getY() - circleFound.getY());
                 if( distanceY >= maxRange){
@@ -190,6 +192,7 @@ public class Switch2 extends Group {
                         Cable cable = new Cable (Legs.get(i.get()), circle);
                         circle.setCable(cable);
                         Legs.get(i.get()).setCable(cable);
+                        gridPaneObserver.getRoot().getChildren().add(cable);
                         System.out.println("cable: " + cable.getFirstCircle().getID() +" || "+   cable.getSecondCircle().getID());
                         i.getAndIncrement();
                     });

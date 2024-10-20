@@ -61,6 +61,10 @@ public class Chip extends Group {
                 CustomCircle closestCircle = Utils.getClosestCircle(gridPaneObserver.getCirclesCollection(), coord[0], coord[1]);
 
                 double distanceY = Math.abs(coord[1] - closestCircle.getY());
+
+                //Si al menos uno de los circulos encontrados tiene un cable se sale del metodo
+                if (closestCircle.hasCable()) return;
+
                 //se mira que la distancia entre el las coordenadas x e y sean válidas
                 if (distanceY >= maxRange) {
                     isPlacedCorrectly = false;
@@ -85,9 +89,11 @@ public class Chip extends Group {
                     closeCircles.forEach(circle -> {
                         circle.setisTaken(true);
                     });
+
+                    //Unicamente el Chip deberia ser Undraggable cuando la cantidad de circulos encontrados son 8
+                    Utils.makeUndraggableNode(this);
                 }
 
-                Utils.makeUndraggableNode(this);
             }
         });
     }
