@@ -29,6 +29,7 @@ public class Resistencia extends Cable {
         this.setStrokeWidth(5);
         this.setRandomID();
         this.setTipo("resistencia");
+        System.out.println("tipo en constructor: " + this.getTipo());
     }
 
     public void createRectangle() {
@@ -81,6 +82,12 @@ public class Resistencia extends Cable {
     }
     public Path getArrow(){
         return arrow;
+    }
+
+    @Override
+    public void setBurned() {
+        super.setBurned();
+        arrow.setFill(Color.BROWN);
     }
 
     @Override

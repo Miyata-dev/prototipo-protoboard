@@ -1,5 +1,6 @@
 package com.example.prototipo;
 
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ public class Cable extends Line {
     private String randomID; //esta id se da valor con un setter, no en el constructor.
     private CustomCircle[] circles;
     private String tipo; //null == Normal, resistencia == resistencia
+    private boolean isBurned = false;
 
     public Cable() {
         this.tipodecarga = 0;
@@ -73,6 +75,12 @@ public class Cable extends Line {
 
     public void setRandomID() {
         this.randomID = Utils.createRandomID();
+    }
+
+    public void setBurned() {
+        System.out.println("burning...");
+        this.isBurned = true;
+        this.setStroke(Color.BROWN);
     }
 
     public void setTipo(String tipo) {

@@ -275,6 +275,7 @@ public class ClickLine {
                 StartHandler,
                 EndHandler
             });
+            current.setTipo("resistencia");
         }
 
         EndHandler.setisTaken(true);

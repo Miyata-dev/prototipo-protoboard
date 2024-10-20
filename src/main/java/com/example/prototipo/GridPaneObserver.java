@@ -2,6 +2,7 @@ package com.example.prototipo;
 
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import jdk.jshell.execution.Util;
 
 import java.util.ArrayList;
@@ -160,11 +161,26 @@ public class GridPaneObserver {
                 GridPaneObserver.addColumn(gridPane, circles, firstCol.getState());
             }
             if (secondCol.getState() != 0 && firstCol.getState() == 0) {
-                ArrayList<CustomCircle> circles = getCircles(gridPane, firstCol.getID());
-                //Utils.paintCirclesCollection(this, circles, secondCol.getState());
-                GridPaneObserver.addColumn(gridPane, circles, secondCol.getState());
+
+                System.out.println("tipo: " + cable.getTipo());
+
+                if (cable.getTipo() == null) {
+                    ArrayList<CustomCircle> circles = getCircles(gridPane, firstCol.getID());
+                    //Utils.paintCirclesCollection(this, circles, secondCol.getState());
+                    GridPaneObserver.addColumn(gridPane, circles, secondCol.getState());
+                } else {
+                    //busca una resistencia que tenga la misma id random que el cable que estamos mirando en la iteración.
+                    Resistencia founded = gridPane.getResistencias().stream()
+                        .filter(el -> el.getRandomID().equals(cable.getRandomID()))
+                        .findAny()
+                        .orElse(null);
+
+                    founded.setBurned();
+
+                }
             }
         });
+
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
         gridPane.getEnergizedColumns().forEach(pair -> {
             Integer energy = pair.getFirstValue();
