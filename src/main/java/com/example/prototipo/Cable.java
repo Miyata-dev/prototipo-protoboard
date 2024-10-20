@@ -10,6 +10,7 @@ public class Cable extends Line {
     private ID[] ids; //Contiene las id que tienen los CustomCircle a los que se conectan
     private String randomID; //esta id se da valor con un setter, no en el constructor.
     private CustomCircle[] circles;
+    private String tipo; //null == Normal, resistencia == resistencia
 
     public Cable() {
         this.tipodecarga = 0;

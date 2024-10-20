@@ -132,8 +132,16 @@ public class MainController {
         parent.getChildren().add(chip);
     }
 
-    public void setModoRecistencia() {
-        clickLineMatrizUno.setisResistenciaModeActive(true);
+    public void setModoResistencia(ActionEvent event) {
+
+        Button button = (Button) event.getSource();
+        if(clickLineMatrizUno.getResistenciaMode()){
+            button.setText("Activar resistencia");
+            clickLineMatrizUno.setisResistenciaModeActive(false);
+        }else{
+            button.setText("Desactivar resistencia");
+            clickLineMatrizUno.setisResistenciaModeActive(true);
+        }
     }
 
     public void toggleProtoBoard(ActionEvent a) {

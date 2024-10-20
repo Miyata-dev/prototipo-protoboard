@@ -62,7 +62,6 @@ public class GridPaneObserver {
     public void addColumn(ArrayList<CustomCircle> column, Integer energy) {
         //si la columna está vacía, no se agrega a la colección
         if (column.isEmpty()) return;
-
         System.out.println("nro de elementos: " + column.size());
         energizedColumns.add(new Pair<>(energy, column));
     }
@@ -102,7 +101,6 @@ public class GridPaneObserver {
         //remueve la energía que tiene el gridPane
         energizedColumns.forEach(pair -> {
             ArrayList<CustomCircle> col = pair.getSecondValue();
-
             col.forEach(CustomCircle::removeEnergy);
         });
 

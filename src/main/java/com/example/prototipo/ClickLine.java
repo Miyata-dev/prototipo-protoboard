@@ -146,6 +146,9 @@ public class ClickLine {
 
             if (isResistenciaModeActive) {
                 resistencia = new Resistencia(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY(), 10);
+                resistencia.setTipodecarga(carga);
+                resistencia.setStrokeWidth(5);
+                resistencia.setRandomID();
                 root.getChildren().add(resistencia);
             } else {
                 root.getChildren().add(CurrentLine);
@@ -170,12 +173,10 @@ public class ClickLine {
                     CurrentLine.setEndX(x);
                     CurrentLine.setEndY(y);
                 } else {
-                    System.out.println("im hereeeee");
                     resistencia.setEndX(x);
                     resistencia.setEndY(y);
                 }
             }
-            System.out.println("cable length: " + CurrentLine.getLineWidth());
         }
     }
     //TODO colocar setIsTaken en el deleteCable.
@@ -207,7 +208,11 @@ public class ClickLine {
             if (StartHandler == null && circle.hasEnergy()) return;
 
             if( ! (( (CustomCircle) e.getTarget() ).hasCable()) && !isCableFixed){
-                root.getChildren().remove(CurrentLine);
+                if(isResistenciaModeActive){
+                    root.getChildren().remove(resistencia);
+                }else{
+                    root.getChildren().remove(CurrentLine);
+                }
             }
 
             if (StartHandler != null){
@@ -220,8 +225,15 @@ public class ClickLine {
         //si no se hace esto, los cables de la coleccion terminan siendo iguales al ultimo cable.
         Cable current = new Cable();
 
-        current.setIds(CurrentLine.getIds());
-        current.setRandomID(CurrentLine.getRandomID());
+        if(!getResistenciaMode()){
+            CurrentLine.setIds(ids);
+            current.setIds(CurrentLine.getIds());
+            current.setRandomID(CurrentLine.getRandomID());
+        }else{
+            resistencia.setIds(ids);
+            current.setIds(resistencia.getIds());
+            current.setRandomID(resistencia.getRandomID());
+        }
         current.SetCircles(new CustomCircle[] {
                 StartHandler,
                 EndHandler
@@ -231,7 +243,11 @@ public class ClickLine {
         if (current.getFirstCircle().getState() == 0 && current.getSecondCircle().getState() == 0) {
             current.removeTipodecarga();
         } else { //si uno de los circulos tiene energía, entonces no se le quita la energía.
+            if(!getResistenciaMode()){
             current.setTipodecarga(CurrentLine.getTipodecarga());
+            }else{
+                current.setTipodecarga(resistencia.getTipodecarga());
+            }
         }
 
         StartHandler.setCable(current);
@@ -257,6 +273,7 @@ public class ClickLine {
             resistencia.createRectangle();
         }
 
+        EndHandler.setisTaken(true);
         StartHandler = null;
         EndHandler = null;
     }
@@ -309,5 +326,9 @@ public class ClickLine {
 
     public void setisResistenciaModeActive(boolean resistenciaModeActive) {
         this.isResistenciaModeActive = resistenciaModeActive;
+    }
+
+    public boolean getResistenciaMode(){
+        return isResistenciaModeActive;
     }
 }
