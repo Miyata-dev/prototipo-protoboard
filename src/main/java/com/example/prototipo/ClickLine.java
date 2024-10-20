@@ -5,11 +5,14 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ClickLine {
     private Cable CurrentLine;
+    private Resistencia resistencia;
     private CustomCircle StartHandler;
     private CustomCircle EndHandler;
     private GridPaneObserver gridPaneObserver;
@@ -21,6 +24,7 @@ public class ClickLine {
     private ArrayList<CustomShape> shapes = new ArrayList<>();
     private boolean isCableFixed = false;
     //private ArrayList<Cable> cables;
+    private boolean isResistenciaModeActive = false;
 
     public ClickLine(AnchorPane root, GridPaneObserver gridPaneObserver, Basurero basurero, Bateria bateria, ArrayList<Cable> cables, ArrayList<LED> leds, ArrayList<Switch> switches) {
         this.root = root;
@@ -32,7 +36,7 @@ public class ClickLine {
         gridPaneObserver.setSwitches(switches);
         ids = new ID[2];
         CurrentLine = new Cable();
-
+        resistencia = new Resistencia(10);
     }
 
     public void CircleAsignator(){
@@ -140,7 +144,12 @@ public class ClickLine {
             CurrentLine.setStrokeWidth(5);
             CurrentLine.setRandomID();
 
-            root.getChildren().add(CurrentLine);
+            if (isResistenciaModeActive) {
+                resistencia = new Resistencia(Event.getSceneX(), Event.getSceneY(), Event.getX(), Event.getY(), 10);
+                root.getChildren().add(resistencia);
+            } else {
+                root.getChildren().add(CurrentLine);
+            }
         }
     }
 
@@ -156,8 +165,15 @@ public class ClickLine {
             //se da valor del cable de nuevo, ya que el EndHandler se actualiza, y por ende pierdse el valor del cable.
 
             if(!(ID.isSameID(ids[0], ids[1]))){
-                CurrentLine.setEndX(x);
-                CurrentLine.setEndY(y);
+
+                if (!isResistenciaModeActive) {
+                    CurrentLine.setEndX(x);
+                    CurrentLine.setEndY(y);
+                } else {
+                    System.out.println("im hereeeee");
+                    resistencia.setEndX(x);
+                    resistencia.setEndY(y);
+                }
             }
             System.out.println("cable length: " + CurrentLine.getLineWidth());
         }
@@ -237,6 +253,9 @@ public class ClickLine {
             }
         }
 
+        if (isResistenciaModeActive) {
+            resistencia.createRectangle();
+        }
 
         StartHandler = null;
         EndHandler = null;
@@ -286,5 +305,9 @@ public class ClickLine {
             }
         }
         return null;
+    }
+
+    public void setisResistenciaModeActive(boolean resistenciaModeActive) {
+        this.isResistenciaModeActive = resistenciaModeActive;
     }
 }

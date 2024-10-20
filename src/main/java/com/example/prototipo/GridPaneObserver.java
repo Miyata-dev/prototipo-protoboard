@@ -14,6 +14,7 @@ public class GridPaneObserver {
     private GridPaneController firstGridPaneVolt;
     private GridPaneController secondGridPaneVolt;
     private ArrayList<Cable> cables = new ArrayList<>();
+    private ArrayList<Resistencia> resistencias = new ArrayList<>();
     private ArrayList<LED> leds = new ArrayList<>();
     private ArrayList<Switch> switches = new ArrayList<>();
     //guarda las columnas con energía y la energía que tienen.
