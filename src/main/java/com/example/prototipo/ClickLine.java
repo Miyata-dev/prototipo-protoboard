@@ -273,8 +273,8 @@ public class ClickLine {
             resistencia.createRectangle();
             gridPaneObserver.addResisencia(resistencia);
             resistencia.SetCircles(new CustomCircle[] {
-                    StartHandler,
-                    EndHandler
+                StartHandler,
+                EndHandler
             });
         }
 
