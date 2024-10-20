@@ -4,6 +4,7 @@ package com.example.prototipo;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -18,6 +19,8 @@ public class Switch2 extends Group {
     private CustomCircle Leg4;
 
     private ArrayList<CustomCircle> Legs = new ArrayList<>(); // son las patas que tiene el Switch2
+    private CustomCircle[] UpperLegs;
+    private CustomCircle[] LowerLegs;
 
     private Boolean ChargePass;
     private String UniqueId;
@@ -25,6 +28,8 @@ public class Switch2 extends Group {
     private AnchorPane root;
     private Basurero basurero;
     private Boolean isPlacedCorrectly = true;
+    private Boolean isUndragableAlready;
+    private Boolean isBurned;
 
     public Switch2(Boolean chargePass, GridPaneObserver gridPaneObserver, AnchorPane root, Basurero basurero){
         //Le damos una ID unica
@@ -33,6 +38,8 @@ public class Switch2 extends Group {
         this.gridPaneObserver = gridPaneObserver;
         this.root = root;
         this.basurero = basurero;
+        this.isUndragableAlready = false;
+        this.isBurned=false;
 
         //Se crea la figura
         this.init();
@@ -92,10 +99,10 @@ public class Switch2 extends Group {
         this.Leg4.setTranslateX(x+17.5);
 
         //Ahora movemos los circulos en Y
-        this.Leg1.setTranslateY(y+20);
-        this.Leg2.setTranslateY(y+20);
-        this.Leg3.setTranslateY(y-20);
-        this.Leg4.setTranslateY(y-20);
+        this.Leg1.setTranslateY(y-20);
+        this.Leg2.setTranslateY(y-20);
+        this.Leg3.setTranslateY(y+20);
+        this.Leg4.setTranslateY(y+20);
 
         //A los circulos se le asignaran sus coordenadas cuando el elemento ya no sea draggable por el UnDragglableNode del Utils
 
@@ -104,6 +111,17 @@ public class Switch2 extends Group {
         this.Legs.add(this.Leg2);
         this.Legs.add(this.Leg3);
         this.Legs.add(this.Leg4);
+
+
+        //Ahora lo Agregamos a u
+        this.UpperLegs = new CustomCircle[]{
+                Legs.get(0),
+                Legs.get(1)
+        };
+        this.LowerLegs = new CustomCircle[]{
+                Legs.get(2),
+                Legs.get(3)
+        };
 
         //Agregamos la Imagen y los CustomCircle al grupo del Switch
         this.getChildren().add(this.Shape);
@@ -135,6 +153,13 @@ public class Switch2 extends Group {
                     //y despues lo eliminamos visualmente
                     root.getChildren().remove(leg.getCable());
                 }
+
+            } else {
+                if(isUndragableAlready && !isBurned){
+                    //Cuando el basurero no este activo y ya no se puede mover y se de un click se actualiza el estado
+                    this.ChargePass = !this.ChargePass;
+                    Function();
+                }
             }
         });
         this.setOnMouseReleased(e->{
@@ -146,10 +171,10 @@ public class Switch2 extends Group {
             double y = Shape.localToScreen(Shape.getX(), Shape.getY()).getY() + 25;
 
             //Les setteamos las coordenadas correspondientes
-            this.Leg1.setCoords(x-17.5, y+20);
-            this.Leg2.setCoords(x+17.5, y+20);
-            this.Leg3.setCoords(x-17.5, y-20);
-            this.Leg4.setCoords(x+17.5, y-20);
+            this.Leg1.setCoords(x-17.5, y-20);
+            this.Leg2.setCoords(x+17.5, y-20);
+            this.Leg3.setCoords(x-17.5, y+20);
+            this.Leg4.setCoords(x+17.5, y+20);
 
             double maxRange = (circlesCollecition.get(0).getRadius() * 2) - (Leg1.getRadius() * 2) +  4; //ese es el rango maximo que puede tener.
 
@@ -197,23 +222,48 @@ public class Switch2 extends Group {
                         circle.setCable(cable);
                         Legs.get(i.get()).setCable(cable);
                         gridPaneObserver.addCable(cable);
-                        gridPaneObserver.getRoot().getChildren().add(cable);
                         System.out.println("cable: " + cable.getFirstCircle().getID() +" || "+   cable.getSecondCircle().getID());
                         i.getAndIncrement();
                     });
                     System.out.println("-------------------------------------------");
                     Utils.makeUndraggableNode(this);
-                    setEnergyfromClosestCircles(Legs);
+                    this.isUndragableAlready = true;
+                    Function();
                 }
 
             }
         });
     }
 
+
     //Este metodo lo que hara es la funcionalidad del Switch
-    public void ChargePass(){
+    public void Function(){
+        //Si es que aun no esta Fijo entonces se sale del metodo
+        if(!getIsUndragableAlready()){ return;}
+        if(isBurned) {return;}
+        //Actualizamos la energia desde los circulos
+        setEnergyfromClosestCircles(Legs);
+
+        //Preguntamos si los circulos de la parte superior del switch tienen energia
+        if(UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()){
+            //si el estado que tienen las patas son distintos entonces se quema el componente
+           if(UpperLegs[0].getState() != UpperLegs[1].getState()){
+               this.isBurned = true;
+               return;
+           }
+        }
+
+        //hacemos lo mismo pero con las patas inferiores
+        if(LowerLegs[0].hasEnergy() && LowerLegs[1].hasEnergy()){
+            if(LowerLegs[0].getState() != LowerLegs[1].getState()){
+                this.isBurned = true;
+                return;
+            }
+        }
 
     }
+
+
 
 
 
@@ -290,5 +340,8 @@ public class Switch2 extends Group {
     }
     public ArrayList<CustomCircle> getLegs(){
         return this.Legs;
+    }
+    public Boolean getIsUndragableAlready(){
+        return this.isUndragableAlready;
     }
 }
