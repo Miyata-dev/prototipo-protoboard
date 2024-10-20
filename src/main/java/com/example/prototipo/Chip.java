@@ -21,20 +21,22 @@ public class Chip extends Group {
         this.setTranslateY(-100);
 
         Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());
-        manageEvents();
+        manageEvents(customShape);
     }
 
-    private void manageEvents() {
+    private void manageEvents(CustomShape customShape) {
         ArrayList<CustomCircle> circlesFromObserver = gridPaneObserver.getCirclesCollection();
 
         this.setOnMouseClicked(e -> {
-            //TODO desoc
-            if (basurero.getIsActive()) {
+
+            if (basurero.getIsActive() && customShape.getHasMoved()) {
                 gridPaneObserver.getRoot().getChildren().remove(this);
                 closeCircles.forEach(circle -> {
                     circle.setisTaken(false);
                 });
             }
+
+            if (basurero.getIsActive()) customShape.setHasMoved(true);
         });
 
         this.setOnMouseReleased(e -> {
