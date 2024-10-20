@@ -89,12 +89,8 @@ public class GridPaneObserver {
 
     public void removeColumn(ArrayList<CustomCircle> column) {
         //se elimina la columna que tenga la misma id que la columna que se pasa por parametro.
-//        energizedColumns.forEach(el -> {
-//            System.out.println("second value: " + el.getSecondValue());
-//        });
 
         energizedColumns.removeIf(el -> {
-//            System.out.println("EL: "+ el.getSecondValue());
             ID elementID = el.getSecondValue().get(0).getID(); //
             ID columnID = column.get(0).getID(); //se obtiene la id de la columna a partir
 
