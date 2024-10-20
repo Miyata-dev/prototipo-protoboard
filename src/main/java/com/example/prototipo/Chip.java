@@ -24,11 +24,12 @@ public class Chip extends Group {
         manageEvents(customShape);
     }
 
+
     private void manageEvents(CustomShape customShape) {
+        //Conseguimos la coleccion de circulos
         ArrayList<CustomCircle> circlesFromObserver = gridPaneObserver.getCirclesCollection();
 
         this.setOnMouseClicked(e -> {
-
             if (basurero.getIsActive() && customShape.getHasMoved()) {
                 gridPaneObserver.getRoot().getChildren().remove(this);
                 closeCircles.forEach(circle -> {
@@ -62,6 +63,10 @@ public class Chip extends Group {
                 CustomCircle closestCircle = Utils.getClosestCircle(gridPaneObserver.getCirclesCollection(), coord[0], coord[1]);
 
                 double distanceY = Math.abs(coord[1] - closestCircle.getY());
+
+                //Si al menos uno de los circulos encontrados tiene un cable se sale del metodo
+                if (closestCircle.hasCable()) return;
+
                 //se mira que la distancia entre el las coordenadas x e y sean válidas
                 if (distanceY >= maxRange) {
                     isPlacedCorrectly = false;
@@ -80,42 +85,45 @@ public class Chip extends Group {
 
                 //si pertenecen al mismo gridPane no se suelta el Chip.
                 if (firstCircleGridName.equals(secondCircleGridName)) return;
-                //mira si alguno de los elementos de closeCircles tiene un cable.
-                boolean someHaveCables = closeCircles.stream().anyMatch(CustomCircle::hasCable);
 
-                //solo suelta el chip si hay 8 circulos en la colección y no tienen cables.
-                if (closeCircles.size() == 8 && !someHaveCables) {
+                if (closeCircles.size() == 8) {
                     //por cada circulo se le setea el estado de ocupado.
                     closeCircles.forEach(circle -> {
                         circle.setisTaken(true);
                     });
 
+                    //Unicamente el Chip deberia ser Undraggable cuando la cantidad de circulos encontrados son 8
                     Utils.makeUndraggableNode(this);
                 }
+
             }
         });
     }
 
+    //Este metodo lo que hace es crear patas y despues añadirla al grupo
     public void addPatitas(CustomShape customShape) {
         int initailX = 4;
         int initialY = 7;
         int incrementX = 18; //12 -> 18 6 * 4
         double heightDifference = customShape.getHeight() + 7; //para poder crear las patas de artriba y abajo se tiene la diferencia de altura.
 
-        //primer for para crear las patas de arriba
+        //este primer ciclo crea las patas de la parte superior del Chip
         for (int i = 0; i < 4; i++) {
             crearPatita(customShape,initailX + incrementX * i, initialY);
         }
-        //crea las patas de abajo.
+        //crea las patas de la parte inferior del Chip.
         for (int i = 0; i < 4; i++) {
             crearPatita(customShape,initailX + incrementX * i, initialY - heightDifference);
         }
     }
-    //se crea una pata y la agrega al grupo de la clase Chip.
+    //Este metodo crea una pata y la agrega al grupo de la clase Chip.
     private void crearPatita(CustomShape customShape, double xOffSet, double yOffSet) {
+
+        //obtenemos la ubicacion del custom shape
         double widthX = customShape.getX();
         double heightY = customShape.getY();
 
+        //Para asi poder darles una ubicacion a la figura que seria un rectangulo
         Rectangle rectangle = new Rectangle(7, 7);
 
         rectangle.setLayoutY(heightY - yOffSet);

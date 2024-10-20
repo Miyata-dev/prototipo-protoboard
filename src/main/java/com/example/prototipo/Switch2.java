@@ -5,6 +5,8 @@ import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -15,11 +17,14 @@ public class Switch2 extends Group {
     private CustomCircle Leg3;
     private CustomCircle Leg4;
 
+    private ArrayList<CustomCircle> Legs = new ArrayList<>(); // son las patas que tiene el Switch2
+
     private Boolean ChargePass;
     private String UniqueId;
     private GridPaneObserver gridPaneObserver;
     private AnchorPane root;
     private Basurero basurero;
+    private Boolean isPlacedCorrectly = true;
 
     public Switch2(Boolean chargePass, GridPaneObserver gridPaneObserver, AnchorPane root, Basurero basurero){
         //Le damos una ID unica
@@ -34,14 +39,7 @@ public class Switch2 extends Group {
 
 
         Utils.makeDraggableNode(this, new AtomicReference<>((double) 0), new AtomicReference<>((double) 0));
-        this.setOnMouseClicked(e->{
-
-           if(basurero.getIsActive()){//TODO REVISAR EL METODO QUE ELIMINA UN ELEMENTO
-               //Llamamos un metodo lo que hace es eliminar la figura,
-           } else {
-               this.ChargePass = !this.ChargePass;
-           }
-        });
+        manageEvents();
     }
 
 
@@ -56,8 +54,8 @@ public class Switch2 extends Group {
         this.Shape.setFitHeight(50);
         double x = 720 + 25;
         double y = 554 + 25;
-        Shape.setX(720);
-        Shape.setY(554);
+        Shape.setTranslateX(720);
+        Shape.setTranslateY(554);
 
 
 
@@ -101,6 +99,12 @@ public class Switch2 extends Group {
 
         //A los circulos se le asignaran sus coordenadas cuando el elemento ya no sea draggable por el UnDragglableNode del Utils
 
+        //Agregamos las patas a la coleccion de Legs
+        this.Legs.add(this.Leg1);
+        this.Legs.add(this.Leg2);
+        this.Legs.add(this.Leg3);
+        this.Legs.add(this.Leg4);
+
         //Agregamos la Imagen y los CustomCircle al grupo del Switch
         this.getChildren().add(this.Shape);
         this.getChildren().add(this.Leg1);
@@ -110,12 +114,134 @@ public class Switch2 extends Group {
     }
 
     //Este metodo lo que hara
-    public void snapFigure(){
+    public void manageEvents(){
+        ArrayList<CustomCircle> closestCircles = new ArrayList<>();
+        ArrayList<CustomCircle> circlesCollecition = gridPaneObserver.getCirclesCollection();
+
+
+        //Cuando se da click al Switch
+        this.setOnMouseClicked(e-> {
+            //preguntamos si es que el basurero esta activo
+            if(basurero.getIsActive()){
+                //Removemos el Grupo del root
+                gridPaneObserver.getRoot().getChildren().remove(this);
+                //y despues por cada cada pata seteamos a los circulos que no son del Switch2
+                for (CustomCircle leg : Legs) {
+                    leg.getCable().getSecondCircle().setisTaken(false);
+                    //Eliminamos el cable del ciruclo que no es del switch
+                    leg.getCable().getSecondCircle().setCable(null);
+                    //Eliminamos el cable de la coleccion del gridPaneObserver
+                    gridPaneObserver.removeCable(leg.getCable());
+                    //y despues lo eliminamos visualmente
+                    root.getChildren().remove(leg.getCable());
+                }
+            }
+        });
+        this.setOnMouseReleased(e->{
+            closestCircles.clear();
+            //isPlacedCorrectly = false;
+
+            //Obtenemos la ubicacion de la imagen del Switch para asi asignarle las coordenadas al cada pata
+            double x = Shape.localToScreen(Shape.getX(), Shape.getY()).getX() + 25;
+            double y = Shape.localToScreen(Shape.getX(), Shape.getY()).getY() + 25;
+
+            //Les setteamos las coordenadas correspondientes
+            this.Leg1.setCoords(x-17.5, y+20);
+            this.Leg2.setCoords(x+17.5, y+20);
+            this.Leg3.setCoords(x-17.5, y-20);
+            this.Leg4.setCoords(x+17.5, y-20);
+
+            double maxRange = (circlesCollecition.get(0).getRadius() * 2) - (Leg1.getRadius() * 2) +  4; //ese es el rango maximo que puede tener.
+
+            for (CustomCircle leg : Legs) {
+                CustomCircle circleFound = Utils.getClosestCircle(circlesCollecition,leg.getX(), leg.getY());
+
+                if(circleFound.hasCable()) return;
+
+                double distanceY = Math.abs(leg.getY() - circleFound.getY());
+                if( distanceY >= maxRange){
+                    //todo revisar esto
+                    //isPlacedCorrectly = false;
+                } else {// NO esta entrando
+                    if(!closestCircles.contains(circleFound)){
+                        closestCircles.add(circleFound);
+                        System.out.println("id: " + circleFound.getID());
+                    }
+                };
+            }
+
+            if (isPlacedCorrectly){
+                //se toman los gridNames del primer círculo de arriba y el último círculo de abajo.,
+
+                String firstCircleGridName = closestCircles.get(0).getID().getGridName();
+                String secondCircleGridName = closestCircles.get(closestCircles.size() - 1).getID().getGridName();
+
+                //TODO REVISAR ESTO
+//                if(firstCircleGridName.equals(secondCircleGridName)){
+//                    //Utils.makeUndraggableNode(this);
+//                    return;
+//                }
+
+                //preguntamos si la cantidad de la coleccion es la misma que la de las patas
+                if (closestCircles.size() == 4){
+
+                    //Creamos un AtomicInteger para asi aumentarlo cada vez y settear las patas de manera mas tranquila
+                    AtomicInteger i = new AtomicInteger();
+                    i.set(0);
+                    System.out.println("-----------------------------------------");
+
+                    //Ahora por cada circulo encontrado hay que crearle un cable
+                    closestCircles.forEach( circle ->{
+                        circle.setisTaken(true);
+                        Cable cable = new Cable (Legs.get(i.get()), circle);
+                        circle.setCable(cable);
+                        Legs.get(i.get()).setCable(cable);
+                        gridPaneObserver.addCable(cable);
+                        gridPaneObserver.getRoot().getChildren().add(cable);
+                        System.out.println("cable: " + cable.getFirstCircle().getID() +" || "+   cable.getSecondCircle().getID());
+                        i.getAndIncrement();
+                    });
+                    System.out.println("-------------------------------------------");
+                    Utils.makeUndraggableNode(this);
+                    setEnergyfromClosestCircles(Legs);
+                }
+
+            }
+        });
+    }
+
+    //Este metodo lo que hara es la funcionalidad del Switch
+    public void ChargePass(){
 
     }
 
 
 
+    //Este metodo lo que hace es si al menos una pata tiene energia
+    public Boolean atLeastOneLegHaveEnergy(ArrayList<CustomCircle> legs){
+        for (CustomCircle leg : legs) {
+            if(leg.hasEnergy()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Este metodo lo que es settear el estado del CustomCircle segun el otro circulo del cable que tiene asignado
+    public void setEnergyfromClosestCircles(ArrayList<CustomCircle> legs){
+        for (CustomCircle leg : legs) {
+            leg.setState(leg.getCable().getSecondCircle().getState());
+        }
+    }
+
+
+
+
+    public void clearcoords(ArrayList<CustomCircle> circles ){
+        for (CustomCircle circle : circles) {
+            circle.setCoords(0,0);
+        }
+    }
 
     //Setters...
     public void setRoot(AnchorPane root){
@@ -162,5 +288,7 @@ public class Switch2 extends Group {
     public CustomCircle getLeg4(){
         return this.Leg4;
     }
-
+    public ArrayList<CustomCircle> getLegs(){
+        return this.Legs;
+    }
 }

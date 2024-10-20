@@ -21,17 +21,8 @@ public class CustomCircle extends Circle {
         this.isBurned = false; //solo se quema una columna si es que
     }
 
-    public void setCable(Cable cable){
-        this.Wire = cable;
-    }
-    public Cable getCable(){
-        return this.Wire;
-    }
 
-    public void setisTaken(boolean isTaken) {
-        if (isBurned) return;
-        this.isTaken = isTaken;
-    }
+    //Metodos...
 
     public boolean hasCable() {
         return this.Wire != null;
@@ -41,6 +32,26 @@ public class CustomCircle extends Circle {
         return state != 0;
     }
 
+    public void removeEnergy() {
+        if (isBurned) return;
+
+        this.state = 0;
+        this.setFill(Color.GRAY);
+    }
+
+
+    //Setters...
+
+    public void setCable(Cable cable){
+        this.Wire = cable;
+    }
+
+
+    public void setBurned() {
+        this.removeEnergy();
+        this.setisTaken(true);
+        this.isBurned = true;
+    }
 
     public void setState(int state) {
         //si el círculo está quemado sin importar la carga que tenga se coloca como negro pq está qyemado.
@@ -65,17 +76,19 @@ public class CustomCircle extends Circle {
         this.y = y;
     }
 
-    public void removeEnergy() {
+    public void setisTaken(boolean isTaken) {
         if (isBurned) return;
-
-        this.state = 0;
-        this.setFill(Color.GRAY);
+        this.isTaken = isTaken;
     }
 
+    //Getters...
+
     public boolean getIsTaken(){return this.isTaken;}
+
     public int getState() {
         return this.state;
     }
+
     public ID getID() {
         return this.id;
     }
@@ -92,11 +105,11 @@ public class CustomCircle extends Circle {
         return this.isBurned;
     }
 
-    public void setBurned() {
-        this.removeEnergy();
-        this.setisTaken(true);
-        this.isBurned = true;
+    public Cable getCable(){
+        return this.Wire;
     }
+
+
 
     @Override
     public boolean equals(Object obj) {
