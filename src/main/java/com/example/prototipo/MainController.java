@@ -89,8 +89,8 @@ public class MainController {
         //después de que se renderizen los nodos.
         Platform.runLater(() -> {
             //toma un gridTrial y le setea las coordenadas a los circulos uno por uno.
-            Consumer<GridPaneTrailController> addCoords = (gridTrail) -> {
-                gridTrail.getGridPane().getChildren().forEach(child -> {
+            Consumer<GridPane> addCoords = (gridPane) -> {
+                gridPane.getChildren().forEach(child -> {
                     if (child instanceof CustomCircle circ) {
                         Bounds boundsInScene = circ.localToScreen(circ.getBoundsInLocal());
                         double x = boundsInScene.getCenterX();
@@ -102,8 +102,10 @@ public class MainController {
             };
             System.out.println("size of circle: " + matrizCirculosUnoController.getCircles().get(0).getRadius());
             // Código para actualizar la UIA
-            addCoords.accept(matrizCirculosUnoController);
-            addCoords.accept(matrizCirculosDosController);
+            addCoords.accept(matrizCirculosUnoController.getGridPane());
+            addCoords.accept(matrizCirculosDosController.getGridPane());
+            addCoords.accept(matrizCargaUno.getGridPane());
+            addCoords.accept(matrizCargaDos.getGridPane());
         });
     }
 

@@ -173,8 +173,8 @@ public class Switch2 extends Group {
             if (isPlacedCorrectly){
                 //se toman los gridNames del primer círculo de arriba y el último círculo de abajo.,
 
-                String firstCircleGridName = closestCircles.get(0).getID().getGridName();
-                String secondCircleGridName = closestCircles.get(closestCircles.size() - 1).getID().getGridName();
+                //String firstCircleGridName = closestCircles.get(0).getID().getGridName();
+                //String secondCircleGridName = closestCircles.get(closestCircles.size() - 1).getID().getGridName();
 
                 //TODO REVISAR ESTO
 //                if(firstCircleGridName.equals(secondCircleGridName)){
