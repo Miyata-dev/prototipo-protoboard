@@ -16,7 +16,6 @@ import javafx.scene.shape.Circle;
 public class Utils {
     public Utils() {
     }
-
     //este método agrega un círclo a la colección que recibe como parámetro solo si son de la misma columna.
     private static void addCirclesFromSameColumn(ID id, Iterator<Node> fristCircleToPaint, ArrayList<CustomCircle> circles) {
         while(fristCircleToPaint.hasNext()) {
@@ -94,34 +93,6 @@ public class Utils {
 
         circles.forEach(CustomCircle::removeEnergy);
     }
-//    public static void unPaintCirclesVolt(GridPaneObserver grid, CustomCircle circle) {
-//        ID circleID = circle.getID();
-//
-//        //mira si el círculo pertenece a un led, si pertenece a un led, se elimina ese circulo de las columnas energizadas.
-//        if (circleID.getGridName().contains(grid.getLedIdPrefix())) {
-//            System.out.println("from unpaintCircles LED...");
-//            ArrayList<CustomCircle> circles = new ArrayList<>();
-//            circles.add(circle);
-//            grid.removeColumn(circles);
-//            circles.forEach(CustomCircle::removeEnergy);
-//            return;
-//        }
-//        System.out.println("from unpaintCircles NOT LED...");
-//        ArrayList<CustomCircle> circles = getRowOfCustomCircles(grid, circleID);
-//        grid.removeColumn(circles);
-//        circles.forEach(CustomCircle::removeEnergy);
-//    }
-
-    public static boolean isConnectedToBatery(ArrayList<CustomCircle> circles) {
-        for (CustomCircle circle : circles) {
-            if (circle.hasCable() && circle.getCable().isConnectedToBatery()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //TODO pedir el gridPaneObserver
     public static ArrayList<Cable> getConnectedCables(ArrayList<Cable> cables, Cable cableToConnect, boolean ignoreVoltCables) {
         String[] voltNames = {
                 "gridVolt1",
@@ -129,7 +100,6 @@ public class Utils {
         };
 
         HashSet<Cable> connectedCablesHashSet = new HashSet<>();
-        Cable previousCable = cableToConnect; //para la iteracion, queremos ver si el cable por parametro es el cable anterior.
 
         //recorre todos los elementos de la colección de cables entregada.
         for (int i = 0; i < cables.size(); i++) {
@@ -229,6 +199,7 @@ public class Utils {
             gridPaneObserver.removeResisencia(resistencia);
             gridPaneObserver.removeCable(resistencia);
             ((AnchorPane) resistencia.getParent()).getChildren().remove(resistencia.getRec());
+            ((AnchorPane) resistencia.getParent()).getChildren().remove(resistencia.getArrow());
             ((AnchorPane) resistencia.getParent()).getChildren().remove(resistencia);
         };
 

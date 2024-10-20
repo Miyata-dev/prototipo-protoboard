@@ -91,7 +91,6 @@ public class ClickLine {
 
 
             if(e.getTarget() instanceof Cable cable) {
-                System.out.println("im hereeeeeeeeeee");
                 //Buscamos el cable presionado para asi ver despues si el cable pertenece a un elemento del protoboard
                 Cable cablefound = Utils.getCableByID(gridPaneObserver.getCables(), cable);
                 //asignamos los CustomCircles del cable

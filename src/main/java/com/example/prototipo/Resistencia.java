@@ -2,11 +2,16 @@ package com.example.prototipo;
 
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 
 public class Resistencia extends Cable {
     private double voltaje;
     private Rectangle rec;
+    private Path arrow;
+
 
     public Resistencia(double voltaje){
         this.voltaje = voltaje;
@@ -46,6 +51,23 @@ public class Resistencia extends Cable {
         rec.setFill(Color.BLACK);
 
         ((AnchorPane) this.getParent()).getChildren().add(rec);
+        createArrow(medioX,medioY,angle);
+    }
+    public void createArrow(double x,double y,double angle){
+        arrow = new Path();
+        double arrowLength = 15;
+        double arrowWidth = 4;
+        MoveTo moveTo = new MoveTo(x, y);
+        LineTo lineTo1 = new LineTo(x - arrowLength * Math.cos(Math.toRadians(angle - 30)),
+                y - arrowLength * Math.sin(Math.toRadians(angle - 30)));
+        LineTo lineTo2 = new LineTo(x - arrowLength * Math.cos(Math.toRadians(angle + 30)),
+                y - arrowLength * Math.sin(Math.toRadians(angle + 30)));
+        LineTo lineTo3 = new LineTo(x, y); // Regresar al punto central
+
+        // Agregar los elementos al Path
+        arrow.getElements().addAll(moveTo, lineTo1, lineTo2, lineTo3);
+        arrow.setFill(Color.YELLOW);
+        ((AnchorPane) this.getParent()).getChildren().add(arrow);
     }
 
     public void setVoltaje(double voltaje) {
@@ -56,6 +78,9 @@ public class Resistencia extends Cable {
     }
     public Rectangle getRec() {
         return rec;
+    }
+    public Path getArrow(){
+        return arrow;
     }
 
     @Override
