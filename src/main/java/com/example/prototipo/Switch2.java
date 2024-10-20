@@ -181,29 +181,58 @@ public class Switch2 extends Group {
 //                    //Utils.makeUndraggableNode(this);
 //                    return;
 //                }
+
                 //preguntamos si la cantidad de la coleccion es la misma que la de las patas
                 if (closestCircles.size() == 4){
-                    //Ahora por cada circulo encontrado hay que crearle un cable
+
+                    //Creamos un AtomicInteger para asi aumentarlo cada vez y settear las patas de manera mas tranquila
                     AtomicInteger i = new AtomicInteger();
                     i.set(0);
                     System.out.println("-----------------------------------------");
+
+                    //Ahora por cada circulo encontrado hay que crearle un cable
                     closestCircles.forEach( circle ->{
                         circle.setisTaken(true);
                         Cable cable = new Cable (Legs.get(i.get()), circle);
                         circle.setCable(cable);
                         Legs.get(i.get()).setCable(cable);
+                        gridPaneObserver.addCable(cable);
                         gridPaneObserver.getRoot().getChildren().add(cable);
                         System.out.println("cable: " + cable.getFirstCircle().getID() +" || "+   cable.getSecondCircle().getID());
                         i.getAndIncrement();
                     });
                     System.out.println("-------------------------------------------");
                     Utils.makeUndraggableNode(this);
+                    setEnergyfromClosestCircles(Legs);
                 }
 
             }
         });
     }
 
+    //Este metodo lo que hara es la funcionalidad del Switch
+    public void ChargePass(){
+
+    }
+
+
+
+    //Este metodo lo que hace es si al menos una pata tiene energia
+    public Boolean atLeastOneLegHaveEnergy(ArrayList<CustomCircle> legs){
+        for (CustomCircle leg : legs) {
+            if(leg.hasEnergy()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Este metodo lo que es settear el estado del CustomCircle segun el otro circulo del cable que tiene asignado
+    public void setEnergyfromClosestCircles(ArrayList<CustomCircle> legs){
+        for (CustomCircle leg : legs) {
+            leg.setState(leg.getCable().getSecondCircle().getState());
+        }
+    }
 
 
 
@@ -259,5 +288,7 @@ public class Switch2 extends Group {
     public CustomCircle getLeg4(){
         return this.Leg4;
     }
-
+    public ArrayList<CustomCircle> getLegs(){
+        return this.Legs;
+    }
 }
