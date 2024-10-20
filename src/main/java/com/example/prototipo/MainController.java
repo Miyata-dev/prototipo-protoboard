@@ -38,6 +38,8 @@ public class MainController {
     public ArrayList<LED> leds = new ArrayList<>();
     public ArrayList<Switch> switches = new ArrayList<>();
     public Bateria bateria;
+    public ClickLine clickLineMatrizUno;
+
     public void initialize() {
 
         //Creamos un label para poder cambiarle el color al texto a NEGRO
@@ -47,8 +49,6 @@ public class MainController {
                 new Image(getClass().getResource("basurero.png").toExternalForm()),
                 label
         );
-
-
         //nombres para cada grid para los identificadores unicos.
         String[] gridNames = {
                 "gridTrail1",
@@ -74,7 +74,7 @@ public class MainController {
 
 
         parent.getChildren().addAll(basurero, basurero.getLabel(), bateria.getImage(), bateria.getPolos());
-        ClickLine clickLineMatrizUno = new ClickLine(
+        clickLineMatrizUno = new ClickLine(
                 parent,
                 gridPaneObserver,
                 basurero,
@@ -130,6 +130,10 @@ public class MainController {
         CustomShape customShape = new CustomShape(720, 554, 70, 34, Color.BLACK, "CHIP");
         Chip chip = new Chip(customShape, basurero, gridPaneObserver);
         parent.getChildren().add(chip);
+    }
+
+    public void setModoRecistencia() {
+        clickLineMatrizUno.setisResistenciaModeActive(true);
     }
 
     public void toggleProtoBoard(ActionEvent a) {

@@ -265,5 +265,6 @@
       <Button layoutX="575.0" layoutY="554.0" mnemonicParsing="false" onAction="#CreateSwitch" text="Crear Switch" />
       <Button layoutX="352.0" layoutY="554.0" mnemonicParsing="false" onAction="#toggleProtoBoard" text="Apagar protoboard" />
       <Button layoutX="707.0" layoutY="554.0" mnemonicParsing="false" onAction="#createChip" text="Crear Chip" />
+      <Button layoutX="14.0" layoutY="554.0" mnemonicParsing="false" onAction="#setModoRecistencia" text="Activar modo recistencia" />
    </children>
 </AnchorPane>
