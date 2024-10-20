@@ -25,10 +25,11 @@ public class Chip extends Group {
     }
 
     private void manageEvents() {
+        //Conseguimos la coleccion de circulos
+
         ArrayList<CustomCircle> circlesFromObserver = gridPaneObserver.getCirclesCollection();
 
         this.setOnMouseClicked(e -> {
-            //TODO desoc
             if (basurero.getIsActive()) {
                 gridPaneObserver.getRoot().getChildren().remove(this);
                 closeCircles.forEach(circle -> {
@@ -91,26 +92,30 @@ public class Chip extends Group {
         });
     }
 
+    //Este metodo lo que hace es crear patas y despues añadirla al grupo
     public void addPatitas(CustomShape customShape) {
         int initailX = 4;
         int initialY = 7;
         int incrementX = 18; //12 -> 18 6 * 4
         double heightDifference = customShape.getHeight() + 7; //para poder crear las patas de artriba y abajo se tiene la diferencia de altura.
 
-        //primer for para crear las patas de arriba
+        //este primer ciclo crea las patas de la parte superior del Chip
         for (int i = 0; i < 4; i++) {
             crearPatita(customShape,initailX + incrementX * i, initialY);
         }
-        //crea las patas de abajo.
+        //crea las patas de la parte inferior del Chip.
         for (int i = 0; i < 4; i++) {
             crearPatita(customShape,initailX + incrementX * i, initialY - heightDifference);
         }
     }
-    //se crea una pata y la agrega al grupo de la clase Chip.
+    //Este metodo crea una pata y la agrega al grupo de la clase Chip.
     private void crearPatita(CustomShape customShape, double xOffSet, double yOffSet) {
+
+        //obtenemos la ubicacion del custom shape
         double widthX = customShape.getX();
         double heightY = customShape.getY();
 
+        //Para asi poder darles una ubicacion a la figura que seria un rectangulo
         Rectangle rectangle = new Rectangle(7, 7);
 
         rectangle.setLayoutY(heightY - yOffSet);

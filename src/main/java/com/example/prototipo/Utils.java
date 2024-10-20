@@ -337,8 +337,11 @@ public class Utils {
         node.setOnMouseDragged(null);
     }
 
+
+    //Este metodo lo que hace es conseguir el circulo mas cercano a una coordenada
     public static CustomCircle getClosestCircle(List<CustomCircle> circles, double x, double y) {
         CustomCircle closestCircle = circles.get(0);
+
         double minDistance = Math.sqrt(Math.pow(closestCircle.getX() - x, 2) + Math.pow(closestCircle.getY() - y, 2));
 
         for (int i = 1; i < circles.size(); i++) {

@@ -22,6 +22,17 @@ public class Cable extends Line {
         setEndY(endY);
     }
 
+    public Cable(CustomCircle firstCircle, CustomCircle secondCircle){
+        this.SetCircles(new CustomCircle[]{
+                firstCircle,
+                secondCircle
+        });
+        setStartX(firstCircle.getX());
+        setEndX(secondCircle.getX());
+        setStartY(firstCircle.getY());
+        setEndY(secondCircle.getY());
+    }
+
 
     public static boolean compareCables(Cable c1, Cable c2) {
         return ID.isSameID(c1.ids[0], c2.ids[0]) && ID.isSameID(c1.ids[1], c2.ids[1]);
