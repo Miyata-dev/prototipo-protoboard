@@ -206,7 +206,7 @@ public class GridPaneObserver {
     public static void RefreshElements(ArrayList<Switch> switches, ArrayList<LED> leds, ArrayList<Cable> cables){
         //Actualizamos todos los switchs
         for (Switch aSwitch : switches) {
-            aSwitch.ChargePass(cables);
+            aSwitch.Function();
         }
         //Actualizamos todos los LEDs
         for (LED led : leds) {
