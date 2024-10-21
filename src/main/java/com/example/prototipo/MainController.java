@@ -1,7 +1,6 @@
 package com.example.prototipo;
 
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
@@ -9,11 +8,9 @@ import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 
 import java.util.ArrayList;
@@ -116,15 +113,8 @@ public class MainController {
     }
 
     public void CreateSwitch(){
-
-        Switch2 switch2 = new Switch2(false, gridPaneObserver, parent, basurero);
-//        ImageView image = new ImageView(getClass().getResource("Switch.png").toExternalForm());
-//        image.setFitHeight(31);
-//        image.setFitWidth(31);
-//        image.setX(720);
-//        image.setY(554);
-//        CustomShape customShape = new CustomShape(720, 554, 30, 30, Color.WHITE, "Switch");
-//        Switch switch1 = new Switch(true, customShape, gridPaneObserver, basurero, parent, cables, image);
+        Switch switch2 = new Switch(false, gridPaneObserver, parent, basurero);
+        gridPaneObserver.addSwitches(switch2);
         parent.getChildren().add(switch2);
     }
     //in mainController

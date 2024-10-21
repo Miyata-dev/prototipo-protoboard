@@ -119,7 +119,7 @@ public class ClickLine {
                 if(startHandler.getID().getGridName().equals(edgeCases[0]) || endHandler.getID().getGridName().equals(edgeCases[0])){
                     for (Switch switchs : gridPaneObserver.getSwitches()) {
                         CustomShape shape = getCustomShapebyUniqueID(shapes, switchs.getUniqueId());
-                        switchs.ChargePass(gridPaneObserver.getCables());
+                        switchs.Function();
                     }
                     //LED
                     //Hacemos lo mismo que con el switch
@@ -259,7 +259,7 @@ public class ClickLine {
         if(StartHandler.getID().getGridName().equals(edgeCases[0]) || EndHandler.getID().getGridName().equals(edgeCases[0])){
             for (Switch switchs : gridPaneObserver.getSwitches()) {
                 CustomShape shape = getCustomShapebyUniqueID(shapes, switchs.getUniqueId());
-                switchs.ChargePass(gridPaneObserver.getCables());
+                switchs.Function();
             }
             //LED
         } else if(StartHandler.getID().getGridName().equals(edgeCases[1]) || EndHandler.getID().getGridName().equals(edgeCases[1])){

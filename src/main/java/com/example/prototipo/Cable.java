@@ -34,6 +34,7 @@ public class Cable extends Line {
         setEndX(secondCircle.getX());
         setStartY(firstCircle.getY());
         setEndY(secondCircle.getY());
+        setRandomID();
     }
 
 
