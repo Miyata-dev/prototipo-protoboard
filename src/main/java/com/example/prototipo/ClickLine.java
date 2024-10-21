@@ -270,7 +270,7 @@ public class ClickLine {
 
         if (isResistenciaModeActive) {
             resistencia.createRectangle();
-            gridPaneObserver.addResisencia(resistencia);
+            gridPaneObserver.addResistencia(resistencia);
             resistencia.SetCircles(new CustomCircle[] {
                 StartHandler,
                 EndHandler

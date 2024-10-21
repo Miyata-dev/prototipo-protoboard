@@ -57,11 +57,10 @@ public class GridPaneObserver {
         cables.add(cable);
     }
 
-    public void addResisencia(Resistencia resistencia) {
+    public void addResistencia(Resistencia resistencia) {
         resistencias.add(resistencia);
     }
-
-    public void removeResisencia(Resistencia resistencia) {
+    public void removeResistencia(Resistencia resistencia) {
         resistencias.remove(resistencia);
         cables.removeIf(cable -> cable.getRandomID().equals(resistencia.getRandomID()));
     }

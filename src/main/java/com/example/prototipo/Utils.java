@@ -196,7 +196,7 @@ public class Utils {
 
         Consumer<Resistencia> deleteResistenciaFromGridPane = (resistencia) -> {
             ResetStateCustomCircles(resistencia);
-            gridPaneObserver.removeResisencia(resistencia);
+            gridPaneObserver.removeResistencia(resistencia);
             gridPaneObserver.removeCable(resistencia);
             ((AnchorPane) resistencia.getParent()).getChildren().remove(resistencia.getRec());
             ((AnchorPane) resistencia.getParent()).getChildren().remove(resistencia.getArrow());
