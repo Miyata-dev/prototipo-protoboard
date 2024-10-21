@@ -8,6 +8,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -54,6 +55,29 @@ public class MainController {
                 "gridVolt2",
         };
 
+        ImageView motor = new ImageView();
+        motor.setImage(new Image(getClass().getResource("motor.png").toExternalForm()));
+        motor.setFitHeight(50);
+        motor.setFitWidth(50);
+        motor.setX(790);
+        motor.setY(280);
+        motor.setOnMouseClicked(e -> {
+            gridPaneObserver.toggleObserver();
+
+            if (!gridPaneObserver.getIsEnergyActivated()) {
+                System.out.println("apagando Protoboard");
+                this.bateria.setNegativePole(0);
+                this.bateria.setPositive(0);
+                gridPaneObserver.deactivateGridObserver();
+            } else {
+                System.out.println("prendiendo protoboard");
+                this.bateria.setNegativePole(-1);
+                this.bateria.setPositive(1);
+                gridPaneObserver.activateGridObserver();
+            }
+            System.out.println("state: " + gridPaneObserver.getIsEnergyActivated());
+        });
+
         this.bateria = new Bateria(new Image(getClass().getResource("bateria.png").toExternalForm()));
         matrizCirculosUnoController = new GridPaneTrailController(Matriz1,gridNames[0]);
         matrizCirculosDosController = new GridPaneTrailController(Matriz2,gridNames[1]);
@@ -70,7 +94,7 @@ public class MainController {
         );
 
 
-        parent.getChildren().addAll(basurero, basurero.getLabel(), bateria.getImage(), bateria.getPolos());
+        parent.getChildren().addAll(basurero, basurero.getLabel(), bateria.getImage(), bateria.getPolos(), motor);
         clickLineMatrizUno = new ClickLine(
                 parent,
                 gridPaneObserver,
@@ -134,27 +158,6 @@ public class MainController {
             button.setText("Desactivar resistencia");
             clickLineMatrizUno.setisResistenciaModeActive(true);
         }
-    }
-
-    public void toggleProtoBoard(ActionEvent a) {
-        gridPaneObserver.toggleObserver();
-
-        Button button = (Button) a.getSource();
-
-        if (!gridPaneObserver.getIsEnergyActivated()) {
-            System.out.println("apagando Protoboard");
-            this.bateria.setNegativePole(0);
-            this.bateria.setPositive(0);
-            gridPaneObserver.deactivateGridObserver();
-            button.setText("Encender protoboard");
-        } else {
-            System.out.println("prendiendo protoboard");
-            this.bateria.setNegativePole(-1);
-            this.bateria.setPositive(1);
-            gridPaneObserver.activateGridObserver();
-            button.setText("Apagar protoboard");
-        }
-        System.out.println("state: " + gridPaneObserver.getIsEnergyActivated());
     }
 
 }
