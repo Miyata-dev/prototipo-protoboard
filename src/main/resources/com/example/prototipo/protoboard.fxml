@@ -263,7 +263,6 @@
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c3c3c3" height="25.0" layoutX="123.0" layoutY="273.0" stroke="BLACK" strokeType="INSIDE" width="581.0" />
       <Button layoutX="471.0" layoutY="542.0" mnemonicParsing="false" onAction="#crearLed" text="Crear LED" />
       <Button layoutX="550.0" layoutY="542.0" mnemonicParsing="false" onAction="#CreateSwitch" text="Crear Switch" />
-      <Button layoutX="881.0" layoutY="344.0" mnemonicParsing="false" onAction="#toggleProtoBoard" text="Apagar protoboard" />
       <Button layoutX="643.0" layoutY="542.0" mnemonicParsing="false" onAction="#createChip" text="Crear Chip" />
       <Button layoutX="127.0" layoutY="542.0" mnemonicParsing="false" onAction="#setModoResistencia" text="Activar modo resistencia" />
    </children>
