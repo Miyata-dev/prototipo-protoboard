@@ -35,6 +35,10 @@ public class Cable extends Line {
         setStartY(firstCircle.getY());
         setEndY(secondCircle.getY());
         setRandomID();
+        this.setIds(new ID[] {
+            firstCircle.getID(),
+            secondCircle.getID()
+        });
     }
 
 
@@ -176,6 +180,11 @@ public class Cable extends Line {
         double deltaX = this.getEndX() - this.getStartX();
         double deltaY = this.getEndY() - this.getStartY();
         return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    }
+
+    @Override
+    public String toString() {
+        return "id: " + getRandomID() + " carga: " + tipodecarga;
     }
 
     //TODO revisar.
