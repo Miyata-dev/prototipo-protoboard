@@ -12,7 +12,9 @@ public class Chip extends Group {
     private Basurero basurero;
     private GridPaneObserver gridPaneObserver;
     private boolean isPlacedCorrectly = true;
+    private String type; //las opciones son: AND || OR || NOT.
 
+    //se debe especificar el tipo a travez del setter: setType.
     public Chip(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver) {
         super(customShape);
         this.basurero = basurero;
@@ -133,5 +135,13 @@ public class Chip extends Group {
         patitas.add(rectangle);
 
         this.getChildren().add(rectangle);
+    }
+    //SETTERS
+    public void setType(String type) {
+        this.type = type;
+    }
+    //GETTERS
+    public String getType() { //este tipo va a definir el comportamiento del chip.
+        return type;
     }
 }
