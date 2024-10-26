@@ -99,6 +99,9 @@ public class Cable extends Line {
         setEndY(endY);
     }
 
+    public boolean getIsBurned(){
+        return this.isBurned;
+    }
     public String getRandomID() {
         return randomID;
     }
@@ -132,7 +135,7 @@ public class Cable extends Line {
 
         return (firstAtt || secondAtt) && (firstGridNameNameID || secondGridNameID);
     }
-    //mira si un cable está PRUEBALO DSP DE AYUDAR AL POLLO MRD.
+    //mira si un cable está
     public boolean isConnectedToBatery() {
         String bateryID = "BateryVolt";
         //mira si una de las ids relacionadas a los circulos que conecta el cable pertenece a la bateria.

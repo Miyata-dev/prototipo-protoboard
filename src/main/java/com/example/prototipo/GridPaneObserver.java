@@ -127,6 +127,11 @@ public class GridPaneObserver {
             col.forEach(cir -> cir.setState(energy));
         });
 
+        if(!bateria.getPositivePole().hasCable()) {
+            cleanCircles(gridPane,1);
+        }if(!bateria.getNegativePole().hasCable()) {
+            cleanCircles(gridPane,-1);
+        }
         gridPane.getCables().forEach(cable -> {
             //se obtienen los circulos que están conectados al cable.
             CustomCircle firstCol = cable.getFirstCircle();
@@ -146,10 +151,11 @@ public class GridPaneObserver {
                     secondCol.setState(el.getState());
                 }
             });
-            if(!bateria.getPositivePole().hasCable()) {
-                cleanCircles(gridPane,1);
-            }if(!bateria.getNegativePole().hasCable()) {
-                cleanCircles(gridPane,-1);
+
+            if(firstCol.getIsBurned()){
+                burntEnergyCleaner(gridPane,firstCol);
+            }if(secondCol.getIsBurned()){
+                burntEnergyCleaner(gridPane,secondCol);
             }
 
             //en caso de tener una columna sin energía conectada a otra CON ENERGÍA, esta se registra en el
@@ -203,6 +209,27 @@ public class GridPaneObserver {
         }
     }
 
+    public static void burntEnergyCleaner(GridPaneObserver gridPaneObserver,CustomCircle circle) {
+        ArrayList<Cable> unburnedCables = new ArrayList<>();
+        ArrayList<CustomCircle> burnedCircle = getCircles(gridPaneObserver,circle.getID());
+        for (CustomCircle circulo : burnedCircle) {
+            if(circulo.hasCable() && !circulo.getCable().getIsBurned()){
+                unburnedCables.add(circulo.getCable());
+            }
+        }
+        if(unburnedCables.size() != 0 ){
+            ArrayList<Cable> connectedCables = Utils.getConnectedCables(gridPaneObserver.getCables(), unburnedCables.get(0), true);
+            for (Cable cable : connectedCables) {
+                if(!cable.getIsBurned()){
+                    Utils.unPaintCircles(gridPaneObserver, cable.getSecondCircle());
+                    Utils.unPaintCircles(gridPaneObserver, cable.getFirstCircle());
+                }
+            }
+        }
+        System.out.println("Cables que estan en la columna quemada: "+unburnedCables.size());
+
+    }
+
     public static ArrayList<CustomCircle> getCircles(GridPaneObserver gridPaneObserver, ID id){
         ArrayList<CustomCircle> circles = new ArrayList<>();
         if(id.getGridName().contains(gridPaneObserver.getGridVoltPrefix())){
@@ -237,10 +264,9 @@ public class GridPaneObserver {
                 //quema arbitrariamente la segunda.
                 if (cable.getFirstCircle().hasEnergy() && cable.getSecondCircle().hasEnergy()) {
                     ArrayList<CustomCircle> circleToBurn = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
-
+                    cable.setBurned(); // TOMAR ESTE ESTADO Y SACAR LOS GETCONNECTEDCABLES DE LOS CIRCULOS DE LA COLUMNA QUEMADA
                     circleToBurn.forEach(CustomCircle::setBurned);
 
-                    System.out.println("quemando columna...");
                     return;
                 }
             }
