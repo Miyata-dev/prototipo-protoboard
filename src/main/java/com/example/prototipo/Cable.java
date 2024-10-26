@@ -36,15 +36,27 @@ public class Cable extends Line {
         setEndY(secondCircle.getY());
         setRandomID();
         this.setIds(new ID[] {
-            firstCircle.getID(),
-            secondCircle.getID()
+                firstCircle.getID(),
+                secondCircle.getID()
         });
     }
 
+    //Metodos...
+
+    //Este metodo lo que hace es conseguir el circulo que es diferente
+    public static CustomCircle getCircleDiferentfromCable(CustomCircle circle, Cable cable){
+        if(circle.getID().equals(cable.getFirstCircle().getID())){
+            return cable.getSecondCircle();
+        } else{
+            return cable.getFirstCircle();
+        }
+    }
 
     public static boolean compareCables(Cable c1, Cable c2) {
         return ID.isSameID(c1.ids[0], c2.ids[0]) && ID.isSameID(c1.ids[1], c2.ids[1]);
     }
+
+
     //retorna null si no encuentra un cable.
     public static Cable getCableFromCollection(ArrayList<Cable> cables, Cable cableToFind) {
         for (Cable c : cables) {
@@ -55,8 +67,52 @@ public class Cable extends Line {
         return null;
     }
 
-    public void RestoreEnergy(){
+    //Este metodo lo que hace es remover la carga de cable
+    public void removeTipodecarga() {
         this.tipodecarga = 0;
+    }
+
+    public static boolean areConnected(Cable one, Cable two) {
+        //en estás condiciones (la primera y la segunda) se mira que el indice de los cículos de los cables se conecten entre si.
+        boolean firstAtt =
+                one.getIds()[0].getIndexColumn() == two.getIds()[1].getIndexColumn() ||
+                        one.getIds()[0].getIndexColumn() == two.getIds()[0].getIndexColumn();
+
+        boolean secondAtt =
+                one.getIds()[1].getIndexColumn() == two.getIds()[0].getIndexColumn() ||
+                        one.getIds()[1].getIndexColumn() == two.getIds()[1].getIndexColumn();
+        //
+        boolean firstGridNameNameID =
+                one.getIds()[0].getGridName().equals(two.getIds()[1].getGridName()) ||
+                        one.getIds()[0].getGridName().equals(two.getIds()[0].getGridName());
+
+        boolean secondGridNameID =
+                one.getIds()[1].getGridName().equals(two.getIds()[0].getGridName()) ||
+                        one.getIds()[1].getGridName().equals(two.getIds()[1].getGridName());
+
+        return (firstAtt || secondAtt) && (firstGridNameNameID || secondGridNameID);
+    }
+
+
+    public boolean isConnectedToBatery() {
+        String bateryID = "BateryVolt";
+        //mira si una de las ids relacionadas a los circulos que conecta el cable pertenece a la bateria.
+        boolean isFirstConnected = ids[0].getGridName().equals(bateryID);
+        boolean isSecondConnected = ids[1].getGridName().equals(bateryID);
+
+        return isFirstConnected || isSecondConnected;
+    }
+
+    public boolean isConnectedToVolts() {
+        String[] voltNames = {
+                "gridVolt1",
+                "gridVolt2"
+        };
+        //ids[0].getGridName()
+        boolean isFirstConnected = Arrays.asList(voltNames).contains(ids[0].getGridName());
+        boolean isSecondConnected = Arrays.asList(voltNames).contains(ids[1].getGridName());
+
+        return isFirstConnected || isSecondConnected;
     }
 
     //Setters
@@ -66,9 +122,6 @@ public class Cable extends Line {
         this.tipodecarga = tipodecarga;
     }
 
-    public void removeTipodecarga() {
-        this.tipodecarga = 0;
-    }
 
     public void setIds(ID[] ids) {
         this.ids = ids;
@@ -99,6 +152,12 @@ public class Cable extends Line {
         setEndY(endY);
     }
 
+    public void SetCircles(CustomCircle[] circles){
+        this.circles = circles;
+    }
+
+    //Getters..
+
     public String getRandomID() {
         return randomID;
     }
@@ -106,57 +165,9 @@ public class Cable extends Line {
     public ID[] getIds() {
         return ids;
     }
-    //TODO usarlo en el led para poder prenderlo (solo si tiene energia positiva y negativa)
+
     public int getTipodecarga() {
         return tipodecarga;
-    }
-
-    //TODO mejorar la logica de esta comparacion.
-    public static boolean areConnected(Cable one, Cable two) {
-        //en estás condiciones (la primera y la segunda) se mira que el indice de los cículos de los cables se conecten entre si.
-        boolean firstAtt =
-            one.getIds()[0].getIndexColumn() == two.getIds()[1].getIndexColumn() ||
-            one.getIds()[0].getIndexColumn() == two.getIds()[0].getIndexColumn();
-
-        boolean secondAtt =
-            one.getIds()[1].getIndexColumn() == two.getIds()[0].getIndexColumn() ||
-            one.getIds()[1].getIndexColumn() == two.getIds()[1].getIndexColumn();
-        //
-        boolean firstGridNameNameID =
-            one.getIds()[0].getGridName().equals(two.getIds()[1].getGridName()) ||
-            one.getIds()[0].getGridName().equals(two.getIds()[0].getGridName());
-
-        boolean secondGridNameID =
-            one.getIds()[1].getGridName().equals(two.getIds()[0].getGridName()) ||
-            one.getIds()[1].getGridName().equals(two.getIds()[1].getGridName());
-
-        return (firstAtt || secondAtt) && (firstGridNameNameID || secondGridNameID);
-    }
-    //mira si un cable está PRUEBALO DSP DE AYUDAR AL POLLO MRD.
-    public boolean isConnectedToBatery() {
-        String bateryID = "BateryVolt";
-        //mira si una de las ids relacionadas a los circulos que conecta el cable pertenece a la bateria.
-        boolean isFirstConnected = ids[0].getGridName().equals(bateryID);
-        boolean isSecondConnected = ids[1].getGridName().equals(bateryID);
-
-        return isFirstConnected || isSecondConnected;
-    }
-    //ESTO VA EN CABLE
-    //esta solución es POR EL MOMENTO, TODO: implementar para nombrs de volts dinámicos.
-    public boolean isConnectedToVolts() {
-        String[] voltNames = {
-                "gridVolt1",
-                "gridVolt2"
-        };
-        //ids[0].getGridName()
-        boolean isFirstConnected = Arrays.asList(voltNames).contains(ids[0].getGridName());
-        boolean isSecondConnected = Arrays.asList(voltNames).contains(ids[1].getGridName());
-
-        return isFirstConnected || isSecondConnected;
-    }
-
-    public void SetCircles(CustomCircle[] circles){
-        this.circles = circles;
     }
 
     public CustomCircle getFirstCircle(){
@@ -180,6 +191,10 @@ public class Cable extends Line {
         double deltaX = this.getEndX() - this.getStartX();
         double deltaY = this.getEndY() - this.getStartY();
         return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    }
+
+    public Boolean getisBurned(){
+        return this.isBurned;
     }
 
     @Override
