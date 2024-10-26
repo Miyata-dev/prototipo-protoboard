@@ -128,6 +128,10 @@ public class ClickLine {
                         led.ONorOFF();
                     }
                 }
+                gridPaneObserver.getCables().forEach(c -> {
+                    System.out.println("cable: " + c.getRandomID() + " tipo: " + c.getTipo());
+                });
+                System.out.println("--------");
             }
 
         });

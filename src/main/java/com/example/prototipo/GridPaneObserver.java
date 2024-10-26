@@ -8,6 +8,7 @@ import jdk.jshell.execution.Util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 public class GridPaneObserver {
     private GridPaneTrailController firstGridPane;
@@ -54,11 +55,19 @@ public class GridPaneObserver {
 
     public void addCable(Cable cable) {
         System.out.println("adding cable " + cable.getRandomID());
-        cables.add(cable);
+        if (!cables.contains(cable)) {
+            cables.add(cable);
+        }
     }
-
+    //antes de agregarlos, mira que no estén agregados a la colección.
     public void addResistencia(Resistencia resistencia) {
-        resistencias.add(resistencia);
+        if (!cables.contains(resistencia)) {
+            cables.add(resistencia);
+        }
+
+        if (!resistencias.contains(resistencia)) {
+            resistencias.add(resistencia);
+        }
     }
     public void removeResistencia(Resistencia resistencia) {
         resistencias.remove(resistencia);
@@ -128,6 +137,7 @@ public class GridPaneObserver {
         });
 
         gridPane.getCables().forEach(cable -> {
+            System.out.println("in refresh" + " cable: " + cable.getRandomID() + " tipo: " + cable.getTipo());
             //se obtienen los circulos que están conectados al cable.
             CustomCircle firstCol = cable.getFirstCircle();
             CustomCircle secondCol = cable.getSecondCircle();
@@ -151,7 +161,7 @@ public class GridPaneObserver {
             }if(!bateria.getNegativePole().hasCable()) {
                 cleanCircles(gridPane,-1);
             }
-
+            System.out.println("first cir state: " + firstCol.getState() + " second cir: " + secondCol.getState());
             //en caso de tener una columna sin energía conectada a otra CON ENERGÍA, esta se registra en el
             //registro de pares <Energía, Columna> (esto es lo que ocurre en los 2 condicionales)
             if (firstCol.getState() != 0 && secondCol.getState() == 0) {
@@ -178,6 +188,7 @@ public class GridPaneObserver {
 
                 }
             }
+            System.out.println();
         });
 
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
@@ -189,8 +200,10 @@ public class GridPaneObserver {
         //Actualizamos todos los elementos del GridPaneObserver despues de pintar todos los circulos.
         RefreshElements(gridPane.getSwitches(), gridPane.getLeds(), gridPane.getCables());
         refreshCables(gridPane);
+        refreshEnergizedColumns(gridPane);
     }
     public static void cleanCircles(GridPaneObserver gridPane, int polo) {
+        System.out.println("cleanCircles || state: " + polo);
         ArrayList<Cable> cables = gridPane.getCables();
         for (Cable cable : cables) {
             CustomCircle firstC = cable.getFirstCircle();
@@ -243,6 +256,24 @@ public class GridPaneObserver {
                     System.out.println("quemando columna...");
                     return;
                 }
+            }
+        }
+    }
+
+    public static void refreshEnergizedColumns(GridPaneObserver gridPaneObserver) {
+        ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energized = gridPaneObserver.getEnergizedColumns();
+
+        //mira si una columna tiene cable.
+        Predicate<ArrayList<CustomCircle>> hasCable = column -> column.stream().anyMatch(CustomCircle::hasCable);
+        //mira las columnas energizadas, si hay una energizada sin cable, se borra.
+        for (int i = 0; i < energized.size(); i++) {
+            System.out.println("energy: " + energized.get(i).getFirstValue());
+            System.out.println("column: " + energized.get(i).getSecondValue());
+
+            System.out.println("has cable?: " + hasCable.test(energized.get(i).getSecondValue()));
+            //si la columna no tiene cable, se saca de las columnas energizadas.
+            if (!hasCable.test(energized.get(i).getSecondValue())) {
+                Utils.unPaintCircles(gridPaneObserver, energized.get(i).getSecondValue().get(0));
             }
         }
     }
