@@ -9,6 +9,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
+import java.util.function.Consumer;
+
 public class Basurero extends ImageView {
     private Image image;
     private Label label;
@@ -58,26 +60,61 @@ public class Basurero extends ImageView {
     public void EliminateElements(CustomShape customShape, MouseEvent e, AnchorPane root, GridPaneObserver gridPaneObserver){
         Node node = (Node) e.getTarget();
 
+        String resistenciaPrefix = "resistencia";
+
+        Consumer<Resistencia> deleteResistenciaFromGridPane = (resistencia) -> {
+            Utils.ResetStateCustomCircles(resistencia);
+            gridPaneObserver.removeResistencia(resistencia);
+            gridPaneObserver.removeCable(resistencia);
+            root.getChildren().remove(resistencia.getRec());
+            root.getChildren().remove(resistencia.getArrow());
+            root.getChildren().remove(resistencia);
+        };
+
         if (customShape.getLeg2().hasCable()) {
             Cable cableToRemove = customShape.getLeg2().getCable();
-            //Se realiza un eliminacion si el elemento es un cable y ademas las ID son iguales al cable a remover del Elemento Correspondiente
-            root.getChildren().removeIf(element -> {
-                Utils.ResetStateCustomCircles(cableToRemove);
-                return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
-            });
-            //Despues de eliminar el cable del elemento los eliminamos tambien de la colección del griPaneObserver
-            gridPaneObserver.removeCable(cableToRemove);
+            //se mira que no sea una resistencia.
+            if (cableToRemove.getTipo() == null) {
+                //Se realiza un eliminacion si el elemento es un cable y ademas las ID son iguales al cable a remover del Elemento Correspondiente
+                root.getChildren().removeIf(element -> {
+                    Utils.ResetStateCustomCircles(cableToRemove);
+                    return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
+                });
+                //Despues de eliminar el cable del elemento los eliminamos tambien de la colección del griPaneObserver
+                gridPaneObserver.removeCable(cableToRemove);
+            } else if (cableToRemove.getTipo().equals(resistenciaPrefix)) {
+                //busca una resistencia que tenga la misma id random que el cable que estamos mirando en la iteración.
+                Resistencia founded = gridPaneObserver.getResistencias().stream()
+                    .filter(el -> el.getRandomID().equals(cableToRemove.getRandomID()))
+                    .findAny()
+                    .orElse(null);
+
+                deleteResistenciaFromGridPane.accept(founded);
+            }
         }
         if (customShape.getLeg1().hasCable()) {
             Cable cableToRemove = customShape.getLeg1().getCable();
-            //Se realiza un eliminacion si el elemento es un cable y ademas las ID son iguales al cable a remover del Elemento Correspondiente
-            root.getChildren().removeIf(element -> {
-                Utils.ResetStateCustomCircles(cableToRemove);
-                return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
-            });
-            //Despues de eliminar el cable del elemento los eliminamos tambien de la colección del griPaneObserver
-            gridPaneObserver.removeCable(cableToRemove);
+            //se mira que no sea una resistencia.
+            if (cableToRemove.getTipo() == null) {
+                //Se realiza un eliminacion si el elemento es un cable y ademas las ID son iguales al cable a remover del Elemento Correspondiente
+                root.getChildren().removeIf(element -> {
+                    Utils.ResetStateCustomCircles(cableToRemove);
+                    return element instanceof Cable && ((Cable) element).getRandomID().equals(cableToRemove.getRandomID());
+                });
+                //Despues de eliminar el cable del elemento los eliminamos tambien de la colección del griPaneObserver
+                gridPaneObserver.removeCable(cableToRemove);
+            } else if (cableToRemove.getTipo().equals(resistenciaPrefix)) {
+                Resistencia founded = gridPaneObserver.getResistencias().stream()
+                        .filter(el -> el.getRandomID().equals(cableToRemove.getRandomID()))
+                        .findAny()
+                        .orElse(null);
+
+                deleteResistenciaFromGridPane.accept(founded);
+            }
         }
+
+        gridPaneObserver.getCables().forEach(cable -> System.out.println(cable));
+        System.out.println("numero de resistencias: " + gridPaneObserver.getResistencias().size());
     }
 
 

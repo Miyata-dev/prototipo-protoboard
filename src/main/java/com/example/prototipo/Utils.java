@@ -202,7 +202,7 @@ public class Utils {
             ((AnchorPane) resistencia.getParent()).getChildren().remove(resistencia.getArrow());
             ((AnchorPane) resistencia.getParent()).getChildren().remove(resistencia);
         };
-
+        System.out.println("tipo: " + pressedCable.getTipo());
         //si es un cable entra aquí.
         if (pressedCable.getTipo() == null) {
             //se tiene que obtener el cable de la coleccion, sino la información de los círculos se pierde.
