@@ -20,8 +20,6 @@ public class Switch extends Group {
     private ArrayList<CustomCircle> Legs = new ArrayList<>(); // son las patas que tiene el Switch2
     private CustomCircle[] UpperLegs;
     private CustomCircle[] LowerLegs;
-    private CustomCircle Lower;
-    private CustomCircle Upper;
 
     private Boolean ChargePass;
     private String UniqueId;
@@ -33,7 +31,7 @@ public class Switch extends Group {
     private Boolean isBurned;
     private Boolean hasmoved;
 
-    public Switch(Boolean chargePass, GridPaneObserver gridPaneObserver, AnchorPane root, Basurero basurero){
+    public Switch(Boolean chargePass, GridPaneObserver gridPaneObserver, AnchorPane root, Basurero basurero) {
         //Le damos una ID unica
         this.UniqueId = Utils.createRandomID();
         this.ChargePass = true;
@@ -41,7 +39,7 @@ public class Switch extends Group {
         this.root = root;
         this.basurero = basurero;
         this.isUndragableAlready = false;
-        this.isBurned=false;
+        this.isBurned = false;
         this.hasmoved = false;
 
         //Se crea la figura
@@ -56,7 +54,7 @@ public class Switch extends Group {
     //Metodos
 
     //Este metodo lo que hace es crear el elemento para que se vea graficamente
-    public void init(){
+    public void init() {
         //Declaramos la imagen dentro de la clase ya que siempre va a ser la misma imagen
         this.Shape = new ImageView(getClass().getResource("Switch.png").toExternalForm());
         //Declaramos su tamaño y su ubicación para despues agregarlo al grupo
@@ -68,14 +66,13 @@ public class Switch extends Group {
         Shape.setTranslateY(554);
 
 
-
         //Ahora viene agregar las 4 patas que tiene el Switch
 
         //Creamos ID's para cada pata del Switch nuevo
-        ID idOne = new ID (1,1, "switchvolt1");
-        ID idTwo = new ID (1,2, "switchvolt1");
-        ID idThree = new ID (1,3, "switchvolt1");
-        ID idFour = new ID(1,4, "switchvolt1");
+        ID idOne = new ID(1, 1, "switchvolt1");
+        ID idTwo = new ID(1, 2, "switchvolt1");
+        ID idThree = new ID(1, 3, "switchvolt1");
+        ID idFour = new ID(1, 4, "switchvolt1");
 
         //Le damos a las id de las patas que no son para gridPane
         idOne.setIsForGridpane(false);
@@ -86,7 +83,7 @@ public class Switch extends Group {
         //Creamos las patas
         this.Leg1 = new CustomCircle(4, idOne, 0);
         this.Leg2 = new CustomCircle(4, idTwo, 0);
-        this.Leg3 = new CustomCircle(4, idThree, 0 );
+        this.Leg3 = new CustomCircle(4, idThree, 0);
         this.Leg4 = new CustomCircle(4, idFour, 0);
 
         //Lo que hacemos es dejarlos como tomados ya que no sera necesario el que tiren cables
@@ -96,16 +93,16 @@ public class Switch extends Group {
         this.Leg4.setisTaken(true);
 
         //Ahora movemos los circulos en X
-        this.Leg1.setTranslateX(x-17.5);
-        this.Leg2.setTranslateX(x+17.5);
-        this.Leg3.setTranslateX(x-17.5);
-        this.Leg4.setTranslateX(x+17.5);
+        this.Leg1.setTranslateX(x - 17.5);
+        this.Leg2.setTranslateX(x + 17.5);
+        this.Leg3.setTranslateX(x - 17.5);
+        this.Leg4.setTranslateX(x + 17.5);
 
         //Ahora movemos los circulos en Y
-        this.Leg1.setTranslateY(y-20);
-        this.Leg2.setTranslateY(y-20);
-        this.Leg3.setTranslateY(y+20);
-        this.Leg4.setTranslateY(y+20);
+        this.Leg1.setTranslateY(y - 20);
+        this.Leg2.setTranslateY(y - 20);
+        this.Leg3.setTranslateY(y + 20);
+        this.Leg4.setTranslateY(y + 20);
 
         //A los circulos se le asignaran sus coordenadas cuando el elemento ya no sea draggable por el UnDragglableNode del Utils
 
@@ -135,21 +132,21 @@ public class Switch extends Group {
     }
 
     //Este metodo lo que hara
-    public void manageEvents(){
+    public void manageEvents() {
         ArrayList<CustomCircle> closestCircles = new ArrayList<>();
         ArrayList<CustomCircle> circlesCollecition = gridPaneObserver.getCirclesCollection();
 
 
         //Cuando se da click al Switch
-        this.setOnMouseClicked(e-> {
+        this.setOnMouseClicked(e -> {
             //preguntamos si es que el basurero esta activo
-            if(basurero.getIsActive() && hasmoved){
+            if (basurero.getIsActive() && hasmoved) {
                 //Removemos el Grupo del root
                 gridPaneObserver.getRoot().getChildren().remove(this);
                 //y despues por cada cada pata seteamos a los circulos que no son del Switch2
                 for (CustomCircle leg : Legs) {
                     ArrayList<CustomCircle> circles = gridPaneObserver.getCircles(gridPaneObserver, leg.getCable().getSecondCircle().getID());
-                    circles.forEach(circle->{
+                    circles.forEach(circle -> {
                         circle.removeEnergy();
                     });
                     leg.getCable().getSecondCircle().setisTaken(false);
@@ -162,7 +159,7 @@ public class Switch extends Group {
                 }
 
             } else {
-                if(isUndragableAlready && !isBurned){
+                if (isUndragableAlready && !isBurned) {
                     System.out.println("HERE I AM");
                     this.hasmoved = true;
                     //Cuando el basurero no este activo y ya no se puede mover y se de un click se actualiza el estado
@@ -172,7 +169,7 @@ public class Switch extends Group {
                 }
             }
         });
-        this.setOnMouseReleased(e->{
+        this.setOnMouseReleased(e -> {
             closestCircles.clear();
             //isPlacedCorrectly = false;
 
@@ -181,44 +178,35 @@ public class Switch extends Group {
             double y = Shape.localToScreen(Shape.getX(), Shape.getY()).getY() + 25;
 
             //Les setteamos las coordenadas correspondientes
-            this.Leg1.setCoords(x-17.5, y-20);
-            this.Leg2.setCoords(x+17.5, y-20);
-            this.Leg3.setCoords(x-17.5, y+20);
-            this.Leg4.setCoords(x+17.5, y+20);
+            this.Leg1.setCoords(x - 17.5, y - 20);
+            this.Leg2.setCoords(x + 17.5, y - 20);
+            this.Leg3.setCoords(x - 17.5, y + 20);
+            this.Leg4.setCoords(x + 17.5, y + 20);
 
-            double maxRange = (circlesCollecition.get(0).getRadius() * 2) - (Leg1.getRadius() * 2) +  4; //ese es el rango maximo que puede tener.
+            double maxRange = (circlesCollecition.get(0).getRadius() * 2) - (Leg1.getRadius() * 2) + 4; //ese es el rango maximo que puede tener.
 
             for (CustomCircle leg : Legs) {
-                CustomCircle circleFound = Utils.getClosestCircle(circlesCollecition,leg.getX(), leg.getY());
+                CustomCircle circleFound = Utils.getClosestCircle(circlesCollecition, leg.getX(), leg.getY());
 
-                if(circleFound.hasCable()) return;
+                if (circleFound.hasCable() || circleFound.getIsBurned()) return;
 
                 double distanceY = Math.abs(leg.getY() - circleFound.getY());
-                if( distanceY >= maxRange){
+                if (distanceY >= maxRange) {
                     //todo revisar esto
                     //isPlacedCorrectly = false;
                 } else {// NO esta entrando
-                    if(!closestCircles.contains(circleFound)){
+                    if (!closestCircles.contains(circleFound)) {
                         closestCircles.add(circleFound);
                         System.out.println("id: " + circleFound.getID());
                     }
-                };
+                }
+
             }
 
-            if (isPlacedCorrectly){
-                //se toman los gridNames del primer círculo de arriba y el último círculo de abajo.,
-
-                String firstCircleGridName = closestCircles.get(0).getID().getGridName();
-                String secondCircleGridName = closestCircles.get(closestCircles.size() - 1).getID().getGridName();
-
-                //TODO REVISAR ESTO
-//                if(firstCircleGridName.equals(secondCircleGridName)){
-//                    //Utils.makeUndraggableNode(this);
-//                    return;
-//                }
+            if (isPlacedCorrectly) {
 
                 //preguntamos si la cantidad de la coleccion es la misma que la de las patas
-                if (closestCircles.size() == 4){
+                if (closestCircles.size() == 4) {
 
                     //Creamos un AtomicInteger para asi aumentarlo cada vez y settear las patas de manera mas tranquila
                     AtomicInteger i = new AtomicInteger();
@@ -226,14 +214,14 @@ public class Switch extends Group {
                     System.out.println("-----------------------------------------");
 
                     //Ahora por cada circulo encontrado hay que crearle un cable
-                    closestCircles.forEach( circle ->{
+                    closestCircles.forEach(circle -> {
                         circle.setisTaken(true);
-                        Cable cable = new Cable (Legs.get(i.get()), circle);
+                        Cable cable = new Cable(Legs.get(i.get()), circle);
                         circle.setCable(cable);
                         Legs.get(i.get()).setCable(cable);
                         cable.setTipodecarga(circle.getState());
                         gridPaneObserver.addCable(cable);
-                        System.out.println("cable: " + cable.getFirstCircle().getID() +" || "+   cable.getSecondCircle().getID());
+                        System.out.println("cable: " + cable.getFirstCircle().getID() + " || " + cable.getSecondCircle().getID());
                         i.getAndIncrement();
 
                     });
@@ -249,34 +237,39 @@ public class Switch extends Group {
 
 
     //Este metodo lo que hara es la funcionalidad del Switch
-    public void Function(){
-        if(!ChargePass){
-            for (CustomCircle leg : Legs) {
-                leg.removeEnergy();
-                ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, leg.getCable().getSecondCircle().getID());
-                circles.forEach(circle -> {
-                    circle.removeEnergy();
-                });
-                if(Upper != null && leg.getID().equals(Upper.getID()));
-                else if (Lower != null && leg.getID().equals(Lower.getID())) {
-
-                } else{
-
-                    gridPaneObserver.removeColumn(circles);
-                }
-
-            }
-
+    public void Function() {
+        if (!ChargePass) {
+//            for (CustomCircle leg : Legs) {
+//
+//
+//                leg.removeEnergy();
+//                ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, leg.getCable().getSecondCircle().getID());
+//                circles.forEach(circle -> {
+//                    circle.removeEnergy();
+//                });
+//                if (Upper != null && leg.getID().equals(Upper.getID())) ;
+//                else if (Lower != null && leg.getID().equals(Lower.getID())) {
+//
+//                } else {
+//
+//                    gridPaneObserver.removeColumn(circles);
+//                }
+//
+//            }
+//
+//            return;
+//        }
+            //Si es que aun no esta Fijo entonces se sale del metodo
+        }
+        if (!getIsUndragableAlready()) {
             return;
         }
-        //Si es que aun no esta Fijo entonces se sale del metodo
-        if(!getIsUndragableAlready()){ return;}
 
         //Actualizamos la energia desde los circulos
         setEnergyfromClosestCircles(Legs);
         checkisBurned();
 
-        if(isBurned) {
+        if (isBurned) {
             for (CustomCircle leg : Legs) {
 
                 leg.removeEnergy();
@@ -289,34 +282,34 @@ public class Switch extends Group {
             }
             return;
         }
-        if((Leg1.hasEnergy() || Leg2.hasEnergy()) && (!Leg3.hasEnergy() || !Leg4.hasEnergy()) && !isBurned){
+        if ((Leg1.hasEnergy() || Leg2.hasEnergy()) && (!Leg3.hasEnergy() || !Leg4.hasEnergy()) && !isBurned) {
             Leg3.setState(Leg1.getState());
             Leg4.setState(Leg1.getState());
             ArrayList<CustomCircle> circles1 = GridPaneObserver.getCircles(gridPaneObserver, Leg3.getID());
-            circles1.forEach(circle->{
+            circles1.forEach(circle -> {
                 circle.setState(Leg3.getState());
             });
             gridPaneObserver.addColumn(circles1, Leg3.getState());
 
             ArrayList<CustomCircle> circles2 = GridPaneObserver.getCircles(gridPaneObserver, Leg4.getID());
-            circles2.forEach(circle->{
+            circles2.forEach(circle -> {
                 circle.setState(Leg4.getState());
             });
             gridPaneObserver.addColumn(circles2, Leg4.getState());
             GridPaneObserver.refreshProtoboard(gridPaneObserver);
 
 
-        } else if ( (Leg3.hasEnergy() || Leg4.hasEnergy()) && (!Leg1.hasEnergy() || !Leg2.hasEnergy()) && !isBurned) {
+        } else if ((Leg3.hasEnergy() || Leg4.hasEnergy()) && (!Leg1.hasEnergy() || !Leg2.hasEnergy()) && !isBurned) {
             Leg1.setState(Leg3.getState());
             Leg2.setState(Leg3.getState());
             ArrayList<CustomCircle> circles1 = GridPaneObserver.getCircles(gridPaneObserver, Leg1.getID());
-            circles1.forEach(circle->{
+            circles1.forEach(circle -> {
                 circle.setState(Leg1.getState());
             });
             gridPaneObserver.addColumn(circles1, Leg1.getState());
 
             ArrayList<CustomCircle> circles2 = GridPaneObserver.getCircles(gridPaneObserver, Leg2.getID());
-            circles2.forEach(circle->{
+            circles2.forEach(circle -> {
                 circle.setState(Leg2.getState());
             });
             gridPaneObserver.addColumn(circles2, Leg2.getState());
@@ -327,33 +320,56 @@ public class Switch extends Group {
     }
 
 
+    //Este metodo lo que hara es recorrer todos los caminos
+    public Boolean isConnectedFromVolt(Cable LegCable){
+        ArrayList<Cable> cables = Utils.getConnectedCables(gridPaneObserver.getCables(), LegCable, false);
+        for (Cable cable : cables) {
+            if(cable.getFirstCircle().getID().getGridName().equals(gridPaneObserver.getGridVoltPrefix()) || cable.getSecondCircle().getID().getGridName().equals(gridPaneObserver.getGridVoltPrefix())){
+                return true;
+            } else{
+                return false;
+            }
+        }
+        return false;
+    }
+
+
+    public void updateLegs(){
+        //En el caso que la primera pata tenga energia y la otra no se le da energia a la que no tiene
+        if (UpperLegs[0].hasEnergy() && !UpperLegs[1].hasEnergy()) {
+            UpperLegs[1].setState(UpperLegs[0].getState());
+            //GridPaneObserver.refreshProtoboard(gridPaneObserver);
+            //Es lo mismo que el anterior pero en el caso contrario
+        } else if(!UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()){
+            UpperLegs[0].setState(UpperLegs[1].getState());
+            //GridPaneObserver.refreshProtoboard(gridPaneObserver);
+        }
+
+        //hacemos lo mismo pero con las patas inferiores
+        if(!LowerLegs[0].hasEnergy() && !LowerLegs[1].hasEnergy());
+        else if (LowerLegs[0].hasEnergy() && !LowerLegs[1].hasEnergy()) {
+            LowerLegs[1].setState(LowerLegs[0].getState());
+            //GridPaneObserver.refreshProtoboard(gridPaneObserver);
+        } else if (!LowerLegs[0].hasEnergy() && LowerLegs[1].hasEnergy()) {
+            LowerLegs[0].setState(LowerLegs[1].getState());
+            //GridPaneObserver.refreshProtoboard(gridPaneObserver);
+        }
+
+    }
+
 
     //Este metodo lo que hara sera ver si el Switch se deberia quemar o no y ademas actualizamos el estado de los circulos
-    public void checkisBurned(){
-        Upper = new CustomCircle(0, null, 0);
-        Lower = new CustomCircle(0, null, 0);
+    public void checkisBurned( ){
+        int Upper = 0;
+        int Lower = 0;
         //Preguntamos si los circulos de la parte superior del switch tienen energia
-        if(UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()){
+        if(UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()) {
             //si el estado que tienen las patas son distintos entonces se quema el componente
-            if(UpperLegs[0].getState() != UpperLegs[1].getState()){
+            if (UpperLegs[0].getState() != UpperLegs[1].getState()) {
                 this.isBurned = true;
                 return;
-            }
-        } else{
-            //En el caso que una de las dos patas no tenga energia entonces hay que darle la carga de la otra
-
-            //Si las dos patas no tienen energia entonces no sucede nada
-            if(!UpperLegs[0].hasEnergy() && !UpperLegs[1].hasEnergy());
-            //En el caso que la primera pata tenga energia y la otra no se le da energia a la que no tiene
-            else if (UpperLegs[0].hasEnergy() && !UpperLegs[1].hasEnergy()) {
-                UpperLegs[1].setState(UpperLegs[0].getState());
-                Upper= UpperLegs[0];
-                //GridPaneObserver.refreshProtoboard(gridPaneObserver);
-                //Es lo mismo que el anterior pero en el caso contrario
-            } else if(!UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()){
-                UpperLegs[0].setState(UpperLegs[1].getState());
-                Upper= UpperLegs[1];
-                //GridPaneObserver.refreshProtoboard(gridPaneObserver);
+            } else {
+                Upper = UpperLegs[0].getState();
             }
         }
 
@@ -361,38 +377,38 @@ public class Switch extends Group {
         if(LowerLegs[0].hasEnergy() && LowerLegs[1].hasEnergy()){
             if(LowerLegs[0].getState() != LowerLegs[1].getState()){
                 this.isBurned = true;
-                return;
-            }
-        } else{
-            if(!LowerLegs[0].hasEnergy() && !LowerLegs[1].hasEnergy());
-            else if (LowerLegs[0].hasEnergy() && !LowerLegs[1].hasEnergy()) {
-                LowerLegs[1].setState(LowerLegs[0].getState());
-                Lower= LowerLegs[0];
-                //GridPaneObserver.refreshProtoboard(gridPaneObserver);
-            } else if (!LowerLegs[0].hasEnergy() && LowerLegs[1].hasEnergy()) {
-                LowerLegs[0].setState(LowerLegs[1].getState());
-                Lower= LowerLegs[1];
-                //GridPaneObserver.refreshProtoboard(gridPaneObserver);
+            } else{
+                Lower = LowerLegs[0].getState();
             }
         }
 
-        //Despues de actualizar los estados preguntamos la carga que tienen las otras patas
-        if(Lower.getState() != Upper.getState() && Lower.hasEnergy() && Upper.hasEnergy()){
-            //Si la carga que tienen son distintas entonces se quema el componente
+        //En el caso que el paso de carga este activo y el estado de las patas inferiores y superiores son distintas se quema
+        if(ChargePass && Lower != Upper){
             this.isBurned = true;
-            return;
         }
     }
 
+    public void paintLegs(){
+        for(CustomCircle leg : Legs){
+            ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, Cable.getCircleDiferentfromCable(leg, leg.getCable()).getID());
+            circles.forEach(circle -> {
+                circle.setState(leg.getState());
+            });
+        }
+    }
 
-    //Este metodo lo que hace es si al menos una pata tiene energia
-    public Boolean atLeastOneLegHaveEnergy(ArrayList<CustomCircle> legs){
-        for (CustomCircle leg : legs) {
-            if(leg.hasEnergy()){
-                return true;
+    //Este metodo lo que hace es despintar las patas del Switch que no estan conectada a un cable energizado
+    public void unPaintLegs(){
+        for (CustomCircle leg : Legs) {
+            //preguntamos si la pata tiene un cable conectado al volt
+            if(!isConnectedFromVolt(leg.getCable())){
+                //le quitamos la energia
+                leg.removeEnergy();
+                ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, leg.getCable().getSecondCircle().getID());
+                circles.forEach(circle -> {circle.removeEnergy();});
             }
         }
-        return false;
+        GridPaneObserver.refreshProtoboard(gridPaneObserver);
     }
 
     //Este metodo lo que es settear el estado del CustomCircle segun el otro circulo del cable que tiene asignado
