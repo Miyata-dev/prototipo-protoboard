@@ -239,29 +239,12 @@ public class Switch extends Group {
     //Este metodo lo que hara es la funcionalidad del Switch
     public void Function() {
         if (!ChargePass) {
-//            for (CustomCircle leg : Legs) {
-//
-//
-//                leg.removeEnergy();
-//                ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, leg.getCable().getSecondCircle().getID());
-//                circles.forEach(circle -> {
-//                    circle.removeEnergy();
-//                });
-//                if (Upper != null && leg.getID().equals(Upper.getID())) ;
-//                else if (Lower != null && leg.getID().equals(Lower.getID())) {
-//
-//                } else {
-//
-//                    gridPaneObserver.removeColumn(circles);
-//                }
-//
-//            }
-//
-//            return;
-//        }
-            //Si es que aun no esta Fijo entonces se sale del metodo
+            unPaintLegs();
+            updateLegs();
+            checkisBurned();
+            return;
         }
-        if (!getIsUndragableAlready()) {
+        if (!getIsUndragableAlready()) {//Si es que aun no esta Fijo entonces se sale del metodo
             return;
         }
 
@@ -270,52 +253,13 @@ public class Switch extends Group {
         checkisBurned();
 
         if (isBurned) {
-            for (CustomCircle leg : Legs) {
-
-                leg.removeEnergy();
-                //if(Upper.
-                ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, leg.getCable().getSecondCircle().getID());
-                circles.forEach(circle -> {
-                    circle.removeEnergy();
-                });
-                gridPaneObserver.removeColumn(circles);
-            }
+            unPaintLegs();
             return;
+        } else {
+           paintLegs();
+           return;
         }
-        if ((Leg1.hasEnergy() || Leg2.hasEnergy()) && (!Leg3.hasEnergy() || !Leg4.hasEnergy()) && !isBurned) {
-            Leg3.setState(Leg1.getState());
-            Leg4.setState(Leg1.getState());
-            ArrayList<CustomCircle> circles1 = GridPaneObserver.getCircles(gridPaneObserver, Leg3.getID());
-            circles1.forEach(circle -> {
-                circle.setState(Leg3.getState());
-            });
-            gridPaneObserver.addColumn(circles1, Leg3.getState());
 
-            ArrayList<CustomCircle> circles2 = GridPaneObserver.getCircles(gridPaneObserver, Leg4.getID());
-            circles2.forEach(circle -> {
-                circle.setState(Leg4.getState());
-            });
-            gridPaneObserver.addColumn(circles2, Leg4.getState());
-            GridPaneObserver.refreshProtoboard(gridPaneObserver);
-
-
-        } else if ((Leg3.hasEnergy() || Leg4.hasEnergy()) && (!Leg1.hasEnergy() || !Leg2.hasEnergy()) && !isBurned) {
-            Leg1.setState(Leg3.getState());
-            Leg2.setState(Leg3.getState());
-            ArrayList<CustomCircle> circles1 = GridPaneObserver.getCircles(gridPaneObserver, Leg1.getID());
-            circles1.forEach(circle -> {
-                circle.setState(Leg1.getState());
-            });
-            gridPaneObserver.addColumn(circles1, Leg1.getState());
-
-            ArrayList<CustomCircle> circles2 = GridPaneObserver.getCircles(gridPaneObserver, Leg2.getID());
-            circles2.forEach(circle -> {
-                circle.setState(Leg2.getState());
-            });
-            gridPaneObserver.addColumn(circles2, Leg2.getState());
-            GridPaneObserver.refreshProtoboard(gridPaneObserver);
-
-        }
 
     }
 
@@ -325,9 +269,9 @@ public class Switch extends Group {
         ArrayList<Cable> cables = Utils.getConnectedCables(gridPaneObserver.getCables(), LegCable, false);
         for (Cable cable : cables) {
             if(cable.getFirstCircle().getID().getGridName().equals(gridPaneObserver.getGridVoltPrefix()) || cable.getSecondCircle().getID().getGridName().equals(gridPaneObserver.getGridVoltPrefix())){
-                return true;
-            } else{
                 return false;
+            } else{
+                return true;
             }
         }
         return false;
@@ -408,7 +352,6 @@ public class Switch extends Group {
                 circles.forEach(circle -> {circle.removeEnergy();});
             }
         }
-        GridPaneObserver.refreshProtoboard(gridPaneObserver);
     }
 
     //Este metodo lo que es settear el estado del CustomCircle segun el otro circulo del cable que tiene asignado
