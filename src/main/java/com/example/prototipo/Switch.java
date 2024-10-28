@@ -33,6 +33,7 @@ public class Switch extends Group {
 
     private ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energizedColumns = new ArrayList<>();
     private Pair<Integer, CustomCircle> origin = null; //(Integer) 1 = arriba || (Integer) -1 = abajo.
+    private ArrayList<CustomCircle> coOrigin = null;
 
     public Switch(Boolean chargePass, GridPaneObserver gridPaneObserver, AnchorPane root, Basurero basurero) {
         //Le damos una ID unica
@@ -299,6 +300,10 @@ public class Switch extends Group {
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, UpperLegs[1].getCable().getSecondCircle().getID());
             circles.forEach(cir -> cir.setState(origin.getSecondValue().getState()));
 
+            //Añadimos la columna a la coleccion de columnas energizadas
+            addEnergizedColumn(circles);
+            setCoOrigin(circles);
+
             //Es lo mismo que el anterior pero en el caso contrario
         } else if(!UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()){
             UpperLegs[0].setState(UpperLegs[1].getState());
@@ -306,6 +311,10 @@ public class Switch extends Group {
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, UpperLegs[0].getCable().getSecondCircle().getID());
             circles.forEach(cir -> cir.setState(origin.getSecondValue().getState()));
             //GridPaneObserver.refreshProtoboard(gridPaneObserver);
+
+            //Añadimos la columna a la coleccion de columnas energizadas
+            addEnergizedColumn(circles);
+            setCoOrigin(circles);
         }
 
         //hacemos lo mismo pero con las patas inferiores
@@ -317,12 +326,20 @@ public class Switch extends Group {
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, LowerLegs[1].getCable().getSecondCircle().getID());
             circles.forEach(cir -> cir.setState(origin.getSecondValue().getState()));
             //GridPaneObserver.refreshProtoboard(gridPaneObserver);
+
+            //Añadimos la columna a la coleccion de columnas energizadas
+            addEnergizedColumn(circles);
+            setCoOrigin(circles);
         } else if (!LowerLegs[0].hasEnergy() && LowerLegs[1].hasEnergy()) {
             LowerLegs[0].setState(LowerLegs[1].getState());
             setOrigin(-1, LowerLegs[1]);
 
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, LowerLegs[0].getCable().getSecondCircle().getID());
             circles.forEach(cir -> cir.setState(origin.getSecondValue().getState()));
+
+            //Añadimos la columna a la coleccion de columnas energizadas
+            addEnergizedColumn(circles);
+            setCoOrigin(circles);
             //GridPaneObserver.refreshProtoboard(gridPaneObserver);
         }
 
@@ -388,8 +405,10 @@ public class Switch extends Group {
     //Este metodo lo que hace es despintar las patas del Switch que no estan conectada a un cable energizado
     public void unPaintLegs(){
         energizedColumns.forEach(pair -> {
-            ArrayList<CustomCircle> col = pair.getSecondValue();
-            col.forEach(CustomCircle::removeEnergy);
+            if(!pair.getSecondValue().equals(this.coOrigin)){
+                ArrayList<CustomCircle> col = pair.getSecondValue();
+                col.forEach(CustomCircle::removeEnergy);
+            }
         });
     }
 
@@ -400,8 +419,13 @@ public class Switch extends Group {
         }
     }
 
+    //Este metodo lo que hace es agregar la columna a las diferentes colecciones del gridPaneObserver
     public void addEnergizedColumn(ArrayList<CustomCircle> col) {
-        energizedColumns.add(new Pair<>(origin.getSecondValue().getState(), col));
+        Pair pair = new Pair<>(origin.getSecondValue().getState(), col);
+
+        //En el caso de que la columna dada ya estaba en la coleccion de columnas energizadas se sale del metodo y no se agrega
+        if(energizedColumns.contains(pair)) return;
+        energizedColumns.add(pair);
         gridPaneObserver.addColumn(col, origin.getSecondValue().getState());
     }
 
@@ -412,6 +436,11 @@ public class Switch extends Group {
     }
 
     //Setters...
+    public void setCoOrigin(ArrayList<CustomCircle> circles){
+        if(this.coOrigin != null ) return;
+        this.coOrigin = circles;
+    }
+
     public void setRoot(AnchorPane root){
         this.root = root;
     }
