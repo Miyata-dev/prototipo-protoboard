@@ -54,7 +54,7 @@ public class GridPaneObserver {
     }
 
     public void addCable(Cable cable) {
-        System.out.println("adding cable " + cable.getRandomID());
+//        System.out.println("adding cable " + cable.getRandomID());
         if (!cables.contains(cable)) {
             cables.add(cable);
         }
@@ -81,7 +81,7 @@ public class GridPaneObserver {
     public void addColumn(ArrayList<CustomCircle> column, Integer energy) {
         //si la columna está vacía, no se agrega a la colección
         if (column.isEmpty()) return;
-        System.out.println("nro de elementos: " + column.size());
+//        System.out.println("nro de elementos: " + column.size());
         energizedColumns.add(new Pair<>(energy, column));
     }
 
@@ -142,7 +142,7 @@ public class GridPaneObserver {
             cleanCircles(gridPane,-1);
         }
         gridPane.getCables().forEach(cable -> {
-            System.out.println("in refresh" + " cable: " + cable.getRandomID() + " tipo: " + cable.getTipo());
+//            System.out.println("in refresh" + " cable: " + cable.getRandomID() + " tipo: " + cable.getTipo());
             //se obtienen los circulos que están conectados al cable.
             CustomCircle firstCol = cable.getFirstCircle();
             CustomCircle secondCol = cable.getSecondCircle();
@@ -167,7 +167,11 @@ public class GridPaneObserver {
             }if(secondCol.getIsBurned()){
                 burntEnergyCleaner(gridPane,secondCol);
             }
-            System.out.println("first cir state: " + firstCol.getState() + " second cir: " + secondCol.getState());
+
+            if (firstCol.getState() == 0 && secondCol.getState() == 0) {
+                cable.removeTipodecarga();
+            }
+//            System.out.println("first cir state: " + firstCol.getState() + " second cir: " + secondCol.getState());
             //en caso de tener una columna sin energía conectada a otra CON ENERGÍA, esta se registra en el
             //registro de pares <Energía, Columna> (esto es lo que ocurre en los 2 condicionales)
             if (firstCol.getState() != 0 && secondCol.getState() == 0) {
@@ -177,7 +181,7 @@ public class GridPaneObserver {
             }
             if (secondCol.getState() != 0 && firstCol.getState() == 0) {
 
-                System.out.println("tipo: " + cable.getTipo());
+//                System.out.println("tipo: " + cable.getTipo());
 
                 if (cable.getTipo() == null) {
                     ArrayList<CustomCircle> circles = getCircles(gridPane, firstCol.getID());
@@ -194,9 +198,8 @@ public class GridPaneObserver {
 
                 }
             }
-            System.out.println();
+//            System.out.println();
         });
-
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
         gridPane.getEnergizedColumns().forEach(pair -> {
             Integer energy = pair.getFirstValue();
@@ -209,7 +212,7 @@ public class GridPaneObserver {
         refreshEnergizedColumns(gridPane);
     }
     public static void cleanCircles(GridPaneObserver gridPane, int polo) {
-        System.out.println("cleanCircles || state: " + polo);
+//        System.out.println("cleanCircles || state: " + polo);
         ArrayList<Cable> cables = gridPane.getCables();
         for (Cable cable : cables) {
             CustomCircle firstC = cable.getFirstCircle();
@@ -223,23 +226,24 @@ public class GridPaneObserver {
     }
 
     public static void burntEnergyCleaner(GridPaneObserver gridPaneObserver,CustomCircle circle) {
-        ArrayList<Cable> unburnedCables = new ArrayList<>();
+        Cable unburnedCables = null;
         ArrayList<CustomCircle> burnedCircle = getCircles(gridPaneObserver,circle.getID());
         for (CustomCircle circulo : burnedCircle) {
             if(circulo.hasCable() && !circulo.getCable().getIsBurned()){
-                unburnedCables.add(circulo.getCable());
+                unburnedCables = circulo.getCable();
             }
         }
-        if(unburnedCables.size() != 0 ){
-            ArrayList<Cable> connectedCables = Utils.getConnectedCables(gridPaneObserver.getCables(), unburnedCables.get(0), true);
+        if(unburnedCables != null ){
+            ArrayList<Cable> connectedCables = Utils.getConnectedCables(gridPaneObserver.getCables(), unburnedCables, true);
             for (Cable cable : connectedCables) {
                 if(!cable.getIsBurned()){
                     Utils.unPaintCircles(gridPaneObserver, cable.getSecondCircle());
                     Utils.unPaintCircles(gridPaneObserver, cable.getFirstCircle());
                 }
+
             }
         }
-        System.out.println("Cables que estan en la columna quemada: "+unburnedCables.size());
+//        System.out.println("Cables que estan en la columna quemada: "+unburnedCables.size());
 
     }
 
@@ -293,10 +297,10 @@ public class GridPaneObserver {
         Predicate<ArrayList<CustomCircle>> hasCable = column -> column.stream().anyMatch(CustomCircle::hasCable);
         //mira las columnas energizadas, si hay una energizada sin cable, se borra.
         for (int i = 0; i < energized.size(); i++) {
-            System.out.println("energy: " + energized.get(i).getFirstValue());
-            System.out.println("column: " + energized.get(i).getSecondValue());
-
-            System.out.println("has cable?: " + hasCable.test(energized.get(i).getSecondValue()));
+//            System.out.println("energy: " + energized.get(i).getFirstValue());
+//            System.out.println("column: " + energized.get(i).getSecondValue());
+//
+//            System.out.println("has cable?: " + hasCable.test(energized.get(i).getSecondValue()));
             //si la columna no tiene cable, se saca de las columnas energizadas.
             if (!hasCable.test(energized.get(i).getSecondValue())) {
                 Utils.unPaintCircles(gridPaneObserver, energized.get(i).getSecondValue().get(0));
