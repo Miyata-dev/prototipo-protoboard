@@ -15,10 +15,12 @@ public class GridPaneController {
 
     //agrega energia positiva o negativa dependiendo del numero de fila.
     private void fillGridPaneWithCircles() {
+        gridPane.setHgap(8);
+        gridPane.setVgap(1);
         for (int i = 0; i < gridPane.getRowCount(); i++) { //row
             for (int j = 0; j < gridPane.getColumnCount(); j++) { //column
                 ID temporaryID = new ID(i, j, name); // (column, row)
-                CustomCircle circle = new CustomCircle(8, temporaryID, 0);
+                CustomCircle circle = new CustomCircle(7, temporaryID, 0);
 
                 circle.setId(temporaryID.getGeneratedID());
                 circle.getStyleClass().add(CSS_CLASS);
