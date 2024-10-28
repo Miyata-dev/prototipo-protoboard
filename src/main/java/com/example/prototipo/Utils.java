@@ -142,6 +142,18 @@ public class Utils {
         return new ArrayList<>(connectedCablesHashSet);
     }
 
+    public static ArrayList<Cable> getCablesFromCollection(ArrayList<CustomCircle> circles) {
+        ArrayList<Cable> cables = new ArrayList<>();
+
+        circles.forEach(cir -> {
+            if (cir.hasCable()) {
+                cables.add(cir.getCable());
+            }
+        });
+
+        return cables;
+    }
+
     public static Cable getCableByID(ArrayList<Cable> cables, Cable cableToFind) {
         Cable cableFound = null;
 
