@@ -249,31 +249,31 @@ public class Switch extends Group {
 
     //Este metodo lo que hara es la funcionalidad del Switch
     public void Function() {
+        System.out.println("ChargePass is: " + ChargePass);
         setEnergyfromClosestCircles(Legs);
-
         if (!ChargePass) {
             unPaintLegs();
             updateLegs();
             checkisBurned();
             return;
         }
-        if (!getIsUndragableAlready()) {//Si es que aun no esta Fijo entonces se sale del metodo
-            return;
-        }
-
         //Actualizamos la energia desde los circulos
         setEnergyfromClosestCircles(Legs);
         checkisBurned();
-
         if (isBurned) {
+            System.out.println("HERE 5");
             unPaintLegs();
+            coOrigin.forEach(circle->{
+                circle.removeEnergy();
+            });
+            Pair pair = new Pair<>(coOrigin.get(0).getState(), coOrigin);
+            gridPaneObserver.removeColumn(coOrigin);
+            energizedColumns.clear();
             return;
         } else {
-           paintLegs();
-           return;
+            paintLegs();
+            return;
         }
-
-
     }
 
 
@@ -298,7 +298,7 @@ public class Switch extends Group {
             //GridPaneObserver.refreshProtoboard(gridPaneObserver);
             setOrigin(1, UpperLegs[0]);
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, UpperLegs[1].getCable().getSecondCircle().getID());
-            circles.forEach(cir -> cir.setState(origin.getSecondValue().getState()));
+            circles.forEach(cir -> cir.setState(UpperLegs[0].getState()));
 
             //Añadimos la columna a la coleccion de columnas energizadas
             addEnergizedColumn(circles);
@@ -309,7 +309,7 @@ public class Switch extends Group {
             UpperLegs[0].setState(UpperLegs[1].getState());
             setOrigin(1, UpperLegs[1]);
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, UpperLegs[0].getCable().getSecondCircle().getID());
-            circles.forEach(cir -> cir.setState(origin.getSecondValue().getState()));
+            circles.forEach(cir -> cir.setState(UpperLegs[1].getState()));
             //GridPaneObserver.refreshProtoboard(gridPaneObserver);
 
             //Añadimos la columna a la coleccion de columnas energizadas
@@ -318,13 +318,12 @@ public class Switch extends Group {
         }
 
         //hacemos lo mismo pero con las patas inferiores
-        if(!LowerLegs[0].hasEnergy() && !LowerLegs[1].hasEnergy());
-        else if (LowerLegs[0].hasEnergy() && !LowerLegs[1].hasEnergy()) {
+        if (LowerLegs[0].hasEnergy() && !LowerLegs[1].hasEnergy()) {
             LowerLegs[1].setState(LowerLegs[0].getState());
             setOrigin(-1, LowerLegs[0]);
 
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, LowerLegs[1].getCable().getSecondCircle().getID());
-            circles.forEach(cir -> cir.setState(origin.getSecondValue().getState()));
+            circles.forEach(cir -> cir.setState(LowerLegs[0].getState()));
             //GridPaneObserver.refreshProtoboard(gridPaneObserver);
 
             //Añadimos la columna a la coleccion de columnas energizadas
@@ -333,9 +332,8 @@ public class Switch extends Group {
         } else if (!LowerLegs[0].hasEnergy() && LowerLegs[1].hasEnergy()) {
             LowerLegs[0].setState(LowerLegs[1].getState());
             setOrigin(-1, LowerLegs[1]);
-
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, LowerLegs[0].getCable().getSecondCircle().getID());
-            circles.forEach(cir -> cir.setState(origin.getSecondValue().getState()));
+            circles.forEach(cir -> cir.setState(LowerLegs[1].getState()));
 
             //Añadimos la columna a la coleccion de columnas energizadas
             addEnergizedColumn(circles);
@@ -348,34 +346,42 @@ public class Switch extends Group {
 
     //Este metodo lo que hara sera ver si el Switch se deberia quemar o no y ademas actualizamos el estado de los circulos
     public void checkisBurned( ){
-        int Upper = 0;
-        int Lower = 0;
         //Preguntamos si los circulos de la parte superior del switch tienen energia
         if(UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()) {
             //si el estado que tienen las patas son distintos entonces se quema el componente
             if (UpperLegs[0].getState() != UpperLegs[1].getState()) {
+                System.out.println("HERE 2");
                 this.isBurned = true;
-                return;
-            } else {
-                Upper = UpperLegs[0].getState();
             }
         }
 
         //hacemos lo mismo pero con las patas inferiores
         if(LowerLegs[0].hasEnergy() && LowerLegs[1].hasEnergy()){
             if(LowerLegs[0].getState() != LowerLegs[1].getState()){
+                System.out.println("HERE 1");
                 this.isBurned = true;
-            } else{
-                Lower = LowerLegs[0].getState();
             }
         }
 
-//        //En el caso que el paso de carga este activo y el estado de las patas inferiores y superiores son distintas se quema
-//        if(ChargePass && Lower != Upper){
-//            this.isBurned = true;
-//        }
+        //En este caso lo que preguntamos es que si el paso de carga esta activado y las patas superiores tienen energia junto a las inferiores y ademas tambien tienen los mismos tipos de carga y tambien preguntamos si el estado de la pata superior es distinto al de las inferiiores
+        if (!this.isBurned && ChargePass && (UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()) && LowerLegs[0].hasEnergy() && LowerLegs[1].hasEnergy() && UpperLegs[1].getState() == UpperLegs[0].getState() && LowerLegs[1].getState() == LowerLegs[0].getState() && LowerLegs[0].getState() != UpperLegs[0].getState()) {
+            System.out.println("HERE 3");
+            this.isBurned = true;
+
+        }
+        if(isBurned){
+            System.out.println("HERE 4");
+            unPaintLegs();
+            coOrigin.forEach(circle->{
+                circle.removeEnergy();
+            });
+            Pair pair = new Pair<>(coOrigin.get(0).getState(), coOrigin);
+            gridPaneObserver.removeColumn(coOrigin);
+            energizedColumns.clear();
+        }
     }
 
+    //Este Metodo lo que hace es pintar las patas del Switch
     public void paintLegs(){
         //si el origen es 1, entonces ocupa upperLegs, por lo tanto
         //se debe pintar la parte de abajo
@@ -402,12 +408,22 @@ public class Switch extends Group {
         });
     }
 
+
     //Este metodo lo que hace es despintar las patas del Switch que no estan conectada a un cable energizado
     public void unPaintLegs(){
+        ArrayList<ArrayList<CustomCircle>> colsCopies = new ArrayList<>();
         energizedColumns.forEach(pair -> {
             if(!pair.getSecondValue().equals(this.coOrigin)){
                 ArrayList<CustomCircle> col = pair.getSecondValue();
                 col.forEach(CustomCircle::removeEnergy);
+                colsCopies.add(col);
+            }
+        });
+        removeEnergizedColumn(colsCopies);
+        if(origin == null) return;
+        Legs.forEach(leg->{
+            if(!leg.equals(origin.getSecondValue())){
+                leg.removeEnergy();
             }
         });
     }
@@ -427,6 +443,17 @@ public class Switch extends Group {
         if(energizedColumns.contains(pair)) return;
         energizedColumns.add(pair);
         gridPaneObserver.addColumn(col, origin.getSecondValue().getState());
+    }
+
+
+    //Este metodo lo que hace es remover las columnas energizadas que estan dentro de una coleccion
+    public void removeEnergizedColumn(ArrayList<ArrayList<CustomCircle>> cols) {
+
+        cols.forEach(col->{
+            Pair pair = new Pair<>(origin.getSecondValue().getState(), col);
+            energizedColumns.remove(pair);
+            gridPaneObserver.removeColumn(col);
+        });
     }
 
     public void clearcoords(ArrayList<CustomCircle> circles ){
