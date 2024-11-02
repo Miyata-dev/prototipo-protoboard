@@ -176,14 +176,16 @@ public class Switch extends Group {
                     //Cuando el basurero no este activo y ya no se puede mover y se de un click se actualiza el estado
                     this.ChargePass = !this.ChargePass;
                     Function();
-                    //GridPaneObserver.refreshProtoboard(gridPaneObserver);
+
+                    //para el refreshProtoboard funcione como deberia se debe castear por cada cable
+                    gridPaneObserver.getCables().forEach(cable->{
+                        GridPaneObserver.refreshProtoboard(gridPaneObserver);
+                    });
                 }
             }
         });
         this.setOnMouseReleased(e -> {
             closestCircles.clear();
-            //isPlacedCorrectly = false;
-
             //Obtenemos la ubicacion de la imagen del Switch para asi asignarle las coordenadas al cada pata
             double x = Shape.localToScreen(Shape.getX(), Shape.getY()).getX() + 25;
             double y = Shape.localToScreen(Shape.getX(), Shape.getY()).getY() + 25;
@@ -291,6 +293,7 @@ public class Switch extends Group {
     }
 
 
+    //Este metodo lo que hace es actualizar el estado de las patas que tiene el Switch e identificar el origen
     public void updateLegs(){
         //En el caso que la primera pata tenga energia y la otra no se le da energia a la que no tiene
         if (UpperLegs[0].hasEnergy() && !UpperLegs[1].hasEnergy()) {
@@ -383,10 +386,7 @@ public class Switch extends Group {
 
     //Este Metodo lo que hace es pintar las patas del Switch
     public void paintLegs(){
-        //si el origen es 1, entonces ocupa upperLegs, por lo tanto
-        //se debe pintar la parte de abajo
-        System.out.println(origin);
-
+        //si el origen del Switch es 1, se ocupara UpperLegs, lo que lleva a pintar la parte inferior
         if (origin.getFirstValue() == 1) {
             for (CustomCircle circle : LowerLegs) {
                 ArrayList<CustomCircle> col = GridPaneObserver.getCircles(gridPaneObserver, circle.getCable().getSecondCircle().getID());
@@ -420,7 +420,7 @@ public class Switch extends Group {
             }
         });
         removeEnergizedColumn(colsCopies);
-        if(origin == null) return;
+        if(this.origin == null) return;
         Legs.forEach(leg->{
             if(!leg.equals(origin.getSecondValue())){
                 leg.removeEnergy();
@@ -448,7 +448,6 @@ public class Switch extends Group {
 
     //Este metodo lo que hace es remover las columnas energizadas que estan dentro de una coleccion
     public void removeEnergizedColumn(ArrayList<ArrayList<CustomCircle>> cols) {
-
         cols.forEach(col->{
             Pair pair = new Pair<>(origin.getSecondValue().getState(), col);
             energizedColumns.remove(pair);

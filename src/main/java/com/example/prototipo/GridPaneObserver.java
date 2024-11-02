@@ -77,12 +77,10 @@ public class GridPaneObserver {
     public void removeCable(Cable cable) {
         cables.remove(cable);
     }
-    //TODO ver donde ejecutar este método. este método agrega una columna con su respectiva energía.
+
     public void addColumn(ArrayList<CustomCircle> column, Integer energy) {
         //si la columna está vacía, no se agrega a la colección
-        if (column.isEmpty()) return;
-//        System.out.println("nro de elementos: " + column.size());
-        energizedColumns.add(new Pair<>(energy, column));
+        if (column.isEmpty()) return;energizedColumns.add(new Pair<>(energy, column));
     }
 
     public static void addColumn(GridPaneObserver gridPaneObserver, ArrayList<CustomCircle> column, Integer energy) {
@@ -142,7 +140,6 @@ public class GridPaneObserver {
             cleanCircles(gridPane,-1);
         }
         gridPane.getCables().forEach(cable -> {
-//            System.out.println("in refresh" + " cable: " + cable.getRandomID() + " tipo: " + cable.getTipo());
             //se obtienen los circulos que están conectados al cable.
             CustomCircle firstCol = cable.getFirstCircle();
             CustomCircle secondCol = cable.getSecondCircle();
@@ -171,7 +168,6 @@ public class GridPaneObserver {
             if (firstCol.getState() == 0 && secondCol.getState() == 0) {
                 cable.removeTipodecarga();
             }
-//            System.out.println("first cir state: " + firstCol.getState() + " second cir: " + secondCol.getState());
             //en caso de tener una columna sin energía conectada a otra CON ENERGÍA, esta se registra en el
             //registro de pares <Energía, Columna> (esto es lo que ocurre en los 2 condicionales)
             if (firstCol.getState() != 0 && secondCol.getState() == 0) {
@@ -180,9 +176,6 @@ public class GridPaneObserver {
                 GridPaneObserver.addColumn(gridPane, circles, firstCol.getState());
             }
             if (secondCol.getState() != 0 && firstCol.getState() == 0) {
-
-//                System.out.println("tipo: " + cable.getTipo());
-
                 if (cable.getTipo() == null) {
                     ArrayList<CustomCircle> circles = getCircles(gridPane, firstCol.getID());
                     //Utils.paintCirclesCollection(this, circles, secondCol.getState());
@@ -198,7 +191,6 @@ public class GridPaneObserver {
 
                 }
             }
-//            System.out.println();
         });
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
         gridPane.getEnergizedColumns().forEach(pair -> {
