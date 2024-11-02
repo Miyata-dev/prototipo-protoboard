@@ -1,52 +1,80 @@
 package com.example.prototipo;
 
 import javafx.scene.Group;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class Chip extends Group {
     private ArrayList<Rectangle> patitas = new ArrayList<>();
     private ArrayList<Double[]> coords = new ArrayList<>(); // coords[0]= x, coords[1] = y
     private ArrayList<CustomCircle> closeCircles = new ArrayList<>();
+    private ArrayList<ArrayList<CustomCircle>> columns = new ArrayList<>();
     private Basurero basurero;
     private GridPaneObserver gridPaneObserver;
-    private boolean isPlacedCorrectly = true;
-    private String type; //las opciones son: AND || OR || NOT.
+    private boolean isPlacedCorrectly = true, isUndraggable = false;
+    private String type, randomID; //las opciones son: AND || OR || NOT.
+    private CustomShape customShape;
 
     //se debe especificar el tipo a travez del setter: setType.
     public Chip(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver) {
         super(customShape);
+        this.customShape = customShape;
         this.basurero = basurero;
         this.gridPaneObserver = gridPaneObserver;
         addPatitas(customShape);
         this.setTranslateY(-100);
-
+        this.randomID = Utils.createRandomID(); //genera una id random para encontrarlo
         Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());
         manageEvents(customShape);
     }
 
 
-    private void manageEvents(CustomShape customShape) {
+    public void manageEvents(CustomShape customShape) {
         //Conseguimos la coleccion de circulos
         ArrayList<CustomCircle> circlesFromObserver = gridPaneObserver.getCirclesCollection();
 
         this.setOnMouseClicked(e -> {
+            mouseClicked(e, customShape);
+        });
+
+        this.setOnMouseReleased(this::mouseReleased);
+    }
+
+    public void mouseClicked(MouseEvent e, CustomShape customShape, Runnable func) {
+        Consumer<MouseEvent> doSomething = (ev) -> {
             if (basurero.getIsActive() && customShape.getHasMoved()) {
                 gridPaneObserver.getRoot().getChildren().remove(this);
                 closeCircles.forEach(circle -> {
                     circle.setisTaken(false);
                 });
+
+                if (func != null) {
+                    func.run();
+                }
             }
 
             if (basurero.getIsActive()) customShape.setHasMoved(true);
-        });
+        };
 
-        this.setOnMouseReleased(e -> {
+        doSomething.accept(e);
+    }
+
+    public void mouseClicked(MouseEvent e, CustomShape customShape) {
+        mouseClicked(e, customShape, null);
+    }
+
+    //MOUSE RELEASED SUELTA EL CHIP SOLO SI TIENE EL MISMO NÚMERO DE CIRCULSO EN CLOSED CIRCLES, MIRAR CUANDO CAMBIES EL NUMERO DE CÍRCULOS
+    //EN EL MÉTODO addPatitas.
+    public void mouseReleased(MouseEvent e) {
+        ArrayList<CustomCircle> circlesFromObserver = gridPaneObserver.getCirclesCollection();
+
+        Consumer<MouseEvent> doSomething = (ev) -> {
             closeCircles.clear();
             coords.clear();  // Limpia coords antes de llenarlo de nuevo
             isPlacedCorrectly = true; //para reiniciar la variable.
-
             //por cada pata, se obtienen las coordenadas y se guardan en una colección.
             patitas.forEach(pata -> {
                 //se obtienen las coordenadas de la pata que se mira del chip para agregarlas a la colección de coordenadas.
@@ -88,7 +116,7 @@ public class Chip extends Group {
                 //si pertenecen al mismo gridPane no se suelta el Chip.
                 if (firstCircleGridName.equals(secondCircleGridName)) return;
 
-                if (closeCircles.size() == 8) {
+                if (closeCircles.size() == 14) {
                     //por cada circulo se le setea el estado de ocupado.
                     closeCircles.forEach(circle -> {
                         circle.setisTaken(true);
@@ -96,10 +124,21 @@ public class Chip extends Group {
 
                     //Unicamente el Chip deberia ser Undraggable cuando la cantidad de circulos encontrados son 8
                     Utils.makeUndraggableNode(this);
-                }
+                    isUndraggable = true;
+                    //obtiene las columnas de cada círculo.
+                    closeCircles.forEach(cir -> {
+                        ID temporaryID = cir.getID();
 
+                        ArrayList<CustomCircle> column = GridPaneObserver.getCircles(gridPaneObserver, temporaryID);
+
+                        columns.add(column);
+                    });
+                    System.out.println(columns);
+                }
             }
-        });
+        };
+
+        doSomething.accept(e);
     }
 
     //Este metodo lo que hace es crear patas y despues añadirla al grupo
@@ -110,14 +149,23 @@ public class Chip extends Group {
         double heightDifference = customShape.getHeight() + 7; //para poder crear las patas de artriba y abajo se tiene la diferencia de altura.
 
         //este primer ciclo crea las patas de la parte superior del Chip
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 7; i++) {
             crearPatita(customShape,initailX + incrementX * i, initialY);
         }
         //crea las patas de la parte inferior del Chip.
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 7; i++) {
             crearPatita(customShape,initailX + incrementX * i, initialY - heightDifference);
         }
     }
+
+    public ArrayList<CustomCircle> getCloseCircles() {
+        return closeCircles;
+    }
+
+    public CustomShape getCustomShape() {
+        return customShape;
+    }
+
     //Este metodo crea una pata y la agrega al grupo de la clase Chip.
     private void crearPatita(CustomShape customShape, double xOffSet, double yOffSet) {
 
@@ -143,5 +191,17 @@ public class Chip extends Group {
     //GETTERS
     public String getType() { //este tipo va a definir el comportamiento del chip.
         return type;
+    }
+
+    public boolean isUndraggable() {
+        return isUndraggable;
+    }
+
+    public ArrayList<ArrayList<CustomCircle>> getColumns() {
+        return columns;
+    }
+
+    public void checkColumns() {
+        System.out.println("checking columns...");
     }
 }

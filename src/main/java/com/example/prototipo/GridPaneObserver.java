@@ -1,13 +1,7 @@
 package com.example.prototipo;
 
-import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
-import jdk.jshell.execution.Util;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 public class GridPaneObserver {
@@ -19,6 +13,7 @@ public class GridPaneObserver {
     private ArrayList<Resistencia> resistencias = new ArrayList<>();
     private ArrayList<LED> leds = new ArrayList<>();
     private ArrayList<Switch> switches = new ArrayList<>();
+    private ArrayList<ChipAND> chipsAND = new ArrayList<>();
     //guarda las columnas con energía y la energía que tienen.
     private ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energizedColumns = new ArrayList<>();
     //aqui se guardan las columnas quemadas.
@@ -77,11 +72,21 @@ public class GridPaneObserver {
     public void removeCable(Cable cable) {
         cables.remove(cable);
     }
+
+    public void removeChipAND(ChipAND chipAND) {
+        chipsAND.remove(chipAND);
+    }
+
+    public void addChipAND(ChipAND chip) {
+        chipsAND.add(chip);
+    }
+
     //TODO ver donde ejecutar este método. este método agrega una columna con su respectiva energía.
     public void addColumn(ArrayList<CustomCircle> column, Integer energy) {
         //si la columna está vacía, no se agrega a la colección
         if (column.isEmpty()) return;
 //        System.out.println("nro de elementos: " + column.size());
+        System.out.println("adding column: " + column.get(0).getID());
         energizedColumns.add(new Pair<>(energy, column));
     }
 
@@ -126,6 +131,7 @@ public class GridPaneObserver {
     public void activateGridObserver() {
         cables.forEach(cable -> GridPaneObserver.refreshProtoboard(this));
         leds.forEach(led -> LED.UpdatingState(led, true)); //enciende todos los leds del protoboard.
+        refreshProtoboard(this);
     }
 
     public static void refreshProtoboard(GridPaneObserver gridPane) {
@@ -200,16 +206,18 @@ public class GridPaneObserver {
             }
 //            System.out.println();
         });
+
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
         gridPane.getEnergizedColumns().forEach(pair -> {
             Integer energy = pair.getFirstValue();
             ArrayList<CustomCircle> col = pair.getSecondValue();
+            System.out.println("painting col: " + col.get(0).getID() + " energy: " + energy);
             col.forEach(cir -> cir.setState(energy));
         });
         //Actualizamos todos los elementos del GridPaneObserver despues de pintar todos los circulos.
-        RefreshElements(gridPane.getSwitches(), gridPane.getLeds(), gridPane.getCables());
+        RefreshElements(gridPane);
         refreshCables(gridPane);
-        refreshEnergizedColumns(gridPane);
+        refreshEnergizedColumns(gridPane); //con esto aquí no deja que las columnas de los chips se pinten.
     }
     public static void cleanCircles(GridPaneObserver gridPane, int polo) {
 //        System.out.println("cleanCircles || state: " + polo);
@@ -260,14 +268,22 @@ public class GridPaneObserver {
     }
 
     //Este metodo lo que hace es actualizar todos los elementos del protoboard(Switch y LED) cuando al momento de Encender y apagar se llamen su funcionalidad correspondiente
-    public static void RefreshElements(ArrayList<Switch> switches, ArrayList<LED> leds, ArrayList<Cable> cables){
+    public static void RefreshElements(GridPaneObserver gridPaneObserver){
         //Actualizamos todos los switchs
-        for (Switch aSwitch : switches) {
+        for (Switch aSwitch : gridPaneObserver.getSwitches()) {
             aSwitch.Function();
         }
         //Actualizamos todos los LEDs
-        for (LED led : leds) {
+        for (LED led : gridPaneObserver.getLeds()) {
             led.ONorOFF();
+        }
+
+        ArrayList<ChipAND> chips = gridPaneObserver.getChipsAND();
+        System.out.println("number of chips: " + chips.size());
+        //ESTO DE AQUI NO FUNCIONA POR EL REFRESHENERGYZEDCOLUMNS, se debe mejorar esa lógica.
+        for (ChipAND c : chips) {
+            System.out.println("checking columns in refresh...");
+            c.checkColumns();
         }
     }//Actualizamos todos los switchs
 
@@ -289,20 +305,18 @@ public class GridPaneObserver {
             }
         }
     }
-
+    //TODO mejorar la lógica ya que las columnas de los chips se les quita la energpia ya que no tiene cables
+    //y se registran como energizadas en el ChipAND.
     public static void refreshEnergizedColumns(GridPaneObserver gridPaneObserver) {
         ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energized = gridPaneObserver.getEnergizedColumns();
-
         //mira si una columna tiene cable.
         Predicate<ArrayList<CustomCircle>> hasCable = column -> column.stream().anyMatch(CustomCircle::hasCable);
         //mira las columnas energizadas, si hay una energizada sin cable, se borra.
         for (int i = 0; i < energized.size(); i++) {
-//            System.out.println("energy: " + energized.get(i).getFirstValue());
-//            System.out.println("column: " + energized.get(i).getSecondValue());
-//
-//            System.out.println("has cable?: " + hasCable.test(energized.get(i).getSecondValue()));
+            ArrayList<CustomCircle> col = energized.get(i).getSecondValue();
+
             //si la columna no tiene cable, se saca de las columnas energizadas.
-            if (!hasCable.test(energized.get(i).getSecondValue())) {
+            if (!hasCable.test(energized.get(i).getSecondValue()) && !energized.get(i).getSecondValue().get(0).getIsAffectedByChip()) {
                 Utils.unPaintCircles(gridPaneObserver, energized.get(i).getSecondValue().get(0));
             }
         }
@@ -406,6 +420,10 @@ public class GridPaneObserver {
 
     public ArrayList<Pair<Integer, ArrayList<CustomCircle>>> getEnergizedColumns() {
         return energizedColumns;
+    }
+
+    public ArrayList<ChipAND> getChipsAND() {
+        return chipsAND;
     }
 
     public boolean getIsEnergyActivated() {
