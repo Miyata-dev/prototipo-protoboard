@@ -7,7 +7,7 @@ import javafx.scene.shape.Circle;
 public class CustomCircle extends Circle {
     private int state = 0;// state = 0 -> Neutro    state=1 -> Positivo,    state=-1 ->Negativo
     private ID id;
-    private boolean isTaken, isBurned;//Este atributo revisa si el circulo tiene un cable, si está quemado no se va a pintar.
+    private boolean isTaken, isBurned, isAffectedByChip;//Este atributo revisa si el circulo tiene un cable, si está quemado no se va a pintar.
     private Cable Wire;
     private double x;
     private double y;
@@ -19,8 +19,8 @@ public class CustomCircle extends Circle {
         this.setId("customCircle");
         this.isTaken = false;
         this.isBurned = false; //solo se quema una columna si es que
+        this.isAffectedByChip = false;
     }
-
 
     //Metodos...
 
@@ -81,6 +81,10 @@ public class CustomCircle extends Circle {
         this.isTaken = isTaken;
     }
 
+    public void setIsAffectedByChip(boolean isAffectedByChip) {
+        this.isAffectedByChip = isAffectedByChip;
+    }
+
     //Getters...
 
     public boolean getIsTaken(){return this.isTaken;}
@@ -109,7 +113,9 @@ public class CustomCircle extends Circle {
         return this.Wire;
     }
 
-
+    public boolean getIsAffectedByChip(){
+        return this.isAffectedByChip;
+    }
 
     @Override
     public boolean equals(Object obj) {

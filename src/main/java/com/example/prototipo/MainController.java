@@ -1,11 +1,14 @@
 package com.example.prototipo;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -37,6 +40,15 @@ public class MainController {
     public ArrayList<Switch> switches = new ArrayList<>();
     public Bateria bateria;
     public ClickLine clickLineMatrizUno;
+
+    ObservableList<String> options =
+            FXCollections.observableArrayList(
+                    "Chip AND",
+                    "Chip OR",
+                    "Chip NOT"
+            );
+
+    public ComboBox<String> comboBox = new ComboBox(options);
 
     public void initialize() {
 
@@ -106,6 +118,36 @@ public class MainController {
         );
         clickLineMatrizUno.CircleAsignator();
 
+        ObservableList<String> options = comboBox.getItems(); //obtiene las opciones de la lista
+
+        comboBox.setLayoutX(720);
+        comboBox.setLayoutY(500);
+
+        comboBox.setOnAction(e -> {
+            if (comboBox.getSelectionModel().getSelectedItem() == null) return;
+
+            String selectedOption = comboBox.getSelectionModel().getSelectedItem().toString();
+
+            CustomShape customShape = new CustomShape(720, 554, 125, 34, Color.BLACK, "CHIP");
+
+            if (selectedOption.equals(options.get(0))) {
+                System.out.println("creating chip and...");
+                ChipAND chip = new ChipAND(customShape, basurero, gridPaneObserver);
+
+                gridPaneObserver.addChipAND(chip);
+                parent.getChildren().add(chip);
+            } else if (selectedOption.equals(options.get(1))) {
+                System.out.println("creating chip or...");
+            } else if (selectedOption.equals(options.get(2))) {
+                System.out.println("creating chip NOT...");
+            }
+
+            // Resetear la selección del ComboBox
+            Platform.runLater(() -> comboBox.getSelectionModel().clearSelection());
+        });
+
+        parent.getChildren().add(comboBox);
+
         //se calculan las coordenadas de los círculos de los gridTrails
         //después de que se renderizen los nodos.
         Platform.runLater(() -> {
@@ -143,7 +185,7 @@ public class MainController {
     }
     //in mainController
     public void createChip() {
-        CustomShape customShape = new CustomShape(720, 554, 70, 34, Color.BLACK, "CHIP");
+        CustomShape customShape = new CustomShape(720, 554, 125, 34, Color.BLACK, "CHIP");
         Chip chip = new Chip(customShape, basurero, gridPaneObserver);
         parent.getChildren().add(chip);
     }
