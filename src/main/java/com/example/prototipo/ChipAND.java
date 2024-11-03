@@ -24,17 +24,35 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
             super.mouseReleased(e);
             getCols();
             checkColumns();
+            gridPaneObserver.getCables().forEach(c -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
             //quita la energía de las columnas afectadas.
         });
 
         Runnable removeAffectedCols = () -> {
+            lowerCols.forEach(col -> {
+                Utils.unPaintCircles(gridPaneObserver, col.get(0));
+                gridPaneObserver.removeColumn(col);
+                col.forEach(cir -> cir.setIsAffectedByChip(false));
+            });
+
+            upperCols.forEach(col -> {
+                Utils.unPaintCircles(gridPaneObserver, col.get(0));
+                gridPaneObserver.removeColumn(col);
+                col.forEach(cir -> cir.setIsAffectedByChip(false));
+            });
+
             affectedColumns.forEach(col -> {
                 Utils.unPaintCircles(gridPaneObserver, col.get(0));
                 gridPaneObserver.removeColumn(col);
                 col.forEach(cir -> cir.setIsAffectedByChip(false));
             });
+
             affectedColumns.clear();
+            upperCols.clear();
+            lowerCols.clear();
+
             gridPaneObserver.removeChipAND(this);
+            gridPaneObserver.getCables().forEach(c -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
         };
 
         this.setOnMouseClicked(e -> {
