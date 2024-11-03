@@ -69,6 +69,11 @@ public class ClickLine {
             if(!(e.getTarget() instanceof CustomCircle)) return;
             RealizeLine(e);
             isCableFixed = true;
+            GridPaneObserver.refreshCables(gridPaneObserver);
+            if(!gridPaneObserver.getBurnedCables().isEmpty()){
+                gridPaneObserver.getCables().removeAll(gridPaneObserver.getBurnedCables());
+            }
+
             //al eliminar un cable, el paso de energía es defectuoso, por ello se llama esta función que se asegura de que esté bn.
             if (gridPaneObserver.getIsEnergyActivated()) {
                 gridPaneObserver.getCables().forEach(n -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
@@ -93,6 +98,17 @@ public class ClickLine {
             if(e.getTarget() instanceof Cable cable) {
                 //Buscamos el cable presionado para asi ver despues si el cable pertenece a un elemento del protoboard
                 Cable cablefound = Utils.getCableByID(gridPaneObserver.getCables(), cable);
+
+                if(cablefound == null) {
+                    Cable cableQuemado = Utils.getCableByID(gridPaneObserver.getBurnedCables(), cable);
+                    cableQuemado.Getcircles()[0].setisTaken(false);
+                    cableQuemado.Getcircles()[1].setisTaken(false);
+                    cableQuemado.Getcircles()[0].setCable(null);
+                    cableQuemado.Getcircles()[1].setCable(null);
+                    gridPaneObserver.getBurnedCables().remove(cableQuemado);
+                    root.getChildren().remove(cableQuemado);
+                    return;
+                }
                 //asignamos los CustomCircles del cable
                 CustomCircle startHandler = cablefound.Getcircles()[0];
                 CustomCircle endHandler = cablefound.Getcircles()[1];

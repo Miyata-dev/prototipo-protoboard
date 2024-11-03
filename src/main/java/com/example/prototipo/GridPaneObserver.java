@@ -10,6 +10,7 @@ public class GridPaneObserver {
     private GridPaneController firstGridPaneVolt;
     private GridPaneController secondGridPaneVolt;
     private ArrayList<Cable> cables = new ArrayList<>();
+    private ArrayList<Cable> burnedCables = new ArrayList<>();
     private ArrayList<Resistencia> resistencias = new ArrayList<>();
     private ArrayList<LED> leds = new ArrayList<>();
     private ArrayList<Switch> switches = new ArrayList<>();
@@ -147,9 +148,27 @@ public class GridPaneObserver {
         }if(!bateria.getNegativePole().hasCable()) {
             cleanCircles(gridPane,-1);
         }
-        gridPane.getCables().forEach(cable -> {
-//            System.out.println("in refresh" + " cable: " + cable.getRandomID() + " tipo: " + cable.getTipo());
-            //se obtienen los circulos que están conectados al cable.
+        if(bateria.getPositivePole().hasCable()){
+            simplifiedRefresh(gridPane,bateria.getPositivePole());
+        }if(bateria.getNegativePole().hasCable()){
+            simplifiedRefresh(gridPane,bateria.getNegativePole());
+        }
+        //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
+        gridPane.getEnergizedColumns().forEach(pair -> {
+            Integer energy = pair.getFirstValue();
+            ArrayList<CustomCircle> col = pair.getSecondValue();
+            col.forEach(cir -> cir.setState(energy));
+        });
+        //Actualizamos todos los elementos del GridPaneObserver despues de pintar todos los circulos.
+        RefreshElements(gridPane);
+        refreshCables(gridPane);
+        refreshEnergizedColumns(gridPane); //con esto aquí no deja que las columnas de los chips se pinten.
+    }
+
+    public static void simplifiedRefresh(GridPaneObserver gridPane, CustomCircle pole) {
+        ArrayList<Cable> poleCables = Utils.getConnectedCables(gridPane.getCables(),pole.getCable(),false);
+        for(Cable cable : poleCables){
+    //se obtienen los circulos que están conectados al cable.
             CustomCircle firstCol = cable.getFirstCircle();
             CustomCircle secondCol = cable.getSecondCircle();
             //se obtiene las columnas de los circulos que tiene el cables
@@ -167,17 +186,9 @@ public class GridPaneObserver {
                     secondCol.setState(el.getState());
                 }
             });
-
-            if(firstCol.getIsBurned()){
-                burntEnergyCleaner(gridPane,firstCol);
-            }if(secondCol.getIsBurned()){
-                burntEnergyCleaner(gridPane,secondCol);
-            }
-
             if (firstCol.getState() == 0 && secondCol.getState() == 0) {
                 cable.removeTipodecarga();
             }
-//            System.out.println("first cir state: " + firstCol.getState() + " second cir: " + secondCol.getState());
             //en caso de tener una columna sin energía conectada a otra CON ENERGÍA, esta se registra en el
             //registro de pares <Energía, Columna> (esto es lo que ocurre en los 2 condicionales)
             if (firstCol.getState() != 0 && secondCol.getState() == 0) {
@@ -196,28 +207,19 @@ public class GridPaneObserver {
                 } else {
                     //busca una resistencia que tenga la misma id random que el cable que estamos mirando en la iteración.
                     Resistencia founded = gridPane.getResistencias().stream()
-                        .filter(el -> el.getRandomID().equals(cable.getRandomID()))
-                        .findAny()
-                        .orElse(null);
+                            .filter(el -> el.getRandomID().equals(cable.getRandomID()))
+                            .findAny()
+                            .orElse(null);
 
                     founded.setBurned();
 
                 }
             }
-        });
-        //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
-        gridPane.getEnergizedColumns().forEach(pair -> {
-            Integer energy = pair.getFirstValue();
-            ArrayList<CustomCircle> col = pair.getSecondValue();
-            col.forEach(cir -> cir.setState(energy));
-        });
-        //Actualizamos todos los elementos del GridPaneObserver despues de pintar todos los circulos.
-        RefreshElements(gridPane);
-        refreshCables(gridPane);
-        refreshEnergizedColumns(gridPane); //con esto aquí no deja que las columnas de los chips se pinten.
+        }
+
     }
+
     public static void cleanCircles(GridPaneObserver gridPane, int polo) {
-//        System.out.println("cleanCircles || state: " + polo);
         ArrayList<Cable> cables = gridPane.getCables();
         for (Cable cable : cables) {
             CustomCircle firstC = cable.getFirstCircle();
@@ -230,26 +232,14 @@ public class GridPaneObserver {
         }
     }
 
-    public static void burntEnergyCleaner(GridPaneObserver gridPaneObserver,CustomCircle circle) {
-        Cable unburnedCables = null;
-        ArrayList<CustomCircle> burnedCircle = getCircles(gridPaneObserver,circle.getID());
-        for (CustomCircle circulo : burnedCircle) {
-            if(circulo.hasCable() && !circulo.getCable().getIsBurned()){
-                unburnedCables = circulo.getCable();
+    public static void burntEnergyCleaner(GridPaneObserver gridPaneObserver,ArrayList<CustomCircle> burnedCircles) {
+        for (CustomCircle circulo : burnedCircles) {
+            if(circulo.hasCable()){
+                gridPaneObserver.getBurnedCables().add(circulo.getCable());
             }
         }
-        if(unburnedCables != null ){
-            ArrayList<Cable> connectedCables = Utils.getConnectedCables(gridPaneObserver.getCables(), unburnedCables, true);
-            for (Cable cable : connectedCables) {
-                if(!cable.getIsBurned()){
-                    Utils.unPaintCircles(gridPaneObserver, cable.getSecondCircle());
-                    Utils.unPaintCircles(gridPaneObserver, cable.getFirstCircle());
-                }
 
-            }
-        }
-//        System.out.println("Cables que estan en la columna quemada: "+unburnedCables.size());
-
+        System.out.println("Cantidad de cables: "+ gridPaneObserver.getBurnedCables().size());
     }
 
     public static ArrayList<CustomCircle> getCircles(GridPaneObserver gridPaneObserver, ID id){
@@ -276,10 +266,10 @@ public class GridPaneObserver {
         }
 
         ArrayList<ChipAND> chips = gridPaneObserver.getChipsAND();
-        System.out.println("number of chips: " + chips.size());
+//        System.out.println("number of chips: " + chips.size());
         //ESTO DE AQUI NO FUNCIONA POR EL REFRESHENERGYZEDCOLUMNS, se debe mejorar esa lógica.
         for (ChipAND c : chips) {
-            System.out.println("checking columns in refresh...");
+//            System.out.println("checking columns in refresh...");
             c.checkColumns();
         }
     }//Actualizamos todos los switchs
@@ -294,8 +284,9 @@ public class GridPaneObserver {
                 //quema arbitrariamente la segunda.
                 if (cable.getFirstCircle().hasEnergy() && cable.getSecondCircle().hasEnergy()) {
                     ArrayList<CustomCircle> circleToBurn = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
-                    cable.setBurned(); // TOMAR ESTE ESTADO Y SACAR LOS GETCONNECTEDCABLES DE LOS CIRCULOS DE LA COLUMNA QUEMADA
+                    cable.setBurned();
                     circleToBurn.forEach(CustomCircle::setBurned);
+                    burntEnergyCleaner(gridPaneObserver,circleToBurn);
 
                     return;
                 }
@@ -402,6 +393,8 @@ public class GridPaneObserver {
     public ArrayList<Cable> getCables() {
         return cables;
     }
+
+    public ArrayList<Cable> getBurnedCables() {return burnedCables;}
 
     public ArrayList<Resistencia> getResistencias() {
         return resistencias;
