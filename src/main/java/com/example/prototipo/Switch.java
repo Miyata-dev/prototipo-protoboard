@@ -386,6 +386,8 @@ public class Switch extends Group {
 
     //Este Metodo lo que hace es pintar las patas del Switch
     public void paintLegs(){
+        //se asegura de que tenga un origen.
+        if (origin == null) return;
         //si el origen del Switch es 1, se ocupara UpperLegs, lo que lleva a pintar la parte inferior
         if (origin.getFirstValue() == 1) {
             for (CustomCircle circle : LowerLegs) {
