@@ -150,8 +150,10 @@ public class GridPaneObserver {
         }
         if(bateria.getPositivePole().hasCable()){
             simplifiedRefresh(gridPane,bateria.getPositivePole());
+            freeEnergy(gridPane,bateria.getPositivePole());
         }if(bateria.getNegativePole().hasCable()){
             simplifiedRefresh(gridPane,bateria.getNegativePole());
+            freeEnergy(gridPane,bateria.getNegativePole());
         }
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
         gridPane.getEnergizedColumns().forEach(pair -> {
@@ -238,8 +240,20 @@ public class GridPaneObserver {
                 gridPaneObserver.getBurnedCables().add(circulo.getCable());
             }
         }
+    }
 
-        System.out.println("Cantidad de cables: "+ gridPaneObserver.getBurnedCables().size());
+    public static void freeEnergy(GridPaneObserver gridPane,CustomCircle pole) {
+        ArrayList<Cable> ConnectWithBatery = Utils.getConnectedCables(gridPane.getCables(),pole.getCable(),false);
+        ArrayList<Cable> notConnectedWithBatery = new ArrayList<>(gridPane.getCables());
+        notConnectedWithBatery.removeAll(ConnectWithBatery);
+
+        for (Cable cable: notConnectedWithBatery) {
+            if(cable.getTipodecarga() == pole.getState()){
+                Utils.unPaintCircles(gridPane, cable.getSecondCircle());
+                Utils.unPaintCircles(gridPane, cable.getFirstCircle());
+            }
+        }
+
     }
 
     public static ArrayList<CustomCircle> getCircles(GridPaneObserver gridPaneObserver, ID id){

@@ -13,8 +13,8 @@ public class Bateria {
     public Bateria(Image image) {
         this.image = image;
         //indexRow = 2 es el polo negativo, si es indexRow = 1 es positivo
-        ID IdForNegative = new ID(2,1,"BateryVolt");
-        ID IdForPositive = new ID(1,1,"BateryVolt");
+        ID IdForNegative = new ID(100,100,"BateryVolt");
+        ID IdForPositive = new ID(101,101,"BateryVolt");
         IdForNegative.setIsForGridpane(false);
         IdForPositive.setIsForGridpane(false);
 

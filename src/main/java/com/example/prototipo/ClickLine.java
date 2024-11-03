@@ -100,13 +100,13 @@ public class ClickLine {
                 Cable cablefound = Utils.getCableByID(gridPaneObserver.getCables(), cable);
 
                 if(cablefound == null) {
-                    Cable cableQuemado = Utils.getCableByID(gridPaneObserver.getBurnedCables(), cable);
-                    cableQuemado.Getcircles()[0].setisTaken(false);
-                    cableQuemado.Getcircles()[1].setisTaken(false);
-                    cableQuemado.Getcircles()[0].setCable(null);
-                    cableQuemado.Getcircles()[1].setCable(null);
-                    gridPaneObserver.getBurnedCables().remove(cableQuemado);
-                    root.getChildren().remove(cableQuemado);
+                    Cable burnedCable = Utils.getCableByID(gridPaneObserver.getBurnedCables(), cable);
+                    burnedCable.Getcircles()[0].setisTaken(false);
+                    burnedCable.Getcircles()[1].setisTaken(false);
+                    burnedCable.Getcircles()[0].setCable(null);
+                    burnedCable.Getcircles()[1].setCable(null);
+                    gridPaneObserver.getBurnedCables().remove(burnedCable);
+                    root.getChildren().remove(burnedCable);
                     return;
                 }
                 //asignamos los CustomCircles del cable
