@@ -73,7 +73,9 @@ public class Cable extends Line {
     }
 
 
+    //Este metodo lo que hace es comprobar si dos cables estan conectados mediante la misma columna o Fila
     public static boolean areConnected(Cable one, Cable two, GridPaneObserver gridPaneObserver) {
+        //Creamos unas variables que preguntan si los cables tienen al menos un volt
         boolean isOneVolt = one.getIds()[0].getGridName().contains(gridPaneObserver.getGridVoltPrefix()) ||
                 one.getIds()[1].getGridName().contains(gridPaneObserver.getGridVoltPrefix());
 
@@ -82,6 +84,7 @@ public class Cable extends Line {
 
         boolean firstAtt, secondAtt;
 
+        //preguntamos si los dos tienen al menos una id de Volt
         if (isOneVolt && isTwoVolt) {
             // Comparaciones por filas si ambos cables son volts
             firstAtt = one.getIds()[0].getIndexRow() == two.getIds()[1].getIndexRow() ||
@@ -108,29 +111,6 @@ public class Cable extends Line {
 
         return (firstAtt || secondAtt) && (firstGridNameID || secondGridNameID);
     }
-
-//    public static boolean areConnected(Cable one, Cable two,GridPaneObserver gridPane) {
-//        //en estás condiciones (la primera y la segunda) se mira que el indice de los cículos de los cables se conecten entre si.
-//
-//
-//        boolean firstAtt =
-//                one.getIds()[0].getIndexColumn() == two.getIds()[1].getIndexColumn() ||
-//                        one.getIds()[0].getIndexColumn() == two.getIds()[0].getIndexColumn();
-//
-//        boolean secondAtt =
-//                one.getIds()[1].getIndexColumn() == two.getIds()[0].getIndexColumn() ||
-//                        one.getIds()[1].getIndexColumn() == two.getIds()[1].getIndexColumn();
-//
-//        boolean firstGridNameNameID =
-//                one.getIds()[0].getGridName().equals(two.getIds()[1].getGridName()) ||
-//                        one.getIds()[0].getGridName().equals(two.getIds()[0].getGridName());
-//
-//        boolean secondGridNameID =
-//                one.getIds()[1].getGridName().equals(two.getIds()[0].getGridName()) ||
-//                        one.getIds()[1].getGridName().equals(two.getIds()[1].getGridName());
-//
-//        return (firstAtt || secondAtt) && (firstGridNameNameID || secondGridNameID);
-//    }
 
 
     public boolean isConnectedToBatery() {

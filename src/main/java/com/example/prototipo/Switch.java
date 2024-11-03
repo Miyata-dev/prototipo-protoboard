@@ -16,6 +16,7 @@ public class Switch extends Group {
     private CustomCircle Leg2;
     private CustomCircle Leg3;
     private CustomCircle Leg4;
+    private ArrayList<Cable> cables = new ArrayList<>();
 
     private ArrayList<CustomCircle> Legs = new ArrayList<>(); // son las patas que tiene el Switch2
     private CustomCircle[] UpperLegs;
@@ -233,7 +234,8 @@ public class Switch extends Group {
                         circle.setCable(cable);
                         Legs.get(i.get()).setCable(cable);
                         cable.setTipodecarga(circle.getState());
-                        //gridPaneObserver.addCable(cable);
+                        this.cables.add(cable);
+                        gridPaneObserver.addCable(cable);
                         System.out.println("cable: " + cable.getFirstCircle().getID() + " || " + cable.getSecondCircle().getID());
                         i.getAndIncrement();
 
@@ -263,7 +265,6 @@ public class Switch extends Group {
         setEnergyfromClosestCircles(Legs);
         checkisBurned();
         if (isBurned) {
-            System.out.println("HERE 5");
             unPaintLegs();
             coOrigin.forEach(circle->{
                 circle.removeEnergy();
@@ -353,7 +354,6 @@ public class Switch extends Group {
         if(UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()) {
             //si el estado que tienen las patas son distintos entonces se quema el componente
             if (UpperLegs[0].getState() != UpperLegs[1].getState()) {
-                System.out.println("HERE 2");
                 this.isBurned = true;
             }
         }
@@ -361,19 +361,16 @@ public class Switch extends Group {
         //hacemos lo mismo pero con las patas inferiores
         if(LowerLegs[0].hasEnergy() && LowerLegs[1].hasEnergy()){
             if(LowerLegs[0].getState() != LowerLegs[1].getState()){
-                System.out.println("HERE 1");
                 this.isBurned = true;
             }
         }
 
         //En este caso lo que preguntamos es que si el paso de carga esta activado y las patas superiores tienen energia junto a las inferiores y ademas tambien tienen los mismos tipos de carga y tambien preguntamos si el estado de la pata superior es distinto al de las inferiiores
         if (!this.isBurned && ChargePass && (UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()) && LowerLegs[0].hasEnergy() && LowerLegs[1].hasEnergy() && UpperLegs[1].getState() == UpperLegs[0].getState() && LowerLegs[1].getState() == LowerLegs[0].getState() && LowerLegs[0].getState() != UpperLegs[0].getState()) {
-            System.out.println("HERE 3");
             this.isBurned = true;
 
         }
         if(isBurned){
-            System.out.println("HERE 4");
             unPaintLegs();
             coOrigin.forEach(circle->{
                 circle.removeEnergy();
@@ -391,12 +388,14 @@ public class Switch extends Group {
         //si el origen del Switch es 1, se ocupara UpperLegs, lo que lleva a pintar la parte inferior
         if (origin.getFirstValue() == 1) {
             for (CustomCircle circle : LowerLegs) {
+                gridPaneObserver.addCable(circle.getCable());
                 ArrayList<CustomCircle> col = GridPaneObserver.getCircles(gridPaneObserver, circle.getCable().getSecondCircle().getID());
                 //energizedColumns.add(new Pair<>(origin.getSecondValue().getState(), col));
                 addEnergizedColumn(col);
             }
         } else if (origin.getFirstValue() == -1) {
             for (CustomCircle circle : UpperLegs) {
+                gridPaneObserver.addCable(circle.getCable());
                 ArrayList<CustomCircle> col = GridPaneObserver.getCircles(gridPaneObserver, circle.getCable().getSecondCircle().getID());
                 //energizedColumns.add(new Pair<>(origin.getSecondValue().getState(), col));
                 addEnergizedColumn(col);
@@ -424,9 +423,11 @@ public class Switch extends Group {
         removeEnergizedColumn(colsCopies);
         if(this.origin == null) return;
         Legs.forEach(leg->{
-            if(!leg.equals(origin.getSecondValue())){
-                leg.removeEnergy();
-            }
+            //if(origin.getFirstValue() == 1){//(Integer) 1 = arriba || (Integer) -1 = abajo.
+                if(!leg.equals(origin.getSecondValue())){
+                    leg.removeEnergy();
+                    gridPaneObserver.removeCable(leg.getCable());
+                }
         });
     }
 
@@ -523,4 +524,6 @@ public class Switch extends Group {
     public Boolean getIsUndragableAlready(){
         return this.isUndragableAlready;
     }
+
+    public ArrayList<Cable> getCables(){return this.cables;}
 }
