@@ -171,7 +171,7 @@ public class Switch extends Group {
                 energizedColumns.clear();
                 gridPaneObserver.removeSwitches(this);
             } else {
-                if (isUndragableAlready && !isBurned) {
+                if (isUndragableAlready && !isBurned && gridPaneObserver.getIsEnergyActivated()) {
                     System.out.println("HERE I AM");
                     this.hasmoved = true;
                     //Cuando el basurero no este activo y ya no se puede mover y se de un click se actualiza el estado
