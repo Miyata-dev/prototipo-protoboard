@@ -281,7 +281,7 @@ public class Switch extends Group {
 
     //Este metodo lo que hara es recorrer todos los caminos
     public Boolean isConnectedFromVolt(Cable LegCable){
-        ArrayList<Cable> cables = Utils.getConnectedCables(gridPaneObserver.getCables(), LegCable, false);
+        ArrayList<Cable> cables = Utils.getConnectedCables(gridPaneObserver.getCables(), LegCable, gridPaneObserver);
         for (Cable cable : cables) {
             if(cable.getFirstCircle().getID().getGridName().equals(gridPaneObserver.getGridVoltPrefix()) || cable.getSecondCircle().getID().getGridName().equals(gridPaneObserver.getGridVoltPrefix())){
                 return false;

@@ -93,25 +93,13 @@ public class Utils {
 
         circles.forEach(CustomCircle::removeEnergy);
     }
-    public static ArrayList<Cable> getConnectedCables(ArrayList<Cable> cables, Cable cableToConnect, boolean ignoreVoltCables) {
-        String[] voltNames = {
-                "gridVolt1",
-                "gridVolt2"
-        };
-
+    public static ArrayList<Cable> getConnectedCables(ArrayList<Cable> cables, Cable cableToConnect,GridPaneObserver gridPane) {
         HashSet<Cable> connectedCablesHashSet = new HashSet<>();
 
         //recorre todos los elementos de la colección de cables entregada.
         for (int i = 0; i < cables.size(); i++) {
-            //se mira que cada uno de los cables de la colección, no provenga de un gridVolt
-            boolean isFirstIDinVolt = Arrays.asList(voltNames).contains(cables.get(i).getIds()[0].getGridName());
-            boolean isSecondIDinVolt = Arrays.asList(voltNames).contains(cables.get(i).getIds()[1].getGridName());
-
-            //se agregan a la colección de cables si está la opción de ignorar el caso de que pertenezcan a los volts.
-            boolean areVoltCablesValid = (!isFirstIDinVolt && !isSecondIDinVolt) || !ignoreVoltCables;
-
             //mira que los cables estén conectados entre si Y ADEMÁS, que no sea un cable que provenga de los gridVolts.
-            if (Cable.areConnected(cables.get(i), cableToConnect) && areVoltCablesValid) {
+            if (Cable.areConnected(cables.get(i), cableToConnect,gridPane)) {
                 connectedCablesHashSet.add(cables.get(i));
             }
             //si es hashset NO está vacío, mira todos los elementos del hashset
@@ -124,14 +112,8 @@ public class Utils {
                     //recorre toda la coleccion de cables entregada y mira si el elemento iterado está conectado
                     //con uno de los elementos del hashset
                     for (Cable cable : cables) {
-                        //se mira que cada uno de los cables de la colección, no provenga de un gridVolt
-                        boolean isFirstIDcableinVolt = Arrays.asList(voltNames).contains(cable.getIds()[0].getGridName());
-                        boolean isSecondIDcableinVolt = Arrays.asList(voltNames).contains(cable.getIds()[1].getGridName());
-
                         //se agregan a la colección de cables si está la opción de ignorar el caso de que pertenezcan a los volts.
-                        boolean areVoltsIDValid = (!isFirstIDcableinVolt && !isSecondIDcableinVolt) || !ignoreVoltCables;
-
-                        if (Cable.areConnected(arrayListAux.get(j), cable) && areVoltsIDValid) {
+                        if (Cable.areConnected(arrayListAux.get(j), cable,gridPane)) {
                             connectedCablesHashSet.add(cable);
                         }
                     }
@@ -265,7 +247,7 @@ public class Utils {
                 deleteCableFromGridPane.accept(cableFound);
                 return;
             }
-            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable, false);
+            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable,gridPaneObserver);
 
             for (Cable cable : connectedCables) {
                 unPaintCircles(gridPaneObserver, cable.getSecondCircle());
@@ -330,7 +312,7 @@ public class Utils {
                 deleteResistenciaFromGridPane.accept(recistenciaFound);
                 return;
             }
-            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable, false);
+            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable,gridPaneObserver);
 
             for (Cable cable : connectedCables) {
                 unPaintCircles(gridPaneObserver, cable.getSecondCircle());

@@ -25,7 +25,7 @@ public class Cable extends Line {
         setEndY(endY);
     }
 
-    public Cable(CustomCircle firstCircle, CustomCircle secondCircle){
+    public Cable(CustomCircle firstCircle, CustomCircle secondCircle) {
         this.SetCircles(new CustomCircle[]{
                 firstCircle,
                 secondCircle
@@ -35,7 +35,7 @@ public class Cable extends Line {
         setStartY(firstCircle.getY());
         setEndY(secondCircle.getY());
         setRandomID();
-        this.setIds(new ID[] {
+        this.setIds(new ID[]{
                 firstCircle.getID(),
                 secondCircle.getID()
         });
@@ -44,10 +44,10 @@ public class Cable extends Line {
     //Metodos...
 
     //Este metodo lo que hace es conseguir el circulo que es diferente
-    public static CustomCircle getCircleDiferentfromCable(CustomCircle circle, Cable cable){
-        if(circle.getID().equals(cable.getFirstCircle().getID())){
+    public static CustomCircle getCircleDiferentfromCable(CustomCircle circle, Cable cable) {
+        if (circle.getID().equals(cable.getFirstCircle().getID())) {
             return cable.getSecondCircle();
-        } else{
+        } else {
             return cable.getFirstCircle();
         }
     }
@@ -72,17 +72,33 @@ public class Cable extends Line {
         this.tipodecarga = 0;
     }
 
-    public static boolean areConnected(Cable one, Cable two) {
-        //en estás condiciones (la primera y la segunda) se mira que el indice de los cículos de los cables se conecten entre si.
-        boolean firstAtt =
-                one.getIds()[0].getIndexColumn() == two.getIds()[1].getIndexColumn() ||
-                        one.getIds()[0].getIndexColumn() == two.getIds()[0].getIndexColumn();
 
-        boolean secondAtt =
-                one.getIds()[1].getIndexColumn() == two.getIds()[0].getIndexColumn() ||
-                        one.getIds()[1].getIndexColumn() == two.getIds()[1].getIndexColumn();
-        //
-        boolean firstGridNameNameID =
+    public static boolean areConnected(Cable one, Cable two, GridPaneObserver gridPaneObserver) {
+        boolean isOneVolt = one.getIds()[0].getGridName().contains(gridPaneObserver.getGridVoltPrefix()) ||
+                one.getIds()[1].getGridName().contains(gridPaneObserver.getGridVoltPrefix());
+
+        boolean isTwoVolt = two.getIds()[0].getGridName().contains(gridPaneObserver.getGridVoltPrefix()) ||
+                two.getIds()[1].getGridName().contains(gridPaneObserver.getGridVoltPrefix());
+
+        boolean firstAtt, secondAtt;
+
+        if (isOneVolt && isTwoVolt) {
+            // Comparaciones por filas si ambos cables son volts
+            firstAtt = one.getIds()[0].getIndexRow() == two.getIds()[1].getIndexRow() ||
+                    one.getIds()[0].getIndexRow() == two.getIds()[0].getIndexRow();
+
+            secondAtt = one.getIds()[1].getIndexRow() == two.getIds()[0].getIndexRow() ||
+                    one.getIds()[1].getIndexRow() == two.getIds()[1].getIndexRow();
+        } else {
+            // Comparaciones por columnas si ambos cables son grid trails
+            firstAtt = one.getIds()[0].getIndexColumn() == two.getIds()[1].getIndexColumn() ||
+                    one.getIds()[0].getIndexColumn() == two.getIds()[0].getIndexColumn();
+
+            secondAtt = one.getIds()[1].getIndexColumn() == two.getIds()[0].getIndexColumn() ||
+                    one.getIds()[1].getIndexColumn() == two.getIds()[1].getIndexColumn();
+        }
+
+        boolean firstGridNameID =
                 one.getIds()[0].getGridName().equals(two.getIds()[1].getGridName()) ||
                         one.getIds()[0].getGridName().equals(two.getIds()[0].getGridName());
 
@@ -90,8 +106,31 @@ public class Cable extends Line {
                 one.getIds()[1].getGridName().equals(two.getIds()[0].getGridName()) ||
                         one.getIds()[1].getGridName().equals(two.getIds()[1].getGridName());
 
-        return (firstAtt || secondAtt) && (firstGridNameNameID || secondGridNameID);
+        return (firstAtt || secondAtt) && (firstGridNameID || secondGridNameID);
     }
+
+//    public static boolean areConnected(Cable one, Cable two,GridPaneObserver gridPane) {
+//        //en estás condiciones (la primera y la segunda) se mira que el indice de los cículos de los cables se conecten entre si.
+//
+//
+//        boolean firstAtt =
+//                one.getIds()[0].getIndexColumn() == two.getIds()[1].getIndexColumn() ||
+//                        one.getIds()[0].getIndexColumn() == two.getIds()[0].getIndexColumn();
+//
+//        boolean secondAtt =
+//                one.getIds()[1].getIndexColumn() == two.getIds()[0].getIndexColumn() ||
+//                        one.getIds()[1].getIndexColumn() == two.getIds()[1].getIndexColumn();
+//
+//        boolean firstGridNameNameID =
+//                one.getIds()[0].getGridName().equals(two.getIds()[1].getGridName()) ||
+//                        one.getIds()[0].getGridName().equals(two.getIds()[0].getGridName());
+//
+//        boolean secondGridNameID =
+//                one.getIds()[1].getGridName().equals(two.getIds()[0].getGridName()) ||
+//                        one.getIds()[1].getGridName().equals(two.getIds()[1].getGridName());
+//
+//        return (firstAtt || secondAtt) && (firstGridNameNameID || secondGridNameID);
+//    }
 
 
     public boolean isConnectedToBatery() {
