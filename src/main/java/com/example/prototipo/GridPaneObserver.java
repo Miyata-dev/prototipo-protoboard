@@ -135,7 +135,7 @@ public class GridPaneObserver {
     }
 
     public static void refreshProtoboard(GridPaneObserver gridPane) {
-        refreshCables(gridPane);
+//        refreshCables(gridPane);
         //se energiza los pares que están registrados.
         gridPane.getEnergizedColumns().forEach(pair -> {
             Integer energy = pair.getFirstValue();
