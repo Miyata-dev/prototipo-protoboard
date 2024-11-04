@@ -106,6 +106,7 @@ public class GridPaneObserver {
 
         energizedColumns.removeIf(el -> {
             ID elementID = el.getSecondValue().get(0).getID(); //
+            if (column.isEmpty()) return false;
             ID columnID = column.get(0).getID(); //se obtiene la id de la columna a partir
 
             return elementID.equals(columnID);
