@@ -109,30 +109,6 @@ public class Cable extends Line {
         return (firstAtt || secondAtt) && (firstGridNameID || secondGridNameID);
     }
 
-//    public static boolean areConnected(Cable one, Cable two,GridPaneObserver gridPane) {
-//        //en estás condiciones (la primera y la segunda) se mira que el indice de los cículos de los cables se conecten entre si.
-//
-//
-//        boolean firstAtt =
-//                one.getIds()[0].getIndexColumn() == two.getIds()[1].getIndexColumn() ||
-//                        one.getIds()[0].getIndexColumn() == two.getIds()[0].getIndexColumn();
-//
-//        boolean secondAtt =
-//                one.getIds()[1].getIndexColumn() == two.getIds()[0].getIndexColumn() ||
-//                        one.getIds()[1].getIndexColumn() == two.getIds()[1].getIndexColumn();
-//
-//        boolean firstGridNameNameID =
-//                one.getIds()[0].getGridName().equals(two.getIds()[1].getGridName()) ||
-//                        one.getIds()[0].getGridName().equals(two.getIds()[0].getGridName());
-//
-//        boolean secondGridNameID =
-//                one.getIds()[1].getGridName().equals(two.getIds()[0].getGridName()) ||
-//                        one.getIds()[1].getGridName().equals(two.getIds()[1].getGridName());
-//
-//        return (firstAtt || secondAtt) && (firstGridNameNameID || secondGridNameID);
-//    }
-
-
     public boolean isConnectedToBatery() {
         String bateryID = "BateryVolt";
         //mira si una de las ids relacionadas a los circulos que conecta el cable pertenece a la bateria.

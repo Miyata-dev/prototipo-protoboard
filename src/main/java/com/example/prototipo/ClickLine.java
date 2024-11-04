@@ -67,13 +67,12 @@ public class ClickLine {
             }
 
             if(!(e.getTarget() instanceof CustomCircle)) return;
-            RealizeLine(e);
-            isCableFixed = true;
             GridPaneObserver.refreshCables(gridPaneObserver);
             if(!gridPaneObserver.getBurnedCables().isEmpty()){
                 gridPaneObserver.getCables().removeAll(gridPaneObserver.getBurnedCables());
-                gridPaneObserver.getResistencias().removeAll(gridPaneObserver.getBurnedResistencias());
             }
+            RealizeLine(e);
+            isCableFixed = true;
 
             //al eliminar un cable, el paso de energía es defectuoso, por ello se llama esta función que se asegura de que esté bn.
             if (gridPaneObserver.getIsEnergyActivated()) {

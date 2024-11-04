@@ -75,7 +75,6 @@ public class MainController {
         motor.setY(280);
         motor.setOnMouseClicked(e -> {
             gridPaneObserver.toggleObserver();
-
             if (!gridPaneObserver.getIsEnergyActivated()) {
                 System.out.println("apagando Protoboard");
                 this.bateria.setNegativePole(0);
