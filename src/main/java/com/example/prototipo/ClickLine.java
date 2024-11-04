@@ -72,7 +72,6 @@ public class ClickLine {
             GridPaneObserver.refreshCables(gridPaneObserver);
             if(!gridPaneObserver.getBurnedCables().isEmpty()){
                 gridPaneObserver.getCables().removeAll(gridPaneObserver.getBurnedCables());
-                gridPaneObserver.getResistencias().removeAll(gridPaneObserver.getBurnedResistencias());
             }
 
             //al eliminar un cable, el paso de energía es defectuoso, por ello se llama esta función que se asegura de que esté bn.
