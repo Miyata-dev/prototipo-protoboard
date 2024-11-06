@@ -16,6 +16,7 @@ public class GridPaneObserver {
     private ArrayList<LED> leds = new ArrayList<>();
     private ArrayList<Switch> switches = new ArrayList<>();
     private ArrayList<ChipAND> chipsAND = new ArrayList<>();
+    private ArrayList<ChipOR> chipsOR = new ArrayList<>();
     //guarda las columnas con energía y la energía que tienen.
     private ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energizedColumns = new ArrayList<>();
     //aqui se guardan las columnas quemadas.
@@ -79,8 +80,17 @@ public class GridPaneObserver {
         chipsAND.remove(chipAND);
     }
 
+    public void removeChipOR(ChipOR chipOR) {
+        chipsOR.remove(chipOR);
+    }
+
     public void addChipAND(ChipAND chip) {
         chipsAND.add(chip);
+        //chipsAND.forEach(ChipAND::checkColumns);
+    }
+
+    public void addChipOR(ChipOR chipor) {
+        chipsOR.add(chipor);
     }
 
     //TODO ver donde ejecutar este método. este método agrega una columna con su respectiva energía.
@@ -257,12 +267,18 @@ public class GridPaneObserver {
         }
 
         ArrayList<ChipAND> chips = gridPaneObserver.getChipsAND();
+        ArrayList<ChipOR> chipsOr = gridPaneObserver.getChipsOR();
 //        System.out.println("number of chips: " + chips.size());
         //ESTO DE AQUI NO FUNCIONA POR EL REFRESHENERGYZEDCOLUMNS, se debe mejorar esa lógica.
         for (ChipAND c : chips) {
 //            System.out.println("checking columns in refresh...");
             c.checkColumns();
         }
+
+        for (ChipOR c : chipsOr) {
+            c.checkColumns();
+        }
+
     }//Actualizamos todos los switchs
 
     //Este metodo lo que hace es refrescar todos los tipo de carga
@@ -415,6 +431,10 @@ public class GridPaneObserver {
 
     public ArrayList<ChipAND> getChipsAND() {
         return chipsAND;
+    }
+
+    public ArrayList<ChipOR> getChipsOR() {
+        return chipsOR;
     }
 
     public boolean getIsEnergyActivated() {
