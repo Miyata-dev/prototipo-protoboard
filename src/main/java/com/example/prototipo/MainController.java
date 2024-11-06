@@ -136,6 +136,10 @@ public class MainController {
                 gridPaneObserver.addChipAND(chip);
                 parent.getChildren().add(chip);
             } else if (selectedOption.equals(options.get(1))) {
+                ChipOR chip = new ChipOR(customShape, basurero, gridPaneObserver);
+
+                gridPaneObserver.addChipOR(chip);
+                parent.getChildren().add(chip);
                 System.out.println("creating chip or...");
             } else if (selectedOption.equals(options.get(2))) {
                 System.out.println("creating chip NOT...");
