@@ -76,7 +76,10 @@ public class ClickLine {
 
             //al eliminar un cable, el paso de energía es defectuoso, por ello se llama esta función que se asegura de que esté bn.
             if (gridPaneObserver.getIsEnergyActivated()) {
-                gridPaneObserver.getCables().forEach(n -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
+                //se crea una copia de los cables antes de iterar.
+                new ArrayList<>(gridPaneObserver.getCables()).forEach(n ->
+                    GridPaneObserver.refreshProtoboard(gridPaneObserver)
+                );
             }
 
             System.out.println("-----------------");
@@ -128,7 +131,9 @@ public class ClickLine {
                 };
                 //al eliminar un cable, el paso de energía es defectuoso, por ello se llama esta función que se asegura de que esté bn.
                 if (gridPaneObserver.getIsEnergyActivated()) {
-                    gridPaneObserver.getCables().forEach(n -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
+                    new ArrayList<>(gridPaneObserver.getCables()).forEach(n ->
+                        GridPaneObserver.refreshProtoboard(gridPaneObserver)
+                    );
                 }
                 //Switch
                 //Lo que hacemos es preguntar si el StartHandler o el EndHandler pertenecen a un Switch

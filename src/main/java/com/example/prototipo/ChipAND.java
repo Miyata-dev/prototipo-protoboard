@@ -54,22 +54,31 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
 
         //si la primera y segunda columna tiene energía, y tienen la misma energía entonces se agrega la tercera.
         if (hasEnergy.test(arr.get(index - 2)) && hasEnergy.test(arr.get(index - 1)) && !haveDifferenteEnergy.test(index)) { //n -2 y n -1
+            //si ya tiene energía, se sale de la función
+            if (hasEnergy.test(arr.get(index))) return;
+
             System.out.println("adding column same energy AND...");
             //la columna a inspeccionar se le setea como afectadaporchip y se pasa el estado.
             arr.get(index).forEach(cir -> {
                 cir.setIsAffectedByChip(true);
                 cir.setState(getFirstCircle.apply(arr.get(index - 2)).getState());
             });
-            gridPaneObserver.addColumn(arr.get(index), getFirstCircle.apply(arr.get(index - 2)).getState());
+
+            connectWithGhostCable(arr, index);
         }
         //si la 1ra y segunda tienen energía pero no tiene el mismo tipo de energía, se pasa negativo.
         if (hasEnergy.test(arr.get(index - 2)) && hasEnergy.test(arr.get(index - 1)) && haveDifferenteEnergy.test(index)) {
+            //si ya tiene energía, se sale de la función
+            if (hasEnergy.test(arr.get(index))) return;
+
             System.out.println("adding column differente energy AND...");
             //la columna a inspeccionar se le setea como afectadaporchip y se pasa el estado.
             arr.get(index).forEach(cir -> {
                 cir.setIsAffectedByChip(true);
                 cir.setState(-1);
             });
+
+            connectWithGhostCable(arr, index, -1);
             gridPaneObserver.addColumn(arr.get(index), -1);
         }
 
