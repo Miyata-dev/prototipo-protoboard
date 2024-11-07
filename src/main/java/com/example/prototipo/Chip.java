@@ -307,6 +307,10 @@ public class Chip extends Group {
         return affectedColumns;
     }
 
+    public ArrayList<Cable> getGhostCables() {
+        return ghostCables;
+    }
+
     public ArrayList<CustomCircle> getCloseCircles() {
         return closeCircles;
     }
