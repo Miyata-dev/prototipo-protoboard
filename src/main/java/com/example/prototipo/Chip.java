@@ -7,6 +7,7 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+//TODO Prueba de posible error
 public class Chip extends Group {
     private ArrayList<Rectangle> patitas = new ArrayList<>();
     private ArrayList<Double[]> coords = new ArrayList<>(); // coords[0]= x, coords[1] = y
