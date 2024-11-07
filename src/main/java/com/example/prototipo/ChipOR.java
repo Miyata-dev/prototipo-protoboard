@@ -58,16 +58,22 @@ public class ChipOR extends Chip{
         //TODO mejorar la lógica del if de abajo.
         //si la 1ra y segunda tienen energía pero no tiene el mismo tipo de energía, se pasa negativo.
         if (hasEnergy.test(arr.get(index - 2)) && hasEnergy.test(arr.get(index - 1)) && haveDifferenteEnergy.test(index)) {
+            //si ya tiene energía, se sale de la función
+            if (hasEnergy.test(arr.get(index))) return;
+
             //la columna a inspeccionar se le setea como afectadaporchip y se pasa el estado.
             arr.get(index).forEach(cir -> {
                 cir.setIsAffectedByChip(true);
                 cir.setState(1);
             });
+            connectWithGhostCable(arr, index, 1);
             gridPaneObserver.addColumn(arr.get(index), 1);
         }
 
         //si la primera o segunda columna tiene energía, se agrega la tercera.
         if (hasEnergy.test(arr.get(index - 2)) || hasEnergy.test(arr.get(index - 1))) { //n -2 y n -1
+            //si ya tiene energía, se sale de la función
+            if (hasEnergy.test(arr.get(index))) return;
 
             //se obtiene el circulo que tiene energía/
             CustomCircle energizedCircle = getFirstCircle.apply(arr.get(index - 2)).hasEnergy()
@@ -76,8 +82,9 @@ public class ChipOR extends Chip{
 
             arr.get(index).forEach(cir -> {
                 cir.setIsAffectedByChip(true);
-                cir.setState(getFirstCircle.apply(arr.get(index - 2)).getState());
+                cir.setState(energizedCircle.getState());
             });
+            connectWithGhostCable(arr, index, energizedCircle.getState());
             gridPaneObserver.addColumn(arr.get(index), energizedCircle.getState());
         }
 

@@ -15,6 +15,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 //TODO Prueba de posible error
@@ -22,6 +24,7 @@ public class Chip extends Group {
     private ArrayList<Rectangle> patitas = new ArrayList<>();
     private ArrayList<Double[]> coords = new ArrayList<>(); // coords[0]= x, coords[1] = y
     private ArrayList<CustomCircle> closeCircles = new ArrayList<>();
+    private ArrayList<Cable> ghostCables = new ArrayList<>();
     private ArrayList<ArrayList<CustomCircle>> columns = new ArrayList<>();
     private List<ArrayList<CustomCircle>> lowerCols, upperCols, affectedColumns = new ArrayList<>();
     private Basurero basurero;
@@ -69,7 +72,7 @@ public class Chip extends Group {
             affectedColumns.clear();
             lowerCols.clear();
             upperCols.clear();
-            //gridPaneObserver.getCables().forEach(c -> GridPaneObserver.refreshProtoboard(gridPaneObserver));
+            gridPaneObserver.getCables().removeAll(ghostCables);
         };
 
         Consumer<MouseEvent> doSomething = (ev) -> {
@@ -216,6 +219,33 @@ public class Chip extends Group {
 
         upperCols = cols.stream()
                 .filter(col -> col.get(0).getID().getGridName().equals(upperColGridName)).collect(Collectors.toList());
+    }
+
+    public void addGhostCable(Cable cable) {
+        if (!ghostCables.contains(cable)) {
+            ghostCables.add(cable);
+        }
+    }
+    //conecta artificialmente a los cables reales del protoboard con un cable fantasma.
+    public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index, int state) {
+        Function<ArrayList<CustomCircle>, CustomCircle> getFirstCircle = (a) -> a.get(0);
+
+        Cable cable = new Cable(getFirstCircle.apply(arr.get(index - 2)), getFirstCircle.apply(arr.get(index)));
+        cable.setRandomID();
+        //si no se tiene un estado en especifico, se toma el primer circulo de la columna.
+        if (state == 0) {
+            cable.setTipodecarga(getFirstCircle.apply(arr.get(index - 2)).getState());
+        } else {
+            cable.setTipodecarga(state);
+        }
+
+        gridPaneObserver.addCable(cable);
+        addGhostCable(cable);
+        gridPaneObserver.addColumn(arr.get(index), getFirstCircle.apply(arr.get(index - 2)).getState());
+    }
+
+    public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index) {
+        connectWithGhostCable(arr, index, 0);
     }
 
     public void addText() {

@@ -140,8 +140,8 @@ public class GridPaneObserver {
 
     //activa la energía TODO: refactorizar este chancherío.
     public void activateGridObserver() {
-        cables.forEach(cable -> GridPaneObserver.refreshProtoboard(this));
-        leds.forEach(led -> LED.UpdatingState(led, true)); //enciende todos los leds del protoboard.
+        new ArrayList<>(cables).forEach(cable -> GridPaneObserver.refreshProtoboard(this));
+        new ArrayList<>(leds).forEach(led -> LED.UpdatingState(led, true));
         refreshProtoboard(this);
     }
 
