@@ -87,6 +87,10 @@ public class Chip extends Group {
                 if (func != null) {
                     func.run();
                 }
+
+                new ArrayList<>(gridPaneObserver.getCables()).forEach(n ->
+                        GridPaneObserver.refreshProtoboard(gridPaneObserver)
+                );
             }
 
             if (basurero.getIsActive()) customShape.setHasMoved(true);
