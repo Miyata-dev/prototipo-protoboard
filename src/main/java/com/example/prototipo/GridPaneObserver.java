@@ -89,6 +89,7 @@ public class GridPaneObserver {
         RefreshElements(gridPane);
         refreshCables(gridPane);
         refreshEnergizedColumns(gridPane); //con esto aquí no deja que las columnas de los chips se pinten.
+        checkEnergyzedColumns(gridPane);
     }
 
     public static void simplifiedRefresh(GridPaneObserver gridPane, CustomCircle pole) {
@@ -253,6 +254,39 @@ public class GridPaneObserver {
     }
 
 
+    //Este metodo lo que hace es verificar si las Columnas realmente deberian o no tener energia
+    public static void checkEnergyzedColumns(GridPaneObserver gridPaneObserver){
+        //Creamos la colleccion de cables que estan conectados.
+        ArrayList<Cable> cablesPositive = new ArrayList<>();
+        ArrayList<Cable> cablesNegative = new ArrayList<>();
+        ArrayList<Cable> cablesConnected =  new ArrayList<>();
+
+        //Preguntamos si el polo negativo de la bateria tiene cable y si es asi los agregamos a la coleccion de los cables conectados
+        if(gridPaneObserver.getBatery().getNegativePole().hasCable()){
+            cablesNegative = Utils.getConnectedCables(gridPaneObserver.getCables(), gridPaneObserver.getBatery().getNegativePole().getCable(), gridPaneObserver);
+            cablesConnected.addAll(cablesNegative);
+        }
+        if(gridPaneObserver.getBatery().getPositivePole().hasCable()){
+            cablesPositive = Utils.getConnectedCables(gridPaneObserver.getCables(), gridPaneObserver.getBatery().getPositivePole().getCable(), gridPaneObserver);
+            cablesConnected.addAll(cablesPositive);
+        }
+
+        for (Cable cable : gridPaneObserver.getCables()) {
+            if(!cablesConnected.contains(cable)){
+                ArrayList<CustomCircle> circle1 = GridPaneObserver.getCircles(gridPaneObserver, cable.getFirstCircle().getID());
+                ArrayList<CustomCircle> circle2 = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
+
+                circle1.forEach(circle->{
+                    circle.removeEnergy();
+                });
+                circle2.forEach(circle->{
+                    circle.removeEnergy();
+                });
+                gridPaneObserver.removeColumn(circle1);
+                gridPaneObserver.removeColumn(circle2);
+            }
+        }
+    }
     //Setters, adds y removes de elementos del Protoboard
 
     //Cable
