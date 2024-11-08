@@ -48,7 +48,18 @@ public class MainController {
                     "Chip NOT"
             );
 
+    ObservableList<String> optionsForLed =
+            FXCollections.observableArrayList(
+                    "BLUE",
+                    "GREEN",
+                    "ORANGE",
+                    "WHITE",
+                    "YELLOW"
+            );
+
+
     public ComboBox<String> comboBox = new ComboBox(options);
+    public ComboBox<String> ledComboBox = new ComboBox(optionsForLed);
 
     public void initialize() {
 
@@ -121,7 +132,6 @@ public class MainController {
 
         comboBox.setLayoutX(720);
         comboBox.setLayoutY(500);
-
         comboBox.setOnAction(e -> {
             if (comboBox.getSelectionModel().getSelectedItem() == null) return;
 
@@ -150,6 +160,23 @@ public class MainController {
         });
 
         parent.getChildren().add(comboBox);
+        parent.getChildren().add(ledComboBox);
+
+        ledComboBox.setLayoutX(400);
+        ledComboBox.setLayoutY(542);
+        ledComboBox.setOnAction(e -> {
+            if (ledComboBox.getSelectionModel().getSelectedItem() == null) return;
+
+            String selectedOption = ledComboBox.getSelectionModel().getSelectedItem().toString();
+
+            CustomShape customShape = new CustomShape(720, 504, 25, 15, Color.YELLOW, "LED");
+            LED led = new LED(false, customShape, basurero, parent, gridPaneObserver)
+                .setColorOption(selectedOption);
+
+            parent.getChildren().add(led);
+            // Resetear la selección del ComboBox
+            Platform.runLater(() -> comboBox.getSelectionModel().clearSelection());
+        });
 
         //se calculan las coordenadas de los círculos de los gridTrails
         //después de que se renderizen los nodos.
