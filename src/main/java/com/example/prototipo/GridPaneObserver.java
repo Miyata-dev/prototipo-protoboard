@@ -45,76 +45,7 @@ public class GridPaneObserver {
         this.CirclesCollection = createCirclesCollection(this);
     }
 
-    //Setters, adds y removes de elementos del Protoboard
-    public void setCables(ArrayList<Cable> cables) {
-        this.cables = cables;
-    }
-
-    public void addCable(Cable cable) {
-//        System.out.println("adding cable " + cable.getRandomID());
-        if (!cables.contains(cable)) {
-            cables.add(cable);
-        }
-    }
-    //antes de agregarlos, mira que no estén agregados a la colección.
-    public void addResistencia(Resistencia resistencia) {
-        if (!cables.contains(resistencia)) {
-            cables.add(resistencia);
-        }
-
-        if (!resistencias.contains(resistencia)) {
-            resistencias.add(resistencia);
-        }
-    }
-    public void removeResistencia(Resistencia resistencia) {
-        resistencias.remove(resistencia);
-        cables.removeIf(cable -> cable.getRandomID().equals(resistencia.getRandomID()));
-    }
-
-    public void removeCable(Cable cable) {
-        cables.remove(cable);
-    }
-
-    public void removeChipAND(ChipAND chipAND) {
-        chipsAND.remove(chipAND);
-    }
-
-    public void addChipAND(ChipAND chip) {
-        chipsAND.add(chip);
-    }
-
-    //TODO ver donde ejecutar este método. este método agrega una columna con su respectiva energía.
-    public void addColumn(ArrayList<CustomCircle> column, Integer energy) {
-        //si la columna está vacía, no se agrega a la colección
-        if (column.isEmpty()) return;
-        energizedColumns.add(new Pair<>(energy, column));
-    }
-
-    public static void addColumn(GridPaneObserver gridPaneObserver, ArrayList<CustomCircle> column, Integer energy) {
-        if (column.isEmpty()) return;
-
-        //solo se agrega la columna si no está quemada.
-        if (!column.get(0).getIsBurned()) {
-            gridPaneObserver.addColumn(column, energy);
-        }
-
-        //gridPaneObserver.addColumn(column, energy);
-    }
-
-    public void removeColumn(ArrayList<CustomCircle> column) {
-        //se elimina la columna que tenga la misma id que la columna que se pasa por parametro.
-
-        energizedColumns.removeIf(el -> {
-            ID elementID = el.getSecondValue().get(0).getID(); //
-            ID columnID = column.get(0).getID(); //se obtiene la id de la columna a partir
-
-            return elementID.equals(columnID);
-        });
-    }
-
-    public void addBurnedColumn(ArrayList<CustomCircle> column) {
-        burnedCircles.add(column);
-    }
+    //Metodos...
 
     //quita temporalmente la energía (desactiva la energía) //TODO REVISAR.
     public void deactivateGridObserver() {
@@ -159,6 +90,7 @@ public class GridPaneObserver {
         RefreshElements(gridPane);
         refreshCables(gridPane);
         refreshEnergizedColumns(gridPane); //con esto aquí no deja que las columnas de los chips se pinten.
+        checkEnergyzedColumns(gridPane);
     }
 
     public static void simplifiedRefresh(GridPaneObserver gridPane, CustomCircle pole) {
@@ -210,6 +142,7 @@ public class GridPaneObserver {
                 }
             }
         }
+
     }
 
     public static void burntEnergyCleaner(GridPaneObserver gridPane,ArrayList<CustomCircle> burnedCircles) {  // Este metodo busca los cables que estan en la columna quemada, para luego eliminarlos de la coleccion
@@ -217,6 +150,7 @@ public class GridPaneObserver {
             if(circulo.hasCable()){
                 gridPane.getBurnedCables().add(circulo.getCable());
             }
+
         }
     }
 
@@ -230,6 +164,7 @@ public class GridPaneObserver {
                 Utils.unPaintCircles(gridPane, cable.getFirstCircle());
             }
         }
+
     }
 
     public static ArrayList<CustomCircle> getCircles(GridPaneObserver gridPaneObserver, ID id){
@@ -256,16 +191,16 @@ public class GridPaneObserver {
         }
 
         ArrayList<ChipAND> chips = gridPaneObserver.getChipsAND();
-//        System.out.println("number of chips: " + chips.size());
         //ESTO DE AQUI NO FUNCIONA POR EL REFRESHENERGYZEDCOLUMNS, se debe mejorar esa lógica.
         for (ChipAND c : chips) {
-//            System.out.println("checking columns in refresh...");
             c.checkColumns();
         }
-    }//Actualizamos todos los switchs
+    }
+
 
     //Este metodo lo que hace es refrescar todos los tipo de carga
     public static void refreshCables(GridPaneObserver gridPaneObserver){
+
         for(Cable cable: gridPaneObserver.getCables()){
             if(cable.getFirstCircle().getState() == cable.getSecondCircle().getState()){
                 cable.setTipodecarga(cable.getFirstCircle().getState());
@@ -291,8 +226,8 @@ public class GridPaneObserver {
             }
         }
     }
-    //TODO mejorar la lógica ya que las columnas de los chips se les quita la energpia ya que no tiene cables
-    //y se registran como energizadas en el ChipAND.
+
+
     public static void refreshEnergizedColumns(GridPaneObserver gridPaneObserver) {
         ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energized = gridPaneObserver.getEnergizedColumns();
         //mira si una columna tiene cable.
@@ -317,6 +252,137 @@ public class GridPaneObserver {
         return CircleCollection;
     }
 
+    public void toggleObserver() {
+        this.isEnergyActivated = !isEnergyActivated;
+    }
+
+
+    //Este metodo lo que hace es verificar si las Columnas realmente deberian o no tener energia
+    public static void checkEnergyzedColumns(GridPaneObserver gridPaneObserver){
+        //Creamos la colleccion de cables que estan conectados.
+        ArrayList<Cable> cablesPositive = new ArrayList<>();
+        ArrayList<Cable> cablesNegative = new ArrayList<>();
+        ArrayList<Cable> cablesConnected =  new ArrayList<>();
+
+        //Preguntamos si el polo negativo de la bateria tiene cable y si es asi los agregamos a la coleccion de los cables conectados
+        if(gridPaneObserver.getBatery().getNegativePole().hasCable()){
+            cablesNegative = Utils.getConnectedCables(gridPaneObserver.getCables(), gridPaneObserver.getBatery().getNegativePole().getCable(), gridPaneObserver);
+            cablesConnected.addAll(cablesNegative);
+        }
+        if(gridPaneObserver.getBatery().getPositivePole().hasCable()){
+            cablesPositive = Utils.getConnectedCables(gridPaneObserver.getCables(), gridPaneObserver.getBatery().getPositivePole().getCable(), gridPaneObserver);
+            cablesConnected.addAll(cablesPositive);
+        }
+
+        for (Cable cable : gridPaneObserver.getCables()) {
+            if(!cablesConnected.contains(cable)){
+                ArrayList<CustomCircle> circle1 = GridPaneObserver.getCircles(gridPaneObserver, cable.getFirstCircle().getID());
+                ArrayList<CustomCircle> circle2 = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
+
+                circle1.forEach(circle->{
+                    circle.removeEnergy();
+                });
+                circle2.forEach(circle->{
+                    circle.removeEnergy();
+                });
+                gridPaneObserver.removeColumn(circle1);
+                gridPaneObserver.removeColumn(circle2);
+            }
+        }
+    }
+    //Setters, adds y removes de elementos del Protoboard
+
+    //Cable
+    public void setCables(ArrayList<Cable> cables) {
+        this.cables = cables;
+    }
+
+    public void addCable(Cable cable) {
+        if (!cables.contains(cable)) {
+            cables.add(cable);
+        }
+    }
+    public void removeCable(Cable cable) {
+        cables.remove(cable);
+    }
+
+    //Resistencias
+    public void addResistencia(Resistencia resistencia) {
+        //antes de agregarlos, mira que no estén agregados a la colección.
+        if (!cables.contains(resistencia)) {
+            cables.add(resistencia);
+        }
+
+        if (!resistencias.contains(resistencia)) {
+            resistencias.add(resistencia);
+        }
+    }
+    public void removeResistencia(Resistencia resistencia) {
+        resistencias.remove(resistencia);
+        cables.removeIf(cable -> cable.getRandomID().equals(resistencia.getRandomID()));
+    }
+
+    //ChipAND
+    public void addChipAND(ChipAND chip) {
+        chipsAND.add(chip);
+    }
+
+    public void removeChipAND(ChipAND chipAND) {
+        chipsAND.remove(chipAND);
+    }
+
+    //Column
+    public void addColumn(ArrayList<CustomCircle> column, Integer energy) {
+        //si la columna está vacía, no se agrega a la colección
+        if (column.isEmpty()) return;
+        energizedColumns.add(new Pair<>(energy, column));
+    }
+    public static void addColumn(GridPaneObserver gridPaneObserver, ArrayList<CustomCircle> column, Integer energy) {
+        if (column.isEmpty()) return;
+
+        //solo se agrega la columna si no está quemada.
+        if (!column.get(0).getIsBurned()) {
+            gridPaneObserver.addColumn(column, energy);
+        }
+    }
+
+    public void removeColumn(ArrayList<CustomCircle> column) {
+        //se elimina la columna que tenga la misma id que la columna que se pasa por parametro.
+
+        energizedColumns.removeIf(el -> {
+            ID elementID = el.getSecondValue().get(0).getID();
+            ID columnID = column.get(0).getID(); //se obtiene la id de la columna a partir
+
+            return elementID.equals(columnID);
+        });
+    }
+
+    //LEDs
+    public void addLeds(LED led) {
+        leds.add(led);
+    }
+
+    public void removeLeds(LED led) {
+        leds.remove(led);
+    }
+
+    //Switchs
+    public void addSwitches(Switch switchs){
+        switches.add(switchs);
+    }
+
+    public void removeSwitches(Switch switchs){
+        switches.remove(switchs);
+    }
+
+    //BurnedColumn
+    public void addBurnedColumn(ArrayList<CustomCircle> column) {
+        burnedCircles.add(column);
+    }
+
+
+
+    //Setters...
     public void setRoot(AnchorPane root){
         this.root = root;
     }
@@ -329,33 +395,15 @@ public class GridPaneObserver {
         this.isEnergyActivated = isEnergyActivated;
     }
 
-    public void toggleObserver() {
-        this.isEnergyActivated = !isEnergyActivated;
-    }
-
     public void setLeds(ArrayList<LED> leds) {
         this.leds = leds;
-    }
-
-    public void addLeds(LED led) {
-        leds.add(led);
-    }
-
-    public void removeLeds(LED led) {
-        leds.remove(led);
     }
 
     public void setSwitches(ArrayList<Switch> switches) {
         this.switches = switches;
     }
 
-    public void addSwitches(Switch switchs){
-        switches.add(switchs);
-    }
 
-    public void removeSwitches(Switch switchs){
-        switches.remove(switchs);
-    }
 
     //getters
     public GridPaneController[] getGridPaneTrails() {
