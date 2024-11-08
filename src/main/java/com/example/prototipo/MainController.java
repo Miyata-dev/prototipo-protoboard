@@ -175,7 +175,7 @@ public class MainController {
 
             parent.getChildren().add(led);
             // Resetear la selección del ComboBox
-            Platform.runLater(() -> comboBox.getSelectionModel().clearSelection());
+            Platform.runLater(() -> ledComboBox.getSelectionModel().clearSelection());
         });
 
         //se calculan las coordenadas de los círculos de los gridTrails
