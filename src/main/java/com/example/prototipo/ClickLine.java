@@ -95,7 +95,6 @@ public class ClickLine {
             boolean canDelete = basurero.getIsActive();
             if (!canDelete) return;
 
-
             if(e.getTarget() instanceof Cable cable) {
                 //Buscamos el cable presionado para asi ver despues si el cable pertenece a un elemento del protoboard
                 Cable cablefound = Utils.getCableByID(gridPaneObserver.getCables(), cable);
@@ -112,16 +111,10 @@ public class ClickLine {
                         root.getChildren().remove(resis.getArrow());
                         root.getChildren().remove(resis);
                     }
-
-
                     root.getChildren().remove(burnedCable);
                     gridPaneObserver.getBurnedCables().remove(burnedCable);
                     return;
                 }
-                /*((AnchorPane) resistencia.getParent()).getChildren().remove(resistencia.getRec());
-            ((AnchorPane) resistencia.getParent()).getChildren().remove(resistencia.getArrow());
-            ((AnchorPane) resistencia.getParent()).getChildren().remove(resistencia);
-        };*/
                 //asignamos los CustomCircles del cable
                 CustomCircle startHandler = cablefound.Getcircles()[0];
                 CustomCircle endHandler = cablefound.Getcircles()[1];

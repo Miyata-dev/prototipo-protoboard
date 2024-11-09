@@ -144,7 +144,7 @@ public class LED extends Group {
     }
 
     //Este metodo lo que es conseguir el estado de las Patas del LED por medio de los cables asignados
-    public void GetStateofLegFromCable(){
+    public void GetStateofLegFromCable(){       //PREGUNTAR, PARA DISCRIMINAR ENTRE CABLES NORMALES O RESISTENCIAS
         //Preguntamos si la primera pata es igual al primer circulo del cable
         if(ID.isSameID(this.shape.getLeg1().getID(), this.shape.getLeg1().getCable().getFirstCircle().getID())){
             //Al ver que los dos circulos son iguales entonces sabemos que el que es distinto es el segundo

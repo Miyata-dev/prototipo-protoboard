@@ -150,6 +150,15 @@ public class GridPaneObserver {
             simplifiedRefresh(gridPane,bateria.getNegativePole());
             freeEnergy(gridPane,bateria.getNegativePole());
         }
+
+        for(Cable c: gridPane.getCables()){
+            if(c.getFirstCircle().getState() == 0 && c.getSecondCircle().getState() == 0){
+                c.removeTipodecarga();
+            }
+        }
+
+
+
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
         gridPane.getEnergizedColumns().forEach(pair -> {
             Integer energy = pair.getFirstValue();
@@ -205,7 +214,6 @@ public class GridPaneObserver {
                             .filter(el -> el.getRandomID().equals(cable.getRandomID()))
                             .findAny()
                             .orElse(null);
-
                     if(founded != null){
                         founded.setBurned();
                     }
