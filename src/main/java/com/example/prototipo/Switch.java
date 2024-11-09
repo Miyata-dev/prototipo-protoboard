@@ -36,6 +36,7 @@ public class Switch extends Group {
     private ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energizedColumns = new ArrayList<>();
     private Pair<Integer, CustomCircle> origin = null;//FirstValue == 1 -> arriba | == -1 -> abajo
     private ArrayList<CustomCircle> coOrigin = null;
+    private CustomCircle coOriginCircle = null;
 
     public Switch(Boolean chargePass, GridPaneObserver gridPaneObserver, AnchorPane root, Basurero basurero) {
         //Le damos una ID unica
@@ -194,8 +195,7 @@ public class Switch extends Group {
                         }
                     } else {
                         Legs.forEach(leg->{
-                            //if(origin.getFirstValue() == 1){//(Integer) 1 = arriba || (Integer) -1 = abajo.
-                            if(!leg.equals(origin.getSecondValue())){
+                            if(!leg.equals(origin.getSecondValue()) && !leg.equals(this.coOriginCircle)){
                                 leg.removeEnergy();
                                 gridPaneObserver.removeCable(leg.getCable());
                             }
@@ -230,8 +230,6 @@ public class Switch extends Group {
 
                 double distanceY = Math.abs(leg.getY() - circleFound.getY());
                 if (distanceY >= maxRange) {
-                    //todo revisar esto
-                    //isPlacedCorrectly = false;
                 } else {
                     if (!closestCircles.contains(circleFound)) {
                         closestCircles.add(circleFound);
@@ -290,41 +288,23 @@ public class Switch extends Group {
         checkisBurned();
         if (isBurned) {
             unPaintLegs();
-            coOrigin.forEach(circle->{
-                circle.removeEnergy();
-            });
+            coOrigin.forEach(CustomCircle::removeEnergy);
             Pair pair = new Pair<>(coOrigin.get(0).getState(), coOrigin);
             gridPaneObserver.removeColumn(coOrigin);
             energizedColumns.clear();
-            return;
         } else {
             paintLegs();
-            return;
         }
     }
-
-
-    //Este metodo lo que hara es recorrer todos los caminos
-    public Boolean isConnectedFromVolt(Cable LegCable){
-        ArrayList<Cable> cables = Utils.getConnectedCables(gridPaneObserver.getCables(), LegCable, gridPaneObserver);
-        for (Cable cable : cables) {
-            if(cable.getFirstCircle().getID().getGridName().equals(gridPaneObserver.getGridVoltPrefix()) || cable.getSecondCircle().getID().getGridName().equals(gridPaneObserver.getGridVoltPrefix())){
-                return false;
-            } else{
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     //Este metodo lo que hace es actualizar el estado de las patas que tiene el Switch e identificar el origen
     public void updateLegs(){
         //En el caso que la primera pata tenga energia y la otra no se le da energia a la que no tiene
         if (UpperLegs[0].hasEnergy() && !UpperLegs[1].hasEnergy()) {
             UpperLegs[1].setState(UpperLegs[0].getState());
-            //GridPaneObserver.refreshProtoboard(gridPaneObserver);
+
             setOrigin(1, UpperLegs[0]);
+            setCoOriginLeg(UpperLegs[1]);
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, UpperLegs[1].getCable().getSecondCircle().getID());
             circles.forEach(cir -> cir.setState(UpperLegs[0].getState()));
 
@@ -336,9 +316,10 @@ public class Switch extends Group {
         } else if(!UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()){
             UpperLegs[0].setState(UpperLegs[1].getState());
             setOrigin(1, UpperLegs[1]);
+            setCoOriginLeg(UpperLegs[0]);
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, UpperLegs[0].getCable().getSecondCircle().getID());
             circles.forEach(cir -> cir.setState(UpperLegs[1].getState()));
-            //GridPaneObserver.refreshProtoboard(gridPaneObserver);
+
 
             //Añadimos la columna a la coleccion de columnas energizadas
             addEnergizedColumn(circles);
@@ -349,10 +330,11 @@ public class Switch extends Group {
         if (LowerLegs[0].hasEnergy() && !LowerLegs[1].hasEnergy()) {
             LowerLegs[1].setState(LowerLegs[0].getState());
             setOrigin(-1, LowerLegs[0]);
+            setCoOriginLeg(LowerLegs[1]);
 
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, LowerLegs[1].getCable().getSecondCircle().getID());
             circles.forEach(cir -> cir.setState(LowerLegs[0].getState()));
-            //GridPaneObserver.refreshProtoboard(gridPaneObserver);
+
 
             //Añadimos la columna a la coleccion de columnas energizadas
             addEnergizedColumn(circles);
@@ -360,15 +342,20 @@ public class Switch extends Group {
         } else if (!LowerLegs[0].hasEnergy() && LowerLegs[1].hasEnergy()) {
             LowerLegs[0].setState(LowerLegs[1].getState());
             setOrigin(-1, LowerLegs[1]);
+            setCoOriginLeg(LowerLegs[0]);
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, LowerLegs[0].getCable().getSecondCircle().getID());
             circles.forEach(cir -> cir.setState(LowerLegs[1].getState()));
 
             //Añadimos la columna a la coleccion de columnas energizadas
             addEnergizedColumn(circles);
             setCoOrigin(circles);
-            //GridPaneObserver.refreshProtoboard(gridPaneObserver);
         }
 
+    }
+
+    private void setCoOriginLeg(CustomCircle leg) {
+        if(coOriginCircle != null) return;
+        this.coOriginCircle = leg;
     }
 
 
@@ -416,20 +403,15 @@ public class Switch extends Group {
         //si el origen del Switch es 1, se ocupara UpperLegs, lo que lleva a pintar la parte inferior
         if (origin.getFirstValue() == 1) {//Arriba
             for (CustomCircle circle : LowerLegs) {
-                //gridPaneObserver.addCable(circle.getCable());
                 ArrayList<CustomCircle> col = GridPaneObserver.getCircles(gridPaneObserver, circle.getCable().getSecondCircle().getID());
-                //energizedColumns.add(new Pair<>(origin.getSecondValue().getState(), col));
                 addEnergizedColumn(col);
             }
         } else if (origin.getFirstValue() == -1) {// abajo
             for (CustomCircle circle : UpperLegs) {
-                //gridPaneObserver.addCable(circle.getCable());
                 ArrayList<CustomCircle> col = GridPaneObserver.getCircles(gridPaneObserver, circle.getCable().getSecondCircle().getID());
-                //energizedColumns.add(new Pair<>(origin.getSecondValue().getState(), col));
                 addEnergizedColumn(col);
             }
         }
-        //gridPaneObserver.addCable(coOrigin.get(0).getCable());
         //después de obtener las columnas energizadas se pintan.
         energizedColumns.forEach(pair -> {
             Integer energy = pair.getFirstValue();
@@ -443,7 +425,7 @@ public class Switch extends Group {
     public void unPaintLegs(){
         ArrayList<ArrayList<CustomCircle>> colsCopies = new ArrayList<>();
         energizedColumns.forEach(pair -> {
-            if(!pair.getSecondValue().equals(this.coOrigin) || !pair.getSecondValue().get(0).equals(origin.getSecondValue().getCable().getSecondCircle())){
+            if(!pair.getSecondValue().equals(this.coOrigin) || !pair.getSecondValue().equals(GridPaneObserver.getCircles(gridPaneObserver, origin.getSecondValue().getCable().getSecondCircle().getID()))){
                 ArrayList<CustomCircle> col = pair.getSecondValue();
                 col.forEach(CustomCircle::removeEnergy);
                 colsCopies.add(col);
@@ -451,18 +433,32 @@ public class Switch extends Group {
         });
         removeEnergizedColumn(colsCopies);
         if(this.origin == null) return;
+        //Recorremos cada pata del Switch que no sean del origen y del co origen
         Legs.forEach(leg->{
-            //if(origin.getFirstValue() == 1){//(Integer) 1 = arriba || (Integer) -1 = abajo.
-                if(!leg.equals(origin.getSecondValue())){
+                if(!leg.equals(origin.getSecondValue()) && !leg.equals(this.coOriginCircle)){
                     leg.removeEnergy();
-                    //gridPaneObserver.removeCable(leg.getCable());
+                    removeEnergyzedConnected(leg.getCable());
                 }
         });
+    }
+
+    public void removeEnergyzedConnected(Cable cable){
+        ArrayList<Cable> cabletoRemove = Utils.getConnectedCables(gridPaneObserver.getCables(), cable, gridPaneObserver, true);
+        if(cabletoRemove.isEmpty()) return;
+        for (Cable cable1 : cabletoRemove) {
+            ArrayList<CustomCircle> firstcol = GridPaneObserver.getCircles(gridPaneObserver, cable.getFirstCircle().getID());
+            ArrayList<CustomCircle> secondcol = GridPaneObserver.getCircles(gridPaneObserver, cable1.getSecondCircle().getID());
+            firstcol.forEach(CustomCircle::removeEnergy);
+            secondcol.forEach(CustomCircle::removeEnergy);
+            gridPaneObserver.removeColumn(firstcol);
+            gridPaneObserver.removeColumn(secondcol);
+        }
     }
 
     //Este metodo lo que es settear el estado del CustomCircle segun el otro circulo del cable que tiene asignado
     public void setEnergyfromClosestCircles(ArrayList<CustomCircle> legs){
         for (CustomCircle leg : legs) {
+            if(!leg.hasCable()) return;
             leg.setState(leg.getCable().getSecondCircle().getState());
         }
     }

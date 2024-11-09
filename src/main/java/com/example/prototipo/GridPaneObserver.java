@@ -96,7 +96,7 @@ public class GridPaneObserver {
     }
 
     public static void simplifiedRefresh(GridPaneObserver gridPane, CustomCircle pole) {
-        ArrayList<Cable> poleCables = Utils.getConnectedCables(new ArrayList<>(gridPane.getCables()),pole.getCable(),gridPane);
+        ArrayList<Cable> poleCables = Utils.getConnectedCables(new ArrayList<>(gridPane.getCables()),pole.getCable(),gridPane, false);
         for(Cable cable : poleCables){
             //se obtienen los circulos que están conectados al cable.
             CustomCircle firstCol = cable.getFirstCircle();
@@ -157,7 +157,7 @@ public class GridPaneObserver {
     }
 
     public static void freeEnergy(GridPaneObserver gridPane,CustomCircle pole) {
-        ArrayList<Cable> ConnectWithBatery = Utils.getConnectedCables(gridPane.getCables(),pole.getCable(),gridPane);
+        ArrayList<Cable> ConnectWithBatery = Utils.getConnectedCables(gridPane.getCables(),pole.getCable(),gridPane, false);
         ArrayList<Cable> notConnectedWithBatery = new ArrayList<>(gridPane.getCables());
         notConnectedWithBatery.removeAll(ConnectWithBatery);
         for (Cable cable: notConnectedWithBatery) {
@@ -266,11 +266,11 @@ public class GridPaneObserver {
 
         //Preguntamos si el polo negativo de la bateria tiene cable y si es asi los agregamos a la coleccion de los cables conectados
         if(gridPaneObserver.getBatery().getNegativePole().hasCable()){
-            ArrayList<Cable> cablesNegative = Utils.getConnectedCables(gridPaneObserver.getCables(), gridPaneObserver.getBatery().getNegativePole().getCable(), gridPaneObserver);
+            ArrayList<Cable> cablesNegative = Utils.getConnectedCables(gridPaneObserver.getCables(), gridPaneObserver.getBatery().getNegativePole().getCable(), gridPaneObserver, false);
             cablesConnected.addAll(cablesNegative);
         }
         if(gridPaneObserver.getBatery().getPositivePole().hasCable()){
-            ArrayList<Cable> cablesPositive = Utils.getConnectedCables(gridPaneObserver.getCables(), gridPaneObserver.getBatery().getPositivePole().getCable(), gridPaneObserver);
+            ArrayList<Cable> cablesPositive = Utils.getConnectedCables(gridPaneObserver.getCables(), gridPaneObserver.getBatery().getPositivePole().getCable(), gridPaneObserver,false);
             cablesConnected.addAll(cablesPositive);
         }
 
