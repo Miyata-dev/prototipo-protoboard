@@ -323,10 +323,9 @@ public class GridPaneObserver {
     //Resistencias
     public void addResistencia(Resistencia resistencia) {
         //antes de agregarlos, mira que no estén agregados a la colección.
-        if (!cables.contains(resistencia)) {
+        if (Cable.getCableFromCollection(cables, resistencia) == null) {
             cables.add(resistencia);
         }
-
         if (!resistencias.contains(resistencia)) {
             resistencias.add(resistencia);
         }
