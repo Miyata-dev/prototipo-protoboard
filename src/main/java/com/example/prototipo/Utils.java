@@ -119,7 +119,9 @@ public class Utils {
                                 gridPane.getSwitches().forEach(switc -> {
                                     switc.getCables().forEach(cable1 -> {
                                         if(cable1.getRandomID().equals(cable.getRandomID())){
-                                            connectedCablesHashSet.addAll(switc.getCables());
+                                            if(switc.getConnectedCablesSwitch() != null){
+                                                connectedCablesHashSet.addAll(switc.getConnectedCablesSwitch());
+                                            }
                                         }
                                     });
                                 });
