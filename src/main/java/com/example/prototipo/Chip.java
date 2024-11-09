@@ -1,23 +1,40 @@
 package com.example.prototipo;
 
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import java.util.ArrayList;
-import java.util.function.Consumer;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+//TODO Prueba de posible error
 public class Chip extends Group {
     private ArrayList<Rectangle> patitas = new ArrayList<>();
     private ArrayList<Double[]> coords = new ArrayList<>(); // coords[0]= x, coords[1] = y
     private ArrayList<CustomCircle> closeCircles = new ArrayList<>();
+    private ArrayList<Cable> ghostCables = new ArrayList<>();
     private ArrayList<ArrayList<CustomCircle>> columns = new ArrayList<>();
+    private List<ArrayList<CustomCircle>> lowerCols, upperCols, affectedColumns = new ArrayList<>();
     private Basurero basurero;
     private GridPaneObserver gridPaneObserver;
     private boolean isPlacedCorrectly = true, isUndraggable = false;
     private String type, randomID; //las opciones son: AND || OR || NOT.
     private CustomShape customShape;
 
+    //para ejecutar código después de un tiempo.
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     //se debe especificar el tipo a travez del setter: setType.
     public Chip(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver) {
         super(customShape);
@@ -44,6 +61,20 @@ public class Chip extends Group {
     }
 
     public void mouseClicked(MouseEvent e, CustomShape customShape, Runnable func) {
+        //quita las columnas afectadas.
+        Runnable removeAffectedCols = () -> {
+            affectedColumns.forEach(col -> {
+                Utils.unPaintCircles(gridPaneObserver, col.get(0));
+                gridPaneObserver.removeColumn(col);
+                col.forEach(cir -> cir.setIsAffectedByChip(false));
+            });
+
+            affectedColumns.clear();
+            lowerCols.clear();
+            upperCols.clear();
+            gridPaneObserver.getCables().removeAll(ghostCables);
+        };
+
         Consumer<MouseEvent> doSomething = (ev) -> {
             if (basurero.getIsActive() && customShape.getHasMoved()) {
                 gridPaneObserver.getRoot().getChildren().remove(this);
@@ -51,9 +82,15 @@ public class Chip extends Group {
                     circle.setisTaken(false);
                 });
 
+                removeAffectedCols.run();
+
                 if (func != null) {
                     func.run();
                 }
+
+                new ArrayList<>(gridPaneObserver.getCables()).forEach(n ->
+                        GridPaneObserver.refreshProtoboard(gridPaneObserver)
+                );
             }
 
             if (basurero.getIsActive()) customShape.setHasMoved(true);
@@ -75,6 +112,7 @@ public class Chip extends Group {
             closeCircles.clear();
             coords.clear();  // Limpia coords antes de llenarlo de nuevo
             isPlacedCorrectly = true; //para reiniciar la variable.
+            isUndraggable = false;
             //por cada pata, se obtienen las coordenadas y se guardan en una colección.
             patitas.forEach(pata -> {
                 //se obtienen las coordenadas de la pata que se mira del chip para agregarlas a la colección de coordenadas.
@@ -128,12 +166,23 @@ public class Chip extends Group {
                     //obtiene las columnas de cada círculo.
                     closeCircles.forEach(cir -> {
                         ID temporaryID = cir.getID();
-
+                        //solo pinta una vez el color naranja solo si el círculo no tiene energía.
+                        if (!scheduler.isShutdown() && !cir.hasEnergy()) {
+                            cir.setFill(Color.ORANGE);
+                        }
                         ArrayList<CustomCircle> column = GridPaneObserver.getCircles(gridPaneObserver, temporaryID);
-
                         columns.add(column);
                     });
-                    System.out.println(columns);
+                    //si es scheduler está apagado, entonces se sale de la función.
+                    if (scheduler.isShutdown()) return;
+
+                    scheduler.schedule(() -> {
+                        closeCircles.forEach(cir -> {
+                            if (cir.hasEnergy()) return;
+                            cir.setFill(Color.GRAY);
+                        });
+                        scheduler.shutdown(); //cierra el scheduler después de despintarlos.
+                    }, 300, TimeUnit.MILLISECONDS);
                 }
             }
         };
@@ -158,12 +207,61 @@ public class Chip extends Group {
         }
     }
 
-    public ArrayList<CustomCircle> getCloseCircles() {
-        return closeCircles;
+    //TODO implementar el pintar.
+    public void getCols() {
+        //si no está colocado bien no hace nada.
+        if (!isUndraggable) return;
+        ArrayList<ArrayList<CustomCircle>> cols = columns;
+
+        String upperColGridName = columns.get(0).get(0).getID().getGridName();
+        String lowerColGridName = columns.get(cols.size() - 1).get(0).getID().getGridName();
+
+        System.out.println("lower: " + lowerColGridName + " upper: " + upperColGridName);
+        //obtiene las columnas de abajo.
+        lowerCols = cols.stream()
+                .filter(col -> col.get(0).getID().getGridName().equals(lowerColGridName)).collect(Collectors.toList());
+
+        upperCols = cols.stream()
+                .filter(col -> col.get(0).getID().getGridName().equals(upperColGridName)).collect(Collectors.toList());
     }
 
-    public CustomShape getCustomShape() {
-        return customShape;
+    public void addGhostCable(Cable cable) {
+        if (!ghostCables.contains(cable)) {
+            ghostCables.add(cable);
+        }
+    }
+    //conecta artificialmente a los cables reales del protoboard con un cable fantasma.
+    public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index, int state) {
+        Function<ArrayList<CustomCircle>, CustomCircle> getFirstCircle = (a) -> a.get(0);
+
+        Cable cable = new Cable(getFirstCircle.apply(arr.get(index - 2)), getFirstCircle.apply(arr.get(index)));
+        cable.setRandomID();
+        //si no se tiene un estado en especifico, se toma el primer circulo de la columna.
+        if (state == 0) {
+            cable.setTipodecarga(getFirstCircle.apply(arr.get(index - 2)).getState());
+        } else {
+            cable.setTipodecarga(state);
+        }
+
+        gridPaneObserver.addCable(cable);
+        addGhostCable(cable);
+        gridPaneObserver.addColumn(arr.get(index), getFirstCircle.apply(arr.get(index - 2)).getState());
+    }
+
+    public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index) {
+        connectWithGhostCable(arr, index, 0);
+    }
+
+    public void addText() {
+        Bounds parentBounds = customShape.getBoundsInParent();
+        double y = parentBounds.getCenterY();
+        double x = parentBounds.getCenterX();
+
+        Text text = new Text(x, y + 5, type);
+        text.setFill(Color.WHITE);  // Color de texto blanco
+        text.setFont(Font.font("System", FontWeight.BOLD, 14));
+
+        this.getChildren().add(text);
     }
 
     //Este metodo crea una pata y la agrega al grupo de la clase Chip.
@@ -199,6 +297,30 @@ public class Chip extends Group {
 
     public ArrayList<ArrayList<CustomCircle>> getColumns() {
         return columns;
+    }
+
+    public List<ArrayList<CustomCircle>> getLowerCols() {
+        return lowerCols;
+    }
+
+    public List<ArrayList<CustomCircle>> getUpperCols() {
+        return upperCols;
+    }
+
+    public List<ArrayList<CustomCircle>> getAffectedColumns() {
+        return affectedColumns;
+    }
+
+    public ArrayList<Cable> getGhostCables() {
+        return ghostCables;
+    }
+
+    public ArrayList<CustomCircle> getCloseCircles() {
+        return closeCircles;
+    }
+
+    public CustomShape getCustomShape() {
+        return customShape;
     }
 
     public void checkColumns() {

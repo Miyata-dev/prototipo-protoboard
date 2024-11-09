@@ -97,6 +97,11 @@ public class ID {
     }
 
     @Override
+    public int hashCode() {
+        return generatedID.hashCode();
+    }
+
+    @Override
     public String toString() {
         return "Row: " + this.getIndexRow() + " Column: " + this.getIndexColumn() + " Grid: " + this.getGridName();
     }

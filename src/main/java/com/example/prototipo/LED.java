@@ -3,6 +3,9 @@ package com.example.prototipo;
 import javafx.scene.Group;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LED extends Group {
@@ -14,6 +17,19 @@ public class LED extends Group {
     private CustomShape shape;
     private CustomCircle LegPositive, LegNegative; //Pata positiva -> derecha, Pata negativa-> izquierda
     private boolean isBurned;
+    private String colorOption;
+
+    private static final Map<String, Color> colorMap = new HashMap<>();
+
+    static {
+        colorMap.put("GREEN", Color.GREEN);
+        colorMap.put("BLUE", Color.BLUE);
+        colorMap.put("YELLOW", Color.YELLOW);
+        colorMap.put("ORANGE", Color.ORANGE);
+        colorMap.put("WHITE", Color.WHITE);
+        // Agrega más colores según sea necesario
+    }
+
 
     public LED(boolean state, CustomShape customShape, Basurero basurero, AnchorPane root, GridPaneObserver gridPaneObserver) {
         super(customShape);
@@ -96,8 +112,14 @@ public class LED extends Group {
         } else {
             //false -> apagado      true-> encendido
             if (GetState()) {
+                //aqui van los setFills.
                 //Cuando el LED esta encendido el relleno se mostrara Verde y si esta apagado sera Rojo
-                this.shape.setFill(Color.GREEN);
+                Color color = colorMap.get(colorOption.toUpperCase());
+
+                if (color != null) {
+                    this.shape.setFill(color);
+                }
+
             } else {
                 this.shape.setFill(Color.RED);
 
@@ -210,7 +232,10 @@ public class LED extends Group {
     public boolean GetState(){
         return this.state;
     }
-
+    public LED setColorOption(String option){
+        this.colorOption = option;
+        return this;
+    }
     public void setBurned(boolean state){
         this.isBurned = true;
     }

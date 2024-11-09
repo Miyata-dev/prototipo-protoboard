@@ -5,34 +5,37 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class ChipAND extends Chip { //implementar un equyals en la clase CHIP para poder hacer comparaciones.
+public class ChipOR extends Chip{
     private GridPaneObserver gridPaneObserver;
     private Basurero basurero;
+    private List<ArrayList<CustomCircle>> lowerCols, upperCols, affectedColumns = new ArrayList<>();
 
-    public ChipAND(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver) {
+    public ChipOR(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver) {
         super(customShape, basurero, gridPaneObserver);
         this.gridPaneObserver = gridPaneObserver;
         this.basurero = basurero;
-        String tipo = "AND";
+        String tipo = "OR";
 
         this.setType(tipo);
         addText(); //el texto que se despliega depende del texto dado por
 
         this.setOnMouseReleased(e -> {
-            System.out.println("im here....");
             super.mouseReleased(e);
-            getCols();
+            super.getCols(); //se o
             checkColumns();
-            //quita la energía de las columnas afectadas.
         });
+
+        Runnable removeAffectedCols = () -> {
+            System.out.println("Removing affected columns");
+        };
 
         this.setOnMouseClicked(e -> {
-            if (super.getAffectedColumns() == null) return;
+            if (affectedColumns == null) return;
 
-            super.mouseClicked(e, customShape);
+            super.mouseClicked(e, customShape, removeAffectedCols);
         });
-
     }
+
     //revisa la columna indicada, si la anterior a esa y la antepenultima a esta tienen energía
     //la columna indicada a esta se le dará enegía automáticamente.
     private void checkColumn(List<ArrayList<CustomCircle>> arr, int index) {
@@ -52,52 +55,45 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
         if (index - 2 < 0) return;
         super.getAffectedColumns().add(arr.get(index)); //se agrega a las columnas afectadas.
 
-        //si la primera y segunda columna tiene energía, y tienen la misma energía entonces se agrega la tercera.
-        if (hasEnergy.test(arr.get(index - 2)) && hasEnergy.test(arr.get(index - 1)) && !haveDifferenteEnergy.test(index)) { //n -2 y n -1
-            //si ya tiene energía, se sale de la función
-            if (hasEnergy.test(arr.get(index))) return;
-
-            System.out.println("adding column same energy AND...");
-            //la columna a inspeccionar se le setea como afectadaporchip y se pasa el estado.
-            arr.get(index).forEach(cir -> {
-                cir.setIsAffectedByChip(true);
-                cir.setState(getFirstCircle.apply(arr.get(index - 2)).getState());
-            });
-
-            connectWithGhostCable(arr, index);
-        }
+        //TODO mejorar la lógica del if de abajo.
         //si la 1ra y segunda tienen energía pero no tiene el mismo tipo de energía, se pasa negativo.
         if (hasEnergy.test(arr.get(index - 2)) && hasEnergy.test(arr.get(index - 1)) && haveDifferenteEnergy.test(index)) {
             //si ya tiene energía, se sale de la función
             if (hasEnergy.test(arr.get(index))) return;
 
-            System.out.println("adding column differente energy AND...");
             //la columna a inspeccionar se le setea como afectadaporchip y se pasa el estado.
             arr.get(index).forEach(cir -> {
                 cir.setIsAffectedByChip(true);
-                cir.setState(-1);
+                cir.setState(1);
             });
-
-            connectWithGhostCable(arr, index, -1);
-            gridPaneObserver.addColumn(arr.get(index), -1);
+            connectWithGhostCable(arr, index, 1);
+            gridPaneObserver.addColumn(arr.get(index), 1);
         }
 
-        //en el casod de que una de las columnas no tenga energia, se le quita la energía.
-        if (
-            !hasEnergy.test(arr.get(index - 2)) && hasEnergy.test(arr.get(index - 1)) ||
-            hasEnergy.test(arr.get(index - 2)) && !hasEnergy.test(arr.get(index - 1))
-        ) {
+        //si la primera o segunda columna tiene energía, se agrega la tercera.
+        if (hasEnergy.test(arr.get(index - 2)) || hasEnergy.test(arr.get(index - 1))) { //n -2 y n -1
+            //si ya tiene energía, se sale de la función
+            if (hasEnergy.test(arr.get(index))) return;
+
+            //se obtiene el circulo que tiene energía/
+            CustomCircle energizedCircle = getFirstCircle.apply(arr.get(index - 2)).hasEnergy()
+                ? getFirstCircle.apply(arr.get(index - 2))
+                : getFirstCircle.apply(arr.get(index - 1));
+
+            arr.get(index).forEach(cir -> {
+                cir.setIsAffectedByChip(true);
+                cir.setState(energizedCircle.getState());
+            });
+            connectWithGhostCable(arr, index, energizedCircle.getState());
+            gridPaneObserver.addColumn(arr.get(index), energizedCircle.getState());
+        }
+
+        //en el caso de que ninguna de las columnas no tenga energia, se le quita la energía.
+        if (!hasEnergy.test(arr.get(index - 2)) && !hasEnergy.test(arr.get(index - 1))) {
             //todo obtener los cables acociados paa quitarles la energía.
             Utils.unPaintCircles(gridPaneObserver, arr.get(index).get(0)); //se pasa el primer circulo de la columna inspeccionada.
             gridPaneObserver.removeColumn(arr.get(index));
         }
-        //si nunguno de los dos tiene energía se el quita la energía se le quita la energía a la columna seleccionada.
-        if (!hasEnergy.test(arr.get(index - 2)) && !hasEnergy.test(arr.get(index - 1))) {
-            //todo obtener los cables acociados paa quitarles la energía.
-            Utils.unPaintCircles(gridPaneObserver, arr.get(index).get(0));
-            gridPaneObserver.removeColumn(arr.get(index));
-        }
-
     }
 
     // si el 0, 1 tienen el 2 tiene automaticamente y asi sucesivamente.
@@ -119,4 +115,5 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
             checkColumn(upperCols, indexesToCheck[i] + 1);
         }
     }
+
 }
