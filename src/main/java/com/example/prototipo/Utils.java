@@ -269,32 +269,32 @@ public class Utils {
         } else { //si el tipo NO ES null quiere decir que es una resistencia.
             System.out.println("removing resistencia...");
 
-            Resistencia recistenciaFound = null;
+            Resistencia resistenciaFound = null;
 
             for (Resistencia c : gridPaneObserver.getResistencias()) {
                 System.out.println("resistencia: " + c + " id: " + c.getRandomID());
                 if (c.equals(pressedCable)) {
-                    recistenciaFound = c;
+                    resistenciaFound = c;
                 }
             }
-            CustomCircle firstCircle = recistenciaFound.getFirstCircle();
-            CustomCircle secondCircle = recistenciaFound.getSecondCircle();
+            CustomCircle firstCircle = resistenciaFound.getFirstCircle();
+            CustomCircle secondCircle = resistenciaFound.getSecondCircle();
 
             //se mira el caso específico que el cable esté conectado gridVolt -> led o led -> gridVolt.
             if (firstID.getGridName().contains(gridPaneObserver.getGridVoltPrefix()) && secondID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
-                deleteResistenciaFromGridPane.accept(recistenciaFound);
+                deleteResistenciaFromGridPane.accept(resistenciaFound);
                 return;
             } else if (secondID.getGridName().contains(gridPaneObserver.getGridVoltPrefix()) && firstID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
-                deleteResistenciaFromGridPane.accept(recistenciaFound);
+                deleteResistenciaFromGridPane.accept(resistenciaFound);
                 return;
             }
 
             //se mira el caso específico que el cable esté conectado gridVolt -> switch o switch -> gridVolt.
             if (firstID.getGridName().contains(gridPaneObserver.getGridVoltPrefix()) && secondID.getGridName().contains(gridPaneObserver.getSwitchIdPrefix())) {
-                deleteResistenciaFromGridPane.accept(recistenciaFound);
+                deleteResistenciaFromGridPane.accept(resistenciaFound);
                 return;
             } else if (secondID.getGridName().contains(gridPaneObserver.getGridVoltPrefix()) && firstID.getGridName().contains(gridPaneObserver.getSwitchIdPrefix())) {
-                deleteResistenciaFromGridPane.accept(recistenciaFound);
+                deleteResistenciaFromGridPane.accept(resistenciaFound);
                 return;
             }
 
@@ -302,24 +302,24 @@ public class Utils {
             if (firstID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
                 System.out.println("first id is from a led");
                 unPaintCircles(gridPaneObserver, secondCircle);
-                deleteResistenciaFromGridPane.accept(recistenciaFound);
+                deleteResistenciaFromGridPane.accept(resistenciaFound);
                 return;
             } else if (secondID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
                 System.out.println("second id is from a led");
                 unPaintCircles(gridPaneObserver, firstCircle);
-                deleteResistenciaFromGridPane.accept(recistenciaFound);
+                deleteResistenciaFromGridPane.accept(resistenciaFound);
                 return;
             }
             //mira si la primera ID pertenece a un switch, si pertenece a uno, entonces
             if (firstID.getGridName().contains(gridPaneObserver.getSwitchIdPrefix())) {
                 System.out.println("first id is from a switch");
                 unPaintCircles(gridPaneObserver, secondCircle);
-                deleteResistenciaFromGridPane.accept(recistenciaFound);
+                deleteResistenciaFromGridPane.accept(resistenciaFound);
                 return;
             } else if (secondID.getGridName().contains(gridPaneObserver.getSwitchIdPrefix())) {
                 System.out.println("second id is from a switch");
                 unPaintCircles(gridPaneObserver, firstCircle);
-                deleteResistenciaFromGridPane.accept(recistenciaFound);
+                deleteResistenciaFromGridPane.accept(resistenciaFound);
                 return;
             }
             ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable,gridPaneObserver);
@@ -329,7 +329,7 @@ public class Utils {
                 unPaintCircles(gridPaneObserver, cable.getFirstCircle());
             }
 
-            deleteResistenciaFromGridPane.accept(recistenciaFound);
+            deleteResistenciaFromGridPane.accept(resistenciaFound);
         }
     }
 

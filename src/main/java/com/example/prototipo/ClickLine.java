@@ -71,7 +71,7 @@ public class ClickLine {
             isCableFixed = true;
             GridPaneObserver.refreshCables(gridPaneObserver);
             if(!gridPaneObserver.getBurnedCables().isEmpty()){
-                gridPaneObserver.getCables().removeAll(gridPaneObserver.getBurnedCables());
+                gridPaneObserver.getCables().removeAll(gridPaneObserver.getBurnedCables()); // TODO: REVISAR EL ARREGLO DE RESISTENCIAS PORQUE NO SE ESTAN ACTUALIZANDO
             }
 
             //al eliminar un cable, el paso de energía es defectuoso, por ello se llama esta función que se asegura de que esté bn.
@@ -84,9 +84,10 @@ public class ClickLine {
 
             System.out.println("-----------------");
             gridPaneObserver.getCables().forEach(cable -> {
-                System.out.println("tipo de carga: " + cable.getTipodecarga() + " first id: " + cable.getFirstCircle().getID() + " second id: " + cable.getSecondCircle().getID());
+                System.out.println("tipo de carga: " + cable.getTipodecarga() + " first id: " + cable.getFirstCircle().getID() + " second id: " + cable.getSecondCircle().getID() + " tipo del cable: " +cable.getTipo());
             });
             System.out.println("------------------------------");
+
 
         });
 
@@ -97,19 +98,24 @@ public class ClickLine {
             boolean canDelete = basurero.getIsActive();
             if (!canDelete) return;
 
-
             if(e.getTarget() instanceof Cable cable) {
                 //Buscamos el cable presionado para asi ver despues si el cable pertenece a un elemento del protoboard
                 Cable cablefound = Utils.getCableByID(gridPaneObserver.getCables(), cable);
 
-                if(cablefound == null) {
+                if(cablefound == null) {  // Eliminar los cables que estan dentro de la columna quemada
                     Cable burnedCable = Utils.getCableByID(gridPaneObserver.getBurnedCables(), cable);
-                    burnedCable.Getcircles()[0].setisTaken(false);
-                    burnedCable.Getcircles()[1].setisTaken(false);
-                    burnedCable.Getcircles()[0].setCable(null);
-                    burnedCable.Getcircles()[1].setCable(null);
-                    gridPaneObserver.getBurnedCables().remove(burnedCable);
+                    Utils.ResetStateCustomCircles(burnedCable);
+                    if(burnedCable.getTipo() != null){
+                        Resistencia resis = gridPaneObserver.getResistencias().stream()
+                                .filter(el -> el.getRandomID().equals(burnedCable.getRandomID()))
+                                .findAny()
+                                .orElse(null);
+                        root.getChildren().remove(resis.getRec());
+                        root.getChildren().remove(resis.getArrow());
+                        root.getChildren().remove(resis);
+                    }
                     root.getChildren().remove(burnedCable);
+                    gridPaneObserver.getBurnedCables().remove(burnedCable);
                     return;
                 }
                 //asignamos los CustomCircles del cable
