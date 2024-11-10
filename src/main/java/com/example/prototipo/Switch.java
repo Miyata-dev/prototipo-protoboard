@@ -457,20 +457,23 @@ public class Switch extends Group {
             gridPaneObserver.removeColumn(circleCable);
             return;
         }
+        cabletoRemove.add(cable);
         System.out.println("-------------------------- cable");
         System.out.println("tipo de carga: " + cable.getTipodecarga() + " first id: " + cable.getFirstCircle().getID() + " second id: " + cable.getSecondCircle().getID());
         System.out.println("-------------------------- cabletoremove");
         for (Cable cable1 : cabletoRemove) {//Vamos por cada cable de la coleccion
 
-            System.out.println("tipo de carga: " + cable1.getTipodecarga() + " first id: " + cable1.getFirstCircle().getID() + " second id: " + cable1.getSecondCircle().getID());
-            //Obtenemos las columnas correspondientes y les quitamos la energia
-            ArrayList<CustomCircle> firstcol = GridPaneObserver.getCircles(gridPaneObserver, cable1.getFirstCircle().getID());
-            ArrayList<CustomCircle> secondcol = GridPaneObserver.getCircles(gridPaneObserver, cable1.getSecondCircle().getID());
-            firstcol.forEach(CustomCircle::removeEnergy);
-            secondcol.forEach(CustomCircle::removeEnergy);
-            //para asi quitarlas de la coleccion de columnas energizadas del gridpaneObserver
-            gridPaneObserver.removeColumn(firstcol);
-            gridPaneObserver.removeColumn(secondcol);
+            if(cable1.getFirstCircle().getState() == cable1.getSecondCircle().getState() && cable1.getFirstCircle().getState() == origin.getSecondValue().getState() && cable1.getSecondCircle().getState() == origin.getSecondValue().getState()) {
+                System.out.println("tipo de carga: " + cable1.getTipodecarga() + " first id: " + cable1.getFirstCircle().getID() + " second id: " + cable1.getSecondCircle().getID());
+                //Obtenemos las columnas correspondientes y les quitamos la energia
+                ArrayList<CustomCircle> firstcol = GridPaneObserver.getCircles(gridPaneObserver, cable1.getFirstCircle().getID());
+                ArrayList<CustomCircle> secondcol = GridPaneObserver.getCircles(gridPaneObserver, cable1.getSecondCircle().getID());
+                firstcol.forEach(CustomCircle::removeEnergy);
+                secondcol.forEach(CustomCircle::removeEnergy);
+                //para asi quitarlas de la coleccion de columnas energizadas del gridpaneObserver
+                gridPaneObserver.removeColumn(firstcol);
+                gridPaneObserver.removeColumn(secondcol);
+            }
         }
         System.out.println("--------------------------");
     }
