@@ -152,7 +152,10 @@ public class MainController {
                 parent.getChildren().add(chip);
                 System.out.println("creating chip or...");
             } else if (selectedOption.equals(options.get(2))) {
-                System.out.println("creating chip NOT...");
+                ChipNOT chip = new ChipNOT(customShape, basurero, gridPaneObserver);
+
+                gridPaneObserver.addChipNOT(chip);
+                parent.getChildren().add(chip);
             }
 
             // Resetear la selección del ComboBox

@@ -63,16 +63,32 @@ public class Chip extends Group {
     public void mouseClicked(MouseEvent e, CustomShape customShape, Runnable func) {
         //quita las columnas afectadas.
         Runnable removeAffectedCols = () -> {
+            //se reinicia el estado "IsAffectedByChip" de los circulos de las columnas.
             affectedColumns.forEach(col -> {
                 Utils.unPaintCircles(gridPaneObserver, col.get(0));
                 gridPaneObserver.removeColumn(col);
                 col.forEach(cir -> cir.setIsAffectedByChip(false));
             });
 
+            lowerCols.forEach(col -> {
+                Utils.unPaintCircles(gridPaneObserver, col.get(0));
+                col.forEach(
+                    cir -> cir.setIsAffectedByChip(false)
+                );
+            });
+
+            upperCols.forEach(col -> {
+                Utils.unPaintCircles(gridPaneObserver, col.get(0));
+                col.forEach(
+                    cir -> cir.setIsAffectedByChip(false)
+                );
+            });
+
             affectedColumns.clear();
             lowerCols.clear();
             upperCols.clear();
             gridPaneObserver.getCables().removeAll(ghostCables);
+            ghostCables.clear();
         };
 
         Consumer<MouseEvent> doSomething = (ev) -> {
@@ -215,18 +231,24 @@ public class Chip extends Group {
 
         String upperColGridName = columns.get(0).get(0).getID().getGridName();
         String lowerColGridName = columns.get(cols.size() - 1).get(0).getID().getGridName();
-
-        System.out.println("lower: " + lowerColGridName + " upper: " + upperColGridName);
         //obtiene las columnas de abajo.
         lowerCols = cols.stream()
                 .filter(col -> col.get(0).getID().getGridName().equals(lowerColGridName)).collect(Collectors.toList());
 
         upperCols = cols.stream()
                 .filter(col -> col.get(0).getID().getGridName().equals(upperColGridName)).collect(Collectors.toList());
+
+        lowerCols.forEach(col -> col.forEach(
+            cir -> cir.setIsAffectedByChip(true)
+        ));
+
+        upperCols.forEach(col -> col.forEach(
+            cir -> cir.setIsAffectedByChip(true)
+        ));
     }
 
     public void addGhostCable(Cable cable) {
-        if (!ghostCables.contains(cable)) {
+        if (Cable.getCableFromCollection(ghostCables, cable) == null) {
             ghostCables.add(cable);
         }
     }
@@ -236,6 +258,7 @@ public class Chip extends Group {
 
         Cable cable = new Cable(getFirstCircle.apply(arr.get(index - 2)), getFirstCircle.apply(arr.get(index)));
         cable.setRandomID();
+        cable.setIsGhostCable(true);
         //si no se tiene un estado en especifico, se toma el primer circulo de la columna.
         if (state == 0) {
             cable.setTipodecarga(getFirstCircle.apply(arr.get(index - 2)).getState());
@@ -245,7 +268,7 @@ public class Chip extends Group {
 
         gridPaneObserver.addCable(cable);
         addGhostCable(cable);
-        gridPaneObserver.addColumn(arr.get(index), getFirstCircle.apply(arr.get(index - 2)).getState());
+        gridPaneObserver.addColumn(arr.get(index), state);
     }
 
     public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index) {

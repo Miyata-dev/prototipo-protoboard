@@ -17,6 +17,7 @@ public class GridPaneObserver {
     private ArrayList<Switch> switches = new ArrayList<>();
     private ArrayList<ChipAND> chipsAND = new ArrayList<>();
     private ArrayList<ChipOR> chipsOR = new ArrayList<>();
+    private ArrayList<ChipNOT> chipsNot = new ArrayList<>();
     //guarda las columnas con energía y la energía que tienen.
     private ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energizedColumns = new ArrayList<>();
     //aqui se guardan las columnas quemadas.
@@ -61,8 +62,8 @@ public class GridPaneObserver {
 
     //activa la energía
     public void activateGridObserver() {
-        cables.forEach(cable -> GridPaneObserver.refreshProtoboard(this));
-        leds.forEach(led -> LED.UpdatingState(led, true)); //enciende todos los leds del protoboard.
+        new ArrayList<>(cables).forEach(cable -> GridPaneObserver.refreshProtoboard(this));
+        new ArrayList<>(leds).forEach(led -> LED.UpdatingState(led, true)); //enciende todos los leds del protoboard.
         refreshProtoboard(this);
     }
 
@@ -138,7 +139,6 @@ public class GridPaneObserver {
                     GridPaneObserver.addColumn(gridPane, circles, secondCol.getState());
                 } else {
                     //busca una resistencia que tenga la misma id random que el cable que estamos mirando en la iteración.
-
                     Resistencia founded = gridPane.getResistencias().stream()
                             .filter(el -> el.getRandomID().equals(cable.getRandomID()))
                             .findAny()
@@ -150,7 +150,6 @@ public class GridPaneObserver {
                 }
             }
         }
-
     }
 
     public static void burntEnergyCleaner(GridPaneObserver gridPane,ArrayList<CustomCircle> burnedCircles) {  // Este metodo busca los cables que estan en la columna quemada, para luego eliminarlos de la coleccion
@@ -158,7 +157,6 @@ public class GridPaneObserver {
             if(circulo.hasCable()){
                 gridPane.getBurnedCables().add(circulo.getCable());
             }
-
         }
     }
 
@@ -193,7 +191,7 @@ public class GridPaneObserver {
     }
 
     //Este metodo lo que hace es actualizar todos los elementos del protoboard(Switch y LED) cuando al momento de Encender y apagar se llamen su funcionalidad correspondiente
-    public static void RefreshElements(GridPaneObserver gridPaneObserver) {
+    public static void RefreshElements(GridPaneObserver gridPaneObserver){
         //Actualizamos todos los switchs
         for (Switch aSwitch : gridPaneObserver.getSwitches()) {
             aSwitch.Function();
@@ -205,9 +203,11 @@ public class GridPaneObserver {
 
         ArrayList<ChipAND> chips = gridPaneObserver.getChipsAND();
         ArrayList<ChipOR> chipsOr = gridPaneObserver.getChipsOR();
+        ArrayList<ChipNOT> chipsNot = gridPaneObserver.getChipsNot();
+//        System.out.println("number of chips: " + chips.size());
         //ESTO DE AQUI NO FUNCIONA POR EL REFRESHENERGYZEDCOLUMNS, se debe mejorar esa lógica.
         for (ChipAND c : chips) {
-
+//            System.out.println("checking columns in refresh...");
             c.checkColumns();
         }
 
@@ -215,17 +215,27 @@ public class GridPaneObserver {
             c.checkColumns();
         }
 
+        for (ChipNOT c : chipsNot) {
+            c.checkColumns();
+        }
+
     }//Actualizamos todos los switchs
 
     //Este metodo lo que hace es refrescar todos los tipo de carga
     public static void refreshCables(GridPaneObserver gridPaneObserver){
-
         for(Cable cable: gridPaneObserver.getCables()){
             if(cable.getFirstCircle().getState() == cable.getSecondCircle().getState()){
                 cable.setTipodecarga(cable.getFirstCircle().getState());
             } else {
                 //quema arbitrariamente la segunda.
                 if (cable.getFirstCircle().hasEnergy() && cable.getSecondCircle().hasEnergy()) {
+
+                    if (
+                        cable.getFirstCircle().getIsAffectedByChip() &&
+                        cable.getSecondCircle().getIsAffectedByChip() &&
+                        cable.getIsGhostCable()
+                    ) return;
+
                     if(cable.getTipo() == null){
                         ArrayList<CustomCircle> circleToBurn = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
                         cable.setBurned();
@@ -337,6 +347,15 @@ public class GridPaneObserver {
     public void removeResistencia(Resistencia resistencia) {
         resistencias.remove(resistencia);
         cables.removeIf(cable -> cable.getRandomID().equals(resistencia.getRandomID()));
+    }
+
+    //ChipNOT
+    public void addChipNOT(ChipNOT chipNOT) {
+        chipsNot.add(chipNOT);
+    }
+
+    public void removeChipNOT(ChipNOT chipNOT) {
+        chipsNot.remove(chipNOT);
     }
 
     //ChipOR
@@ -488,6 +507,10 @@ public class GridPaneObserver {
 
     public ArrayList<ChipOR> getChipsOR() {
         return chipsOR;
+    }
+
+    public ArrayList<ChipNOT> getChipsNot() {
+        return chipsNot;
     }
 
     public boolean getIsEnergyActivated() {
