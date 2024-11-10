@@ -193,7 +193,7 @@ public class Switch extends Group {
                                 gridPaneObserver.addCable(circle.getCable());
                             }
                         }
-                    } else {
+                    } else if(!this.ChargePass && this.origin != null) {
                         Legs.forEach(leg->{
                             if(!leg.equals(origin.getSecondValue()) && !leg.equals(this.coOriginCircle)){
                                 leg.removeEnergy();
@@ -277,14 +277,17 @@ public class Switch extends Group {
     public void Function() {
         System.out.println("ChargePass is: " + ChargePass);
         setEnergyfromClosestCircles(Legs);
+        originHaveNoEnergy();
         if (!ChargePass) {
             unPaintLegs();
             updateLegs();
+            originHaveNoEnergy();
             checkisBurned();
             return;
         }
         //Actualizamos la energia desde los circulos
         setEnergyfromClosestCircles(Legs);
+        originHaveNoEnergy();
         checkisBurned();
         if (isBurned) {
             unPaintLegs();
@@ -293,7 +296,9 @@ public class Switch extends Group {
             gridPaneObserver.removeColumn(coOrigin);
             energizedColumns.clear();
         } else {
+            originHaveNoEnergy();
             paintLegs();
+            originHaveNoEnergy();
         }
     }
 
@@ -538,6 +543,18 @@ public class Switch extends Group {
     public void clearcoords(ArrayList<CustomCircle> circles ){
         for (CustomCircle circle : circles) {
             circle.setCoords(0,0);
+        }
+    }
+
+    public void originHaveNoEnergy(){
+        if(this.origin == null) return;
+
+        ArrayList<CustomCircle> originCol = GridPaneObserver.getCircles(gridPaneObserver, origin.getSecondValue().getCable().getSecondCircle().getID());
+
+        if(!originCol.get(0).hasEnergy()){
+            for (CustomCircle leg : this.Legs) {
+                removeEnergyzedConnected(leg.getCable());
+            }
         }
     }
 
