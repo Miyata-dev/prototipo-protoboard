@@ -172,18 +172,17 @@ public class LED extends Group {
             }
         }
     }
-
     //Este metodo lo que es conseguir el estado de las Patas del LED por medio de los cables asignados
     public void GetStateofLegFromCable(){
         //Preguntamos si la primera pata es igual al primer circulo del cable
-        if(ID.isSameID(this.shape.getLeg1().getID(), this.shape.getLeg1().getCable().getFirstCircle().getID())){
+        if(ID.isSameID(this.shape.getLeg1().getID(), this.shape.getLeg1().getCable().getFirstCircle().getID())){  //LEG1 ID == PRIMER CIRCULO DEL CABLE (ID)
             //Al ver que los dos circulos son iguales entonces sabemos que el que es distinto es el segundo
             if(this.shape.getLeg1().getCable().getTipo() == null) {
                 this.shape.getLeg1().setState(this.shape.getLeg1().getCable().getSecondCircle().getState());
             }
         } else{
             //Sabemos que las id no son iguales entonces actualizamos el estado
-            this.shape.getLeg1().setState(this.shape.getLeg1().getCable().getFirstCircle().getState());
+            this.shape.getLeg1().setState(this.shape.getLeg1().getCable().getFirstCircle().getState());  // LEG1 ID == SEGUNDO CIRCULO DEL CABLE (ID)
         }
         //Ahora pregutamos por la segunda pata del LED
         if(ID.isSameID(shape.getLeg2().getID(), this.shape.getLeg2().getCable().getFirstCircle().getID())){
@@ -191,7 +190,7 @@ public class LED extends Group {
                 this.shape.getLeg2().setState(this.shape.getLeg2().getCable().getSecondCircle().getState());
             }
         } else {
-            this.shape.getLeg2().setState(this.shape.getLeg2().getCable().getFirstCircle().getState());
+            this.shape.getLeg2().setState(this.shape.getLeg2().getCable().getFirstCircle().getState()); // LEG2 ID == SEGUNDO CIRCULO DEL CABLE (ID)
         }
     }
 

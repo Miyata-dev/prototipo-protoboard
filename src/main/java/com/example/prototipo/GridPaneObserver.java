@@ -48,7 +48,7 @@ public class GridPaneObserver {
 
     //Metodos...
 
-    //quita temporalmente la energía (desactiva la energía) //TODO REVISAR.
+    //quita temporalmente la energía (desactiva la energía)
     public void deactivateGridObserver() {
         //remueve la energía que tiene el gridPane
         energizedColumns.forEach(pair -> {
@@ -59,6 +59,7 @@ public class GridPaneObserver {
         leds.forEach(led -> LED.UpdatingState(led, false)); //apaga todos los leds del protoboard
     }
 
+    //activa la energía
     public void activateGridObserver() {
         cables.forEach(cable -> GridPaneObserver.refreshProtoboard(this));
         leds.forEach(led -> LED.UpdatingState(led, true)); //enciende todos los leds del protoboard.
@@ -128,17 +129,16 @@ public class GridPaneObserver {
             //registro de pares <Energía, Columna> (esto es lo que ocurre en los 2 condicionales)
             if (firstCol.getState() != 0 && secondCol.getState() == 0) {
                 ArrayList<CustomCircle> circles = getCircles(gridPane, secondCol.getID());
-                //Utils.paintCirclesCollection(this, circles, firstCol.getState());
                 GridPaneObserver.addColumn(gridPane, circles, firstCol.getState());
             }
             if (secondCol.getState() != 0 && firstCol.getState() == 0) {
 
                 if (cable.getTipo() == null) {
                     ArrayList<CustomCircle> circles = getCircles(gridPane, firstCol.getID());
-                    //Utils.paintCirclesCollection(this, circles, secondCol.getState());
                     GridPaneObserver.addColumn(gridPane, circles, secondCol.getState());
                 } else {
                     //busca una resistencia que tenga la misma id random que el cable que estamos mirando en la iteración.
+
                     Resistencia founded = gridPane.getResistencias().stream()
                             .filter(el -> el.getRandomID().equals(cable.getRandomID()))
                             .findAny()
@@ -215,8 +215,7 @@ public class GridPaneObserver {
             c.checkColumns();
         }
 
-    }
-
+    }//Actualizamos todos los switchs
 
     //Este metodo lo que hace es refrescar todos los tipo de carga
     public static void refreshCables(GridPaneObserver gridPaneObserver){
@@ -316,8 +315,7 @@ public class GridPaneObserver {
     }
 
     public void addCable(Cable cable) {
-        if(cable == null) return;
-        if (!cables.contains(cable)) {
+        if (Cable.getCableFromCollection(cables, cable) == null) {
             cables.add(cable);
         }
     }
