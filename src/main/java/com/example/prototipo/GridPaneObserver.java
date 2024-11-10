@@ -48,7 +48,7 @@ public class GridPaneObserver {
 
     //Metodos...
 
-    //quita temporalmente la energía (desactiva la energía) //TODO REVISAR.
+    //quita temporalmente la energía (desactiva la energía)
     public void deactivateGridObserver() {
         //remueve la energía que tiene el gridPane
         energizedColumns.forEach(pair -> {
@@ -59,7 +59,7 @@ public class GridPaneObserver {
         leds.forEach(led -> LED.UpdatingState(led, false)); //apaga todos los leds del protoboard
     }
 
-    //activa la energía TODO: refactorizar este chancherío.
+    //activa la energía
     public void activateGridObserver() {
         cables.forEach(cable -> GridPaneObserver.refreshProtoboard(this));
         leds.forEach(led -> LED.UpdatingState(led, true)); //enciende todos los leds del protoboard.
@@ -81,15 +81,11 @@ public class GridPaneObserver {
             simplifiedRefresh(gridPane,bateria.getNegativePole());
             freeEnergy(gridPane,bateria.getNegativePole());
         }
-
         for(Cable c: gridPane.getCables()){
             if(c.getFirstCircle().getState() == 0 && c.getSecondCircle().getState() == 0){
                 c.removeTipodecarga();
             }
         }
-
-
-
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
         gridPane.getEnergizedColumns().forEach(pair -> {
             Integer energy = pair.getFirstValue();
@@ -131,17 +127,16 @@ public class GridPaneObserver {
             //registro de pares <Energía, Columna> (esto es lo que ocurre en los 2 condicionales)
             if (firstCol.getState() != 0 && secondCol.getState() == 0) {
                 ArrayList<CustomCircle> circles = getCircles(gridPane, secondCol.getID());
-                //Utils.paintCirclesCollection(this, circles, firstCol.getState());
                 GridPaneObserver.addColumn(gridPane, circles, firstCol.getState());
             }
             if (secondCol.getState() != 0 && firstCol.getState() == 0) {
 
                 if (cable.getTipo() == null) {
                     ArrayList<CustomCircle> circles = getCircles(gridPane, firstCol.getID());
-                    //Utils.paintCirclesCollection(this, circles, secondCol.getState());
                     GridPaneObserver.addColumn(gridPane, circles, secondCol.getState());
                 } else {
                     //busca una resistencia que tenga la misma id random que el cable que estamos mirando en la iteración.
+
                     Resistencia founded = gridPane.getResistencias().stream()
                             .filter(el -> el.getRandomID().equals(cable.getRandomID()))
                             .findAny()
@@ -312,7 +307,7 @@ public class GridPaneObserver {
     }
 
     public void addCable(Cable cable) {
-        if (!cables.contains(cable)) {
+        if (Cable.getCableFromCollection(cables, cable) == null) {
             cables.add(cable);
         }
     }
