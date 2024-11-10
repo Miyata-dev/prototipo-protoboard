@@ -87,8 +87,6 @@ public class GridPaneObserver {
             }
         }
 
-
-
         //se vuelve a recorrer la colecciónb de pares para devolverle la energía a la columna que se agregó anteriormente.
         gridPane.getEnergizedColumns().forEach(pair -> {
             Integer energy = pair.getFirstValue();
@@ -99,7 +97,7 @@ public class GridPaneObserver {
         RefreshElements(gridPane);
         refreshCables(gridPane);
         refreshEnergizedColumns(gridPane); //con esto aquí no deja que las columnas de los chips se pinten.
-        //checkEnergyzedColumns(gridPane);
+//        checkEnergyzedColumns(gridPane);
     }
 
     public static void simplifiedRefresh(GridPaneObserver gridPane, CustomCircle pole) {
@@ -169,12 +167,17 @@ public class GridPaneObserver {
         ArrayList<Cable> notConnectedWithBatery = new ArrayList<>(gridPane.getCables());
         notConnectedWithBatery.removeAll(ConnectWithBatery);
         for (Cable cable: notConnectedWithBatery) {
-            if(cable.getTipodecarga() == pole.getState()){
+            if(cable.getFirstCircle().getID().getGridName().equals("LedVolt1") || cable.getSecondCircle().getID().getGridName().equals("LedVolt1")){
+                if(cable.getFirstCircle().getID().getGridName().equals("LedVolt1")){
+                    Utils.unPaintCircles(gridPane,cable.getFirstCircle());
+                }if(cable.getSecondCircle().getID().getGridName().equals("LedVolt1")){
+                    Utils.unPaintCircles(gridPane,cable.getSecondCircle());
+                }
+            }else if(cable.getTipodecarga() == pole.getState()){
                 Utils.unPaintCircles(gridPane, cable.getSecondCircle());
                 Utils.unPaintCircles(gridPane, cable.getFirstCircle());
             }
         }
-
     }
 
     public static ArrayList<CustomCircle> getCircles(GridPaneObserver gridPaneObserver, ID id){
@@ -294,7 +297,6 @@ public class GridPaneObserver {
             for (CustomCircle circle : column.getSecondValue()) {
                 if(circle.hasCable()){
                     if(!cablesConnected.contains(circle.getCable())){
-                        System.out.println("IM HERERERERERER");
                         columnscopies.add(column.getSecondValue());
                         column.getSecondValue().forEach(CustomCircle::removeEnergy);
                     }
@@ -403,8 +405,6 @@ public class GridPaneObserver {
     public void addBurnedColumn(ArrayList<CustomCircle> column) {
         burnedCircles.add(column);
     }
-
-
 
     //Setters...
     public void setRoot(AnchorPane root){

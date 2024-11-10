@@ -18,6 +18,7 @@ public class LED extends Group {
     private CustomCircle LegPositive, LegNegative; //Pata positiva -> derecha, Pata negativa-> izquierda
     private boolean isBurned;
     private String colorOption;
+    private GridPaneObserver gridPaneObserver;
 
     private static final Map<String, Color> colorMap = new HashMap<>();
 
@@ -45,6 +46,7 @@ public class LED extends Group {
         this.UniqueId = customShape.getUniqueID();
         this.basurero = basurero;
         this.root = root;
+        this.gridPaneObserver = gridPaneObserver;
 
         Utils.makeDraggableNode(this, customShape.getStartX(), customShape.getStartY());
         init(customShape);
@@ -136,6 +138,12 @@ public class LED extends Group {
     //Metodo para mostrar si el LED esta encendido o Apagado
 
     public void ONorOFF(){
+
+        if(this.shape.getLeg1().hasCable() && this.shape.getLeg1().getCable().getTipo() != null){
+            isResistencia(this.shape.getLeg1());
+        }if(this.shape.getLeg2().hasCable() && this.shape.getLeg2().getCable().getTipo() != null){
+            isResistencia(this.shape.getLeg2());
+        }
         //Si las dos patas no tienen cables entonces se sale del metodo
         if(this.shape.getLeg1().hasCable() && this.shape.getLeg2().hasCable()){
             //Llamamos el metodo para actualizar el estado de las patas segun el cable
@@ -166,23 +174,39 @@ public class LED extends Group {
     }
 
     //Este metodo lo que es conseguir el estado de las Patas del LED por medio de los cables asignados
-    public void GetStateofLegFromCable(){       //PREGUNTAR, PARA DISCRIMINAR ENTRE CABLES NORMALES O RESISTENCIAS
+    public void GetStateofLegFromCable(){
         //Preguntamos si la primera pata es igual al primer circulo del cable
         if(ID.isSameID(this.shape.getLeg1().getID(), this.shape.getLeg1().getCable().getFirstCircle().getID())){
             //Al ver que los dos circulos son iguales entonces sabemos que el que es distinto es el segundo
-            this.shape.getLeg1().setState(this.shape.getLeg1().getCable().getSecondCircle().getState());
+            if(this.shape.getLeg1().getCable().getTipo() == null) {
+                this.shape.getLeg1().setState(this.shape.getLeg1().getCable().getSecondCircle().getState());
+            }
         } else{
             //Sabemos que las id no son iguales entonces actualizamos el estado
             this.shape.getLeg1().setState(this.shape.getLeg1().getCable().getFirstCircle().getState());
         }
         //Ahora pregutamos por la segunda pata del LED
         if(ID.isSameID(shape.getLeg2().getID(), this.shape.getLeg2().getCable().getFirstCircle().getID())){
-            this.shape.getLeg2().setState(this.shape.getLeg2().getCable().getSecondCircle().getState());
+            if(this.shape.getLeg2().getCable().getTipo() == null){
+                this.shape.getLeg2().setState(this.shape.getLeg2().getCable().getSecondCircle().getState());
+            }
         } else {
             this.shape.getLeg2().setState(this.shape.getLeg2().getCable().getFirstCircle().getState());
         }
     }
 
+    public void isResistencia(CustomCircle pata){
+        if(ID.isSameID(pata.getID(), pata.getCable().getFirstCircle().getID()) && pata.getCable().getSecondCircle().hasEnergy()){
+            Resistencia founded = gridPaneObserver.getResistencias().stream()
+                    .filter(el -> el.getRandomID().equals(pata.getCable().getRandomID()))
+                    .findAny()
+                    .orElse(null);
+            if (founded != null) {
+                founded.setBurned();
+            }
+        }
+
+    }
 
 
     //Este modo lo que hace es actualizar el estado del LED que se le pase por parametro, es estatico ya que este metodo sirve para hacer al LED reactivo a los cambios de energia del protoboard
