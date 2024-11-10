@@ -84,6 +84,9 @@ public class Cable extends Line {
 
         boolean firstAtt, secondAtt;
 
+        if(one.getIds()[1].getGridName().equals("switchvolt1") || one.getIds()[0].getGridName().equals("switchvolt1") && two.getIds()[0].getGridName().equals("switchvolt1") || two.getIds()[1].getGridName().equals("switchvolt1")){
+            return false;
+        }
         //preguntamos si los dos tienen al menos una id de Volt
         if (isOneVolt && isTwoVolt) {
             // Comparaciones por filas si ambos cables son volts

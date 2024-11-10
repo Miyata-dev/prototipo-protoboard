@@ -84,10 +84,9 @@ public class ClickLine {
 
             System.out.println("-----------------");
             gridPaneObserver.getCables().forEach(cable -> {
-                System.out.println("tipo de carga: " + cable.getTipodecarga() + " first id: " + cable.getFirstCircle().getID() + " second id: " + cable.getSecondCircle().getID() + " tipo del cable: " +cable.getTipo());
+                System.out.println("tipo de carga: " + cable.getTipodecarga() + " first id: " + cable.getFirstCircle().getID() + " second id: " + cable.getSecondCircle().getID());
             });
             System.out.println("------------------------------");
-
 
         });
 
@@ -97,6 +96,7 @@ public class ClickLine {
             }
             boolean canDelete = basurero.getIsActive();
             if (!canDelete) return;
+
 
             if(e.getTarget() instanceof Cable cable) {
                 //Buscamos el cable presionado para asi ver despues si el cable pertenece a un elemento del protoboard

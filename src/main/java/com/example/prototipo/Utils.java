@@ -94,7 +94,7 @@ public class Utils {
         circles.forEach(CustomCircle::removeEnergy);
         gridPaneObserver.removeColumn(circles);
     }
-    public static ArrayList<Cable> getConnectedCables(ArrayList<Cable> cables, Cable cableToConnect,GridPaneObserver gridPane) {
+    public static ArrayList<Cable> getConnectedCables(ArrayList<Cable> cables, Cable cableToConnect,GridPaneObserver gridPane, Boolean isFromSwitch) {
         HashSet<Cable> connectedCablesHashSet = new HashSet<>();
 
         //recorre todos los elementos de la colección de cables entregada.
@@ -115,11 +115,13 @@ public class Utils {
                     for (Cable cable : cables) {
                         //se agregan a la colección de cables si está la opción de ignorar el caso de que pertenezcan a los volts.
                         if (Cable.areConnected(arrayListAux.get(j), cable,gridPane)) {
-                            if(cable.getIds()[0].getGridName().equals("switchvolt1") || cable.getIds()[1].getGridName().equals("switchvolt1")) {
+                            if(!isFromSwitch && cable.getIds()[0].getGridName().equals("switchvolt1") || cable.getIds()[1].getGridName().equals("switchvolt1")) {
                                 gridPane.getSwitches().forEach(switc -> {
                                     switc.getCables().forEach(cable1 -> {
                                         if(cable1.getRandomID().equals(cable.getRandomID())){
-                                            connectedCablesHashSet.addAll(switc.getCables());
+                                            if(switc.getConnectedCablesSwitch() != null){
+                                                connectedCablesHashSet.addAll(switc.getConnectedCablesSwitch());
+                                            }
                                         }
                                     });
                                 });
@@ -257,7 +259,7 @@ public class Utils {
                 deleteCableFromGridPane.accept(cableFound);
                 return;
             }
-            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable,gridPaneObserver);
+            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable,gridPaneObserver, false);
 
             for (Cable cable : connectedCables) {
                 unPaintCircles(gridPaneObserver, cable.getSecondCircle());
@@ -322,7 +324,7 @@ public class Utils {
                 deleteResistenciaFromGridPane.accept(resistenciaFound);
                 return;
             }
-            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable,gridPaneObserver);
+            ArrayList<Cable> connectedCables = getConnectedCables(cables, pressedCable,gridPaneObserver, false);
 
             for (Cable cable : connectedCables) {
                 unPaintCircles(gridPaneObserver, cable.getSecondCircle());
