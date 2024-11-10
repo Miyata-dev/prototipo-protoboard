@@ -442,18 +442,28 @@ public class Switch extends Group {
 
     }
 
+    //Este metodo lo que es remover todas las columnas energizadas que estan conectadas a la pata del switch correspondiente.
     public void removeEnergyzedConnected(Cable cable){
+        //Conseguimos los cables conectados a remover
         ArrayList<Cable> cabletoRemove = Utils.getConnectedCables(gridPaneObserver.getCables(), cable, gridPaneObserver, true);
-        if(cabletoRemove.isEmpty()) return;
+        if(cabletoRemove.isEmpty()){//Si la coleccion de cables esta vacia entonces le quitamos energia a la columan del cable dado
+            ArrayList<CustomCircle> circleCable = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
+            circleCable.forEach(CustomCircle::removeEnergy);
+            gridPaneObserver.removeColumn(circleCable);
+            return;
+        }
         System.out.println("-------------------------- cable");
         System.out.println("tipo de carga: " + cable.getTipodecarga() + " first id: " + cable.getFirstCircle().getID() + " second id: " + cable.getSecondCircle().getID());
         System.out.println("-------------------------- cabletoremove");
-        for (Cable cable1 : cabletoRemove) {
+        for (Cable cable1 : cabletoRemove) {//Vamos por cada cable de la coleccion
+
             System.out.println("tipo de carga: " + cable1.getTipodecarga() + " first id: " + cable1.getFirstCircle().getID() + " second id: " + cable1.getSecondCircle().getID());
+            //Obtenemos las columnas correspondientes y les quitamos la energia
             ArrayList<CustomCircle> firstcol = GridPaneObserver.getCircles(gridPaneObserver, cable1.getFirstCircle().getID());
             ArrayList<CustomCircle> secondcol = GridPaneObserver.getCircles(gridPaneObserver, cable1.getSecondCircle().getID());
             firstcol.forEach(CustomCircle::removeEnergy);
             secondcol.forEach(CustomCircle::removeEnergy);
+            //para asi quitarlas de la coleccion de columnas energizadas del gridpaneObserver
             gridPaneObserver.removeColumn(firstcol);
             gridPaneObserver.removeColumn(secondcol);
         }
@@ -487,7 +497,6 @@ public class Switch extends Group {
                     LowerCable.add(UpperLegs[1].getCable());
                 }
                 //Ahora añadimos los cables a la coleccion que esta en gridPaneObserver
-                //LowerCable.forEach(cable-> gridPaneObserver.addCable(cable));
                 return LowerCable;
             } else if(this.origin.getFirstValue() == -1){//Abajo
                 ArrayList<Cable> UpperCable = new ArrayList<>();

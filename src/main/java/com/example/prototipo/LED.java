@@ -80,7 +80,7 @@ public class LED extends Group {
         ID idUno = new ID(100, 101, "LedVolt1");
         idUno.setIsForGridpane(false);
 
-        ID idDos = new ID(201, 100, "LedVolt1");
+        ID idDos = new ID(201, 200, "LedVolt1");
         idDos.setIsForGridpane(false);
 
         double x = customShape.getX();

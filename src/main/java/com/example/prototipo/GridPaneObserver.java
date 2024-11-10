@@ -59,7 +59,6 @@ public class GridPaneObserver {
         leds.forEach(led -> LED.UpdatingState(led, false)); //apaga todos los leds del protoboard
     }
 
-    //activa la energía TODO: refactorizar este chancherío.
     public void activateGridObserver() {
         cables.forEach(cable -> GridPaneObserver.refreshProtoboard(this));
         leds.forEach(led -> LED.UpdatingState(led, true)); //enciende todos los leds del protoboard.
@@ -100,7 +99,7 @@ public class GridPaneObserver {
         RefreshElements(gridPane);
         refreshCables(gridPane);
         refreshEnergizedColumns(gridPane); //con esto aquí no deja que las columnas de los chips se pinten.
-        checkEnergyzedColumns(gridPane);
+        //checkEnergyzedColumns(gridPane);
     }
 
     public static void simplifiedRefresh(GridPaneObserver gridPane, CustomCircle pole) {
@@ -203,10 +202,9 @@ public class GridPaneObserver {
 
         ArrayList<ChipAND> chips = gridPaneObserver.getChipsAND();
         ArrayList<ChipOR> chipsOr = gridPaneObserver.getChipsOR();
-//        System.out.println("number of chips: " + chips.size());
         //ESTO DE AQUI NO FUNCIONA POR EL REFRESHENERGYZEDCOLUMNS, se debe mejorar esa lógica.
         for (ChipAND c : chips) {
-//            System.out.println("checking columns in refresh...");
+
             c.checkColumns();
         }
 
