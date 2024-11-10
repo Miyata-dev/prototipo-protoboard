@@ -84,7 +84,7 @@ public class ClickLine {
 
             System.out.println("-----------------");
             gridPaneObserver.getCables().forEach(cable -> {
-                System.out.println("tipo de carga: " + cable.getTipodecarga() + " first id: " + cable.getFirstCircle().getID() + " second id: " + cable.getSecondCircle().getID());
+                System.out.println(cable);
             });
             System.out.println("------------------------------");
 
@@ -150,7 +150,7 @@ public class ClickLine {
                     }
                 }
                 gridPaneObserver.getCables().forEach(c -> {
-                    System.out.println("cable: " + c.getRandomID() + " tipo: " + c.getTipo());
+                    System.out.println(c);
                 });
                 System.out.println("--------");
             }

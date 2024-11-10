@@ -217,8 +217,12 @@ public class GridPaneObserver {
             } else {
                 //quema arbitrariamente la segunda.
                 if (cable.getFirstCircle().hasEnergy() && cable.getSecondCircle().hasEnergy()) {
-                    //si están siendo afectados por un chip, entonces no se queman
-                    if (cable.getFirstCircle().getIsAffectedByChip() && cable.getSecondCircle().getIsAffectedByChip()) return;
+
+                    if (
+                        cable.getFirstCircle().getIsAffectedByChip() &&
+                        cable.getSecondCircle().getIsAffectedByChip() &&
+                        cable.getIsGhostCable()
+                    ) return;
 
                     if(cable.getTipo() == null){
                         ArrayList<CustomCircle> circleToBurn = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
@@ -362,6 +366,7 @@ public class GridPaneObserver {
     public void addColumn(ArrayList<CustomCircle> column, Integer energy) {
         //si la columna está vacía, no se agrega a la colección
         if (column.isEmpty()) return;
+        System.out.println("Adding column: " + column.get(0).getID());
         energizedColumns.add(new Pair<>(energy, column));
     }
     public static void addColumn(GridPaneObserver gridPaneObserver, ArrayList<CustomCircle> column, Integer energy) {
@@ -407,6 +412,7 @@ public class GridPaneObserver {
     public void addBurnedColumn(ArrayList<CustomCircle> column) {
         burnedCircles.add(column);
     }
+
 
 
 

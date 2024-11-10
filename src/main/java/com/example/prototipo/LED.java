@@ -77,10 +77,10 @@ public class LED extends Group {
     //Este metodo crea las patas del LED de manera ordenada
     public void init(CustomShape customShape) {
         //Las ID del LED son unicas para futuras verificaciones
-        ID idUno = new ID(1, 1, "LedVolt1");
+        ID idUno = new ID(100, 101, "LedVolt1");
         idUno.setIsForGridpane(false);
 
-        ID idDos = new ID(2, 1, "LedVolt1");
+        ID idDos = new ID(201, 100, "LedVolt1");
         idDos.setIsForGridpane(false);
 
         double x = customShape.getX();

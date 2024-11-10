@@ -35,20 +35,19 @@ public class ChipNOT extends Chip {
     }
     //se tiene que usar esta version para el Chip NOT
     public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index, int state) {
-        if (index - 1 < 0) return;
-        Function<ArrayList<CustomCircle>, CustomCircle> getFirstCircle = (a) -> a.get(0);
+        Function<ArrayList<CustomCircle>, CustomCircle> getFirstCircle = (a) -> a.get(1);
 
         Cable cable = new Cable(getFirstCircle.apply(arr.get(index - 1)), getFirstCircle.apply(arr.get(index)));
         cable.setRandomID();
         cable.setTipodecarga(state);
+        cable.setIsGhostCable(true);
         //si no se tiene un estado en especifico, se toma el primer circulo de la columna.
         gridPaneObserver.addCable(cable);
         addGhostCable(cable);
-        gridPaneObserver.addColumn(arr.get(index), getFirstCircle.apply(arr.get(index - 1)).getState());
+        gridPaneObserver.addColumn(arr.get(index), state);
     }
 
     public void checkColumn(List<ArrayList<CustomCircle>> arr, int index) {
-        System.out.println("number of ghostCables: " + super.getGhostCables().size());
         if (arr.isEmpty()) return;
 
         Function<ArrayList<CustomCircle>, CustomCircle> getFirstCircle = (a) -> a.get(0);
@@ -70,6 +69,7 @@ public class ChipNOT extends Chip {
             });
 
             connectWithGhostCable(arr, index, -energy);
+            gridPaneObserver.addColumn(arr.get(index), -1);
         }
 
         if (!hasEnergy.test(firstColToCheck)) {
