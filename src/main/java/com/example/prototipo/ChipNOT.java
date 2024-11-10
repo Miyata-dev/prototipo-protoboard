@@ -69,7 +69,6 @@ public class ChipNOT extends Chip {
             });
 
             connectWithGhostCable(arr, index, -energy);
-            gridPaneObserver.addColumn(arr.get(index), -1);
         }
 
         if (!hasEnergy.test(firstColToCheck)) {
