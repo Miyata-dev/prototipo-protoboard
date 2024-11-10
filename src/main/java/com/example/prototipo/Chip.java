@@ -63,16 +63,26 @@ public class Chip extends Group {
     public void mouseClicked(MouseEvent e, CustomShape customShape, Runnable func) {
         //quita las columnas afectadas.
         Runnable removeAffectedCols = () -> {
+            //se reinicia el estado "IsAffectedByChip" de los circulos de las columnas.
             affectedColumns.forEach(col -> {
                 Utils.unPaintCircles(gridPaneObserver, col.get(0));
                 gridPaneObserver.removeColumn(col);
                 col.forEach(cir -> cir.setIsAffectedByChip(false));
             });
 
+            lowerCols.forEach(col -> col.forEach(
+                cir -> cir.setIsAffectedByChip(false)
+            ));
+
+            upperCols.forEach(col -> col.forEach(
+                cir -> cir.setIsAffectedByChip(false)
+            ));
+
             affectedColumns.clear();
             lowerCols.clear();
             upperCols.clear();
             gridPaneObserver.getCables().removeAll(ghostCables);
+            ghostCables.clear();
         };
 
         Consumer<MouseEvent> doSomething = (ev) -> {
@@ -223,6 +233,14 @@ public class Chip extends Group {
 
         upperCols = cols.stream()
                 .filter(col -> col.get(0).getID().getGridName().equals(upperColGridName)).collect(Collectors.toList());
+
+        lowerCols.forEach(col -> col.forEach(
+            cir -> cir.setIsAffectedByChip(true)
+        ));
+
+        upperCols.forEach(col -> col.forEach(
+            cir -> cir.setIsAffectedByChip(true)
+        ));
     }
 
     public void addGhostCable(Cable cable) {

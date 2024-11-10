@@ -17,6 +17,7 @@ public class GridPaneObserver {
     private ArrayList<Switch> switches = new ArrayList<>();
     private ArrayList<ChipAND> chipsAND = new ArrayList<>();
     private ArrayList<ChipOR> chipsOR = new ArrayList<>();
+    private ArrayList<ChipNOT> chipsNot = new ArrayList<>();
     //guarda las columnas con energía y la energía que tienen.
     private ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energizedColumns = new ArrayList<>();
     //aqui se guardan las columnas quemadas.
@@ -190,6 +191,7 @@ public class GridPaneObserver {
 
         ArrayList<ChipAND> chips = gridPaneObserver.getChipsAND();
         ArrayList<ChipOR> chipsOr = gridPaneObserver.getChipsOR();
+        ArrayList<ChipNOT> chipsNot = gridPaneObserver.getChipsNot();
 //        System.out.println("number of chips: " + chips.size());
         //ESTO DE AQUI NO FUNCIONA POR EL REFRESHENERGYZEDCOLUMNS, se debe mejorar esa lógica.
         for (ChipAND c : chips) {
@@ -198,6 +200,10 @@ public class GridPaneObserver {
         }
 
         for (ChipOR c : chipsOr) {
+            c.checkColumns();
+        }
+
+        for (ChipNOT c : chipsNot) {
             c.checkColumns();
         }
 
@@ -211,6 +217,9 @@ public class GridPaneObserver {
             } else {
                 //quema arbitrariamente la segunda.
                 if (cable.getFirstCircle().hasEnergy() && cable.getSecondCircle().hasEnergy()) {
+                    //si están siendo afectados por un chip, entonces no se queman
+                    if (cable.getFirstCircle().getIsAffectedByChip() && cable.getSecondCircle().getIsAffectedByChip()) return;
+
                     if(cable.getTipo() == null){
                         ArrayList<CustomCircle> circleToBurn = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
                         cable.setBurned();
@@ -302,10 +311,11 @@ public class GridPaneObserver {
     }
 
     public void addCable(Cable cable) {
-        if (!cables.contains(cable)) {
+        if (Cable.getCableFromCollection(cables, cable) == null) {
             cables.add(cable);
         }
     }
+
     public void removeCable(Cable cable) {
         cables.remove(cable);
     }
@@ -324,6 +334,15 @@ public class GridPaneObserver {
     public void removeResistencia(Resistencia resistencia) {
         resistencias.remove(resistencia);
         cables.removeIf(cable -> cable.getRandomID().equals(resistencia.getRandomID()));
+    }
+
+    //ChipNOT
+    public void addChipNOT(ChipNOT chipNOT) {
+        chipsNot.add(chipNOT);
+    }
+
+    public void removeChipNOT(ChipNOT chipNOT) {
+        chipsNot.remove(chipNOT);
     }
 
     public void addChipOR(ChipOR chipor) {
@@ -475,6 +494,10 @@ public class GridPaneObserver {
 
     public ArrayList<ChipOR> getChipsOR() {
         return chipsOR;
+    }
+
+    public ArrayList<ChipNOT> getChipsNot() {
+        return chipsNot;
     }
 
     public boolean getIsEnergyActivated() {
