@@ -87,7 +87,8 @@ public class Cable extends Line {
         //Preguntamos si en el caso de que los dos cables tengan al menos un ciruclo que este conectado al switch se retorne
         if(one.getIds()[1].getGridName().equals("switchvolt1") || one.getIds()[0].getGridName().equals("switchvolt1") && two.getIds()[0].getGridName().equals("switchvolt1") || two.getIds()[1].getGridName().equals("switchvolt1")){
             return false;
-        } else if ( (one.getIds()[1].getGridName().equals("LedVolt1") || one.getIds()[0].getGridName().equals("LedVolt1") )  || (two.getIds()[0].getGridName().equals("LedVolt1") || two.getIds()[1].getGridName().equals("LedVolt1"))){
+        }
+        if ( (one.getIds()[1].getGridName().equals("LedVolt1") || one.getIds()[0].getGridName().equals("LedVolt1") )  || (two.getIds()[0].getGridName().equals("LedVolt1") || two.getIds()[1].getGridName().equals("LedVolt1"))){
             return false;
         }//Y preguntamos lo mismo pero con el LED
 
