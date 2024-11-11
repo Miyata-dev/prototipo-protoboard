@@ -253,15 +253,15 @@ public class Chip extends Group {
         }
     }
     //conecta artificialmente a los cables reales del protoboard con un cable fantasma.
-    public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index, int state) {
+    public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index, int indexToConnect, int state) {
         Function<ArrayList<CustomCircle>, CustomCircle> getFirstCircle = (a) -> a.get(0);
 
-        Cable cable = new Cable(getFirstCircle.apply(arr.get(index - 2)), getFirstCircle.apply(arr.get(index)));
+        Cable cable = new Cable(getFirstCircle.apply(arr.get(indexToConnect)), getFirstCircle.apply(arr.get(index)));
         cable.setRandomID();
         cable.setIsGhostCable(true);
         //si no se tiene un estado en especifico, se toma el primer circulo de la columna.
         if (state == 0) {
-            cable.setTipodecarga(getFirstCircle.apply(arr.get(index - 2)).getState());
+            cable.setTipodecarga(getFirstCircle.apply(arr.get(indexToConnect)).getState());
         } else {
             cable.setTipodecarga(state);
         }
@@ -271,8 +271,8 @@ public class Chip extends Group {
         gridPaneObserver.addColumn(arr.get(index), state);
     }
 
-    public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index) {
-        connectWithGhostCable(arr, index, 0);
+    public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index, int indexToConnect) {
+        connectWithGhostCable(arr, index, indexToConnect,0);
     }
 
     public void addText() {

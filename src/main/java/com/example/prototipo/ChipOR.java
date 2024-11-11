@@ -26,7 +26,7 @@ public class ChipOR extends Chip{
         });
 
         Runnable removeAffectedCols = () -> {
-            System.out.println("Removing affected columns");
+            System.out.println("number of ghostCables " + getGhostCables().size());
         };
 
         this.setOnMouseClicked(e -> {
@@ -66,7 +66,7 @@ public class ChipOR extends Chip{
                 cir.setIsAffectedByChip(true);
                 cir.setState(1);
             });
-            connectWithGhostCable(arr, index, 1);
+            connectWithGhostCable(arr, index, index - 1,1);
             gridPaneObserver.addColumn(arr.get(index), 1);
         }
 
@@ -84,7 +84,7 @@ public class ChipOR extends Chip{
                 cir.setIsAffectedByChip(true);
                 cir.setState(energizedCircle.getState());
             });
-            connectWithGhostCable(arr, index, energizedCircle.getState());
+            connectWithGhostCable(arr, index, energizedCircle.getID().getIndexColumn(), energizedCircle.getState());
             gridPaneObserver.addColumn(arr.get(index), energizedCircle.getState());
         }
 
