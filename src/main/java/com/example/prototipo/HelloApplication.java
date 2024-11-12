@@ -15,6 +15,10 @@ public class HelloApplication extends Application {
         Image icon = new Image(getClass().getResource("Utalca.png").toExternalForm());
         stage.getIcons().add(icon);
 
+        // Obtén el controlador asociado automáticamente al cargar el FXML
+        MainController mainController = fxmlLoader.getController();
+        mainController.setStage(stage);
+
         String css = this.getClass().getResource("styles.css").toExternalForm();
         scene.getStylesheets().add(css);
 

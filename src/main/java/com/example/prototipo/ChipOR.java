@@ -75,17 +75,19 @@ public class ChipOR extends Chip{
             //si ya tiene energía, se sale de la función
             if (hasEnergy.test(arr.get(index))) return;
 
-            //se obtiene el circulo que tiene energía/
-            CustomCircle energizedCircle = getFirstCircle.apply(arr.get(index - 2)).hasEnergy()
-                ? getFirstCircle.apply(arr.get(index - 2))
-                : getFirstCircle.apply(arr.get(index - 1));
+            //CustomCircle energizedCircle
+
+            //se obtiene el circulo que tiene energía/ Pair<Integer, CustomCircle> //indice de la columna, circulo energizado.
+            Pair<Integer, CustomCircle> energizedCircle = getFirstCircle.apply(arr.get(index - 2)).hasEnergy()
+                ? new Pair<>(index - 2, getFirstCircle.apply(arr.get(index - 2)))
+                : new Pair<>(index - 1, getFirstCircle.apply(arr.get(index - 1)));
 
             arr.get(index).forEach(cir -> {
                 cir.setIsAffectedByChip(true);
-                cir.setState(energizedCircle.getState());
+                cir.setState(energizedCircle.getSecondValue().getState());
             });
-            connectWithGhostCable(arr, index, energizedCircle.getID().getIndexColumn(), energizedCircle.getState());
-            gridPaneObserver.addColumn(arr.get(index), energizedCircle.getState());
+            connectWithGhostCable(arr, index, energizedCircle.getFirstValue(), energizedCircle.getSecondValue().getState());
+            gridPaneObserver.addColumn(arr.get(index), energizedCircle.getSecondValue().getState());
         }
 
         //en el caso de que ninguna de las columnas no tenga energia, se le quita la energía.
