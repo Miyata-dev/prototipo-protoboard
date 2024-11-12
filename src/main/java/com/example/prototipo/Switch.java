@@ -294,12 +294,15 @@ public class Switch extends Group {
         setEnergyfromClosestCircles(Legs);
         originHaveNoEnergy();
         checkisBurned();
-        if (isBurned) {
+        if (isBurned && this.coOriginCircle != null) {
+            if(this.origin == null) return;
             unPaintLegs();
             coOrigin.forEach(CustomCircle::removeEnergy);
             Pair pair = new Pair<>(coOrigin.get(0).getState(), coOrigin);
             gridPaneObserver.removeColumn(coOrigin);
             energizedColumns.clear();
+            this.coOriginCircle = null;
+            this.coOrigin = null;
         } else {
             originHaveNoEnergy();
             paintLegs();
@@ -309,6 +312,7 @@ public class Switch extends Group {
 
     //Este metodo lo que hace es actualizar el estado de las patas que tiene el Switch e identificar el origen
     public void updateLegs(){
+        if(isBurned) return;
         //En el caso que la primera pata tenga energia y la otra no se le da energia a la que no tiene
         if (UpperLegs[0].hasEnergy() && !UpperLegs[1].hasEnergy()) {
             UpperLegs[1].setState(UpperLegs[0].getState());
@@ -367,6 +371,7 @@ public class Switch extends Group {
 
     //Este metodo lo que hara sera ver si el Switch se deberia quemar o no y ademas actualizamos el estado de los circulos
     public void checkisBurned( ){
+        if(this.isBurned) return;
         //Preguntamos si los circulos de la parte superior del switch tienen energia
         if(UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()) {
             //si el estado que tienen las patas son distintos entonces se quema el componente
