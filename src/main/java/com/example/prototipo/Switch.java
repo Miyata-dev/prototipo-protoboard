@@ -2,6 +2,7 @@ package com.example.prototipo;
 
 
 import javafx.scene.Group;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
@@ -173,39 +174,42 @@ public class Switch extends Group {
                 energizedColumns.clear();
                 gridPaneObserver.removeSwitches(this);
             } else {
-                if (isUndragableAlready && !isBurned && gridPaneObserver.getIsEnergyActivated()) {
+                if (isUndragableAlready && !isBurned) {
                     this.hasmoved = true;
                     //Cuando el basurero no este activo y ya no se puede mover y se de un click se actualiza el estado
-                    this.ChargePass = !this.ChargePass;
-                    Function();
+                    setChargePass(!this.ChargePass);
+                    if (gridPaneObserver.getIsEnergyActivated()) {
+                        Function();
 
-                    //Ya que al momento de refrescar no se puede agregar cables a la colección, debemos mover el agregado de de cables fuera de la función del Switch
 
-                    //Para eso preguntamos el estado de la carga del Switch y si el origen es distinto de nulo, si es asi, podremos
-                    if(this.ChargePass && this.origin != null){
-                        //Preguntamos por el origen, y añadimos la pata de la coleccion
-                        if (origin.getFirstValue() == 1) {//Arriba
-                            for (CustomCircle circle : LowerLegs) {
-                                gridPaneObserver.addCable(circle.getCable());
+                        //Ya que al momento de refrescar no se puede agregar cables a la colección, debemos mover el agregado de de cables fuera de la función del Switch
+
+                        //Para eso preguntamos el estado de la carga del Switch y si el origen es distinto de nulo, si es asi, podremos
+                        if (this.ChargePass && this.origin != null) {
+                            //Preguntamos por el origen, y añadimos la pata de la coleccion
+                            if (origin.getFirstValue() == 1) {//Arriba
+                                for (CustomCircle circle : LowerLegs) {
+                                    gridPaneObserver.addCable(circle.getCable());
+                                }
+                            } else if (origin.getFirstValue() == -1) {// abajo
+                                for (CustomCircle circle : UpperLegs) {
+                                    gridPaneObserver.addCable(circle.getCable());
+                                }
                             }
-                        } else if (origin.getFirstValue() == -1) {// abajo
-                            for (CustomCircle circle : UpperLegs) {
-                                gridPaneObserver.addCable(circle.getCable());
-                            }
+                        } else if (!this.ChargePass && this.origin != null) {
+                            Legs.forEach(leg -> {
+                                if (!leg.equals(origin.getSecondValue()) && !leg.equals(this.coOriginCircle)) {
+                                    leg.removeEnergy();
+                                    gridPaneObserver.removeCable(leg.getCable());
+                                }
+                            });
                         }
-                    } else if(!this.ChargePass && this.origin != null) {
-                        Legs.forEach(leg->{
-                            if(!leg.equals(origin.getSecondValue()) && !leg.equals(this.coOriginCircle)){
-                                leg.removeEnergy();
-                                gridPaneObserver.removeCable(leg.getCable());
-                            }
-                        });
-                    }
 
-                    for (Cable cable : new ArrayList<>(gridPaneObserver.getCables())) {
-                        GridPaneObserver.refreshProtoboard(gridPaneObserver);
-                    }
+                        for (Cable cable : new ArrayList<>(gridPaneObserver.getCables())) {
+                            GridPaneObserver.refreshProtoboard(gridPaneObserver);
+                        }
 
+                    }
                 }
             }
         });
@@ -275,6 +279,7 @@ public class Switch extends Group {
 
     //Este metodo lo que hara es la funcionalidad del Switch
     public void Function() {
+
         System.out.println("ChargePass is: " + ChargePass);
         setEnergyfromClosestCircles(Legs);
         originHaveNoEnergy();
@@ -424,6 +429,8 @@ public class Switch extends Group {
 
     //Este metodo lo que hace es despintar las patas del Switch que no estan conectada a un cable energizado
     public void unPaintLegs(){
+        if(this.origin == null) return;
+
         ArrayList<ArrayList<CustomCircle>> colsCopies = new ArrayList<>();
         energizedColumns.forEach(pair -> {
             if(!pair.getSecondValue().equals(this.coOrigin) && !pair.getSecondValue().equals(GridPaneObserver.getCircles(gridPaneObserver, origin.getSecondValue().getCable().getSecondCircle().getID()))){
@@ -432,7 +439,6 @@ public class Switch extends Group {
                 colsCopies.add(col);
             }
         });
-        if(this.origin == null) return;
         //Recorremos cada pata del Switch que no sean del origen y del co origen
 
         if(this.origin.getFirstValue() == 1){ //-> arriba
@@ -557,7 +563,12 @@ public class Switch extends Group {
         if(!originCol.get(0).hasEnergy()){
             for (CustomCircle leg : this.Legs) {
                 removeEnergyzedConnected(leg.getCable());
+                leg.removeEnergy();
             }
+            //Reiniciamos el estado de todos los
+            this.origin = null;
+            this.coOrigin = null;
+            this.coOriginCircle = null;
         }
     }
 
@@ -594,6 +605,13 @@ public class Switch extends Group {
     }
     public void setChargePass(Boolean chargePass){
         this.ChargePass = chargePass;
+        if(this.ChargePass){
+            Image image = new Image(getClass().getResource("Switch.png").toExternalForm());
+            this.Shape.setImage(image);
+        } else{
+            Image image = new Image(getClass().getResource("Switch_OFF.png").toExternalForm());
+            this.Shape.setImage(image);
+        }
     }
     //solo se setea una vez.
     public void setOrigin(Integer origin, CustomCircle originCircle) {
