@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 
 import java.util.ArrayList;
@@ -40,6 +41,24 @@ public class MainController {
     public ArrayList<Switch> switches = new ArrayList<>();
     public Bateria bateria;
     public ClickLine clickLineMatrizUno;
+    private Stage stage;
+    public Runnable getCoordsFromScreen; //esta funcion se obtiene después de configurar el ledComboBox.
+
+    //setea la propiedad stage para poder agregar los eventos de la pantalla (cuando cambian de tamaño)
+    public void setStage(Stage stage) {
+        this.stage = stage;
+
+        // Now you can use the stage, for example, to listen for window size changes
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Width changed: " + newVal);
+            getCoordsFromScreen.run();
+        });
+
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Height changed: " + newVal);
+            getCoordsFromScreen.run();
+        });
+    }
 
     ObservableList<String> options =
             FXCollections.observableArrayList(
@@ -181,28 +200,11 @@ public class MainController {
             Platform.runLater(() -> ledComboBox.getSelectionModel().clearSelection());
         });
 
+        getCoordsFromScreen = Utils.getUpdateCoordsRunnable(gridPaneObserver);
+
         //se calculan las coordenadas de los círculos de los gridTrails
         //después de que se renderizen los nodos.
-        Platform.runLater(() -> {
-            //toma un gridTrial y le setea las coordenadas a los circulos uno por uno.
-            Consumer<GridPane> addCoords = (gridPane) -> {
-                gridPane.getChildren().forEach(child -> {
-                    if (child instanceof CustomCircle circ) {
-                        Bounds boundsInScene = circ.localToScreen(circ.getBoundsInLocal());
-                        double x = boundsInScene.getCenterX();
-                        double y = boundsInScene.getCenterY();
-
-                        circ.setCoords(x, y);
-                    }
-                });
-            };
-            System.out.println("size of circle: " + matrizCirculosUnoController.getCircles().get(0).getRadius());
-            // Código para actualizar la UIA
-            addCoords.accept(matrizCirculosUnoController.getGridPane());
-            addCoords.accept(matrizCirculosDosController.getGridPane());
-            addCoords.accept(matrizCargaUno.getGridPane());
-            addCoords.accept(matrizCargaDos.getGridPane());
-        });
+        Platform.runLater(() -> getCoordsFromScreen.run());
     }
 
     public void crearLed() {
@@ -219,8 +221,14 @@ public class MainController {
     //in mainController
     public void createChip() {
         CustomShape customShape = new CustomShape(720, 554, 125, 34, Color.BLACK, "CHIP");
-        Chip chip = new Chip(customShape, basurero, gridPaneObserver);
+        Chip chip = new Chip(customShape, basurero, gridPaneObserver, 7);
         parent.getChildren().add(chip);
+    }
+
+    public void createDisplay() {
+        CustomShape customShape = new CustomShape(720, 554, 88, 70, Color.BLACK, "CHIP");
+        Display display = new Display(customShape, basurero, gridPaneObserver);
+        parent.getChildren().add(display);
     }
 
     public void setModoResistencia(ActionEvent event) {

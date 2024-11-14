@@ -10,7 +10,7 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
     private Basurero basurero;
 
     public ChipAND(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver) {
-        super(customShape, basurero, gridPaneObserver);
+        super(customShape, basurero, gridPaneObserver, 7);
         this.gridPaneObserver = gridPaneObserver;
         this.basurero = basurero;
         String tipo = "AND";
@@ -64,7 +64,7 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
                 cir.setState(getFirstCircle.apply(arr.get(index - 2)).getState());
             });
 
-            connectWithGhostCable(arr, index);
+            connectWithGhostCable(arr, index, index -  2);
         }
         //si la 1ra y segunda tienen energía pero no tiene el mismo tipo de energía, se pasa negativo.
         if (hasEnergy.test(arr.get(index - 2)) && hasEnergy.test(arr.get(index - 1)) && haveDifferenteEnergy.test(index)) {
@@ -78,7 +78,7 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
                 cir.setState(-1);
             });
 
-            connectWithGhostCable(arr, index, -1);
+            connectWithGhostCable(arr, index, index - 2, -1);
             gridPaneObserver.addColumn(arr.get(index), -1);
         }
 

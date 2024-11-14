@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -402,4 +403,39 @@ public class Utils {
 
 
     public static String createRandomID() {return UUID.randomUUID().toString();}
+
+    public static Runnable getUpdateCoordsRunnable(GridPaneObserver gridPaneObserver) {
+//        public GridPaneTrailController matrizCirculosUnoController;
+//        public GridPaneTrailController matrizCirculosDosController;
+//        public GridPaneController matrizCargaUno;
+//        public GridPaneController matrizCargaDos;
+        GridPaneTrailController matrizCirculosUnoController = gridPaneObserver.getFirstGridPaneTrail();
+        GridPaneTrailController matrizCirculosDosController = gridPaneObserver.getSecondGridPaneTrail();
+        GridPaneController matrizCargaUno = gridPaneObserver.getFirsGridPaneVolt();
+        GridPaneController matrizCargaDos = gridPaneObserver.getSecondGridPaneVolt();
+
+        Runnable updateCoords = () -> {
+            //toma un gridTrial y le setea las coordenadas a los circulos uno por uno.
+            Consumer<GridPane> addCoords = (gridPane) -> {
+                gridPane.getChildren().forEach(child -> {
+                    if (child instanceof CustomCircle circ) {
+                        Bounds boundsInScene = circ.localToScreen(circ.getBoundsInLocal());
+                        double x = boundsInScene.getCenterX();
+                        double y = boundsInScene.getCenterY();
+
+                        circ.setCoords(x, y);
+                    }
+                });
+            };
+            System.out.println("size of circle: " + matrizCirculosUnoController.getCircles().get(0).getRadius());
+            // Código para actualizar la UIA
+            addCoords.accept(matrizCirculosUnoController.getGridPane());
+            addCoords.accept(matrizCirculosDosController.getGridPane());
+            addCoords.accept(matrizCargaUno.getGridPane());
+            addCoords.accept(matrizCargaDos.getGridPane());
+        };
+
+        return updateCoords;
+    }
+
 }

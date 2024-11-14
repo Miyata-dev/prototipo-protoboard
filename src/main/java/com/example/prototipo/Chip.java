@@ -32,15 +32,17 @@ public class Chip extends Group {
     private boolean isPlacedCorrectly = true, isUndraggable = false;
     private String type, randomID; //las opciones son: AND || OR || NOT.
     private CustomShape customShape;
+    private int numeroPatitas = 7; //numeroPatitas se refiere al numero de patitas que tiene un lado del chip (arriba o abajo) por defecto es sero, pero se puede cambiar
 
     //para ejecutar código después de un tiempo.
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     //se debe especificar el tipo a travez del setter: setType.
-    public Chip(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver) {
+    public Chip(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver, int numeroPatitas) {
         super(customShape);
         this.customShape = customShape;
         this.basurero = basurero;
         this.gridPaneObserver = gridPaneObserver;
+        this.numeroPatitas = numeroPatitas;
         addPatitas(customShape);
         this.setTranslateY(-100);
         this.randomID = Utils.createRandomID(); //genera una id random para encontrarlo
@@ -170,7 +172,7 @@ public class Chip extends Group {
                 //si pertenecen al mismo gridPane no se suelta el Chip.
                 if (firstCircleGridName.equals(secondCircleGridName)) return;
 
-                if (closeCircles.size() == 14) {
+                if (closeCircles.size() == numeroPatitas * 2) { //numeroPatitas se refiere al numero de patitas que tiene un lado del chip (arriba o abajo)
                     //por cada circulo se le setea el estado de ocupado.
                     closeCircles.forEach(circle -> {
                         circle.setisTaken(true);
@@ -214,11 +216,11 @@ public class Chip extends Group {
         double heightDifference = customShape.getHeight() + 7; //para poder crear las patas de artriba y abajo se tiene la diferencia de altura.
 
         //este primer ciclo crea las patas de la parte superior del Chip
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < numeroPatitas; i++) {
             crearPatita(customShape,initailX + incrementX * i, initialY);
         }
         //crea las patas de la parte inferior del Chip.
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < numeroPatitas; i++) {
             crearPatita(customShape,initailX + incrementX * i, initialY - heightDifference);
         }
     }
@@ -253,15 +255,15 @@ public class Chip extends Group {
         }
     }
     //conecta artificialmente a los cables reales del protoboard con un cable fantasma.
-    public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index, int state) {
+    public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index, int indexToConnect, int state) {
         Function<ArrayList<CustomCircle>, CustomCircle> getFirstCircle = (a) -> a.get(0);
 
-        Cable cable = new Cable(getFirstCircle.apply(arr.get(index - 2)), getFirstCircle.apply(arr.get(index)));
+        Cable cable = new Cable(getFirstCircle.apply(arr.get(indexToConnect)), getFirstCircle.apply(arr.get(index)));
         cable.setRandomID();
         cable.setIsGhostCable(true);
         //si no se tiene un estado en especifico, se toma el primer circulo de la columna.
         if (state == 0) {
-            cable.setTipodecarga(getFirstCircle.apply(arr.get(index - 2)).getState());
+            cable.setTipodecarga(getFirstCircle.apply(arr.get(indexToConnect)).getState());
         } else {
             cable.setTipodecarga(state);
         }
@@ -271,8 +273,8 @@ public class Chip extends Group {
         gridPaneObserver.addColumn(arr.get(index), state);
     }
 
-    public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index) {
-        connectWithGhostCable(arr, index, 0);
+    public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index, int indexToConnect) {
+        connectWithGhostCable(arr, index, indexToConnect,0);
     }
 
     public void addText() {
@@ -309,6 +311,11 @@ public class Chip extends Group {
     public void setType(String type) {
         this.type = type;
     }
+
+    public void setNumeroPatitas(int numeroPatitas) {
+        this.numeroPatitas = numeroPatitas;
+    }
+
     //GETTERS
     public String getType() { //este tipo va a definir el comportamiento del chip.
         return type;
@@ -344,6 +351,10 @@ public class Chip extends Group {
 
     public CustomShape getCustomShape() {
         return customShape;
+    }
+
+    public int getNumeroPatitas() {
+        return numeroPatitas;
     }
 
     public void checkColumns() {
