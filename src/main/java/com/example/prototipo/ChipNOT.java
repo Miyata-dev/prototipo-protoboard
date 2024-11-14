@@ -10,7 +10,7 @@ public class ChipNOT extends Chip {
     private Basurero basurero;
 
     public ChipNOT(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver) {
-        super(customShape, basurero, gridPaneObserver);
+        super(customShape, basurero, gridPaneObserver, 7);
 
         this.gridPaneObserver = gridPaneObserver;
         this.basurero = basurero;

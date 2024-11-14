@@ -221,8 +221,14 @@ public class MainController {
     //in mainController
     public void createChip() {
         CustomShape customShape = new CustomShape(720, 554, 125, 34, Color.BLACK, "CHIP");
-        Chip chip = new Chip(customShape, basurero, gridPaneObserver);
+        Chip chip = new Chip(customShape, basurero, gridPaneObserver, 7);
         parent.getChildren().add(chip);
+    }
+
+    public void createDisplay() {
+        CustomShape customShape = new CustomShape(720, 554, 88, 70, Color.BLACK, "CHIP");
+        Display display = new Display(customShape, basurero, gridPaneObserver);
+        parent.getChildren().add(display);
     }
 
     public void setModoResistencia(ActionEvent event) {

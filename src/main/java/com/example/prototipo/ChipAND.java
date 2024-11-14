@@ -10,7 +10,7 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
     private Basurero basurero;
 
     public ChipAND(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver) {
-        super(customShape, basurero, gridPaneObserver);
+        super(customShape, basurero, gridPaneObserver, 7);
         this.gridPaneObserver = gridPaneObserver;
         this.basurero = basurero;
         String tipo = "AND";

@@ -11,7 +11,7 @@ public class ChipOR extends Chip{
     private List<ArrayList<CustomCircle>> lowerCols, upperCols, affectedColumns = new ArrayList<>();
 
     public ChipOR(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver) {
-        super(customShape, basurero, gridPaneObserver);
+        super(customShape, basurero, gridPaneObserver, 7);
         this.gridPaneObserver = gridPaneObserver;
         this.basurero = basurero;
         String tipo = "OR";
