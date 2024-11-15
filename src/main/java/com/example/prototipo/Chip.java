@@ -74,6 +74,7 @@ public class Chip extends Group {
 
             lowerCols.forEach(col -> {
                 Utils.unPaintCircles(gridPaneObserver, col.get(0));
+                gridPaneObserver.removeColumn(col);
                 col.forEach(
                     cir -> cir.setIsAffectedByChip(false)
                 );
@@ -81,6 +82,7 @@ public class Chip extends Group {
 
             upperCols.forEach(col -> {
                 Utils.unPaintCircles(gridPaneObserver, col.get(0));
+                gridPaneObserver.removeColumn(col);
                 col.forEach(
                     cir -> cir.setIsAffectedByChip(false)
                 );

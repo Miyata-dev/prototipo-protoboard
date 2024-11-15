@@ -99,7 +99,7 @@ public class GridPaneObserver {
         RefreshElements(gridPane);
         refreshCables(gridPane);
         refreshEnergizedColumns(gridPane); //con esto aquí no deja que las columnas de los chips se pinten.
-//        checkEnergyzedColumns(gridPane);
+        checkEnergyzedColumns(gridPane);
     }
 
     public static void simplifiedRefresh(GridPaneObserver gridPane, CustomCircle pole) {
@@ -292,17 +292,23 @@ public class GridPaneObserver {
         ArrayList<Cable> cablesConnected =  new ArrayList<>();
 
         //Preguntamos si el polo negativo de la bateria tiene cable y si es asi los agregamos a la coleccion de los cables conectados
-        if(gridPaneObserver.getBatery().getNegativePole().hasCable()){
+        CustomCircle negativePole = gridPaneObserver.getBatery().getNegativePole();
+        CustomCircle positivePole = gridPaneObserver.getBatery().getPositivePole();
+
+        if(negativePole.hasCable()){
             ArrayList<Cable> cablesNegative = Utils.getConnectedCables(gridPaneObserver.getCables(), gridPaneObserver.getBatery().getNegativePole().getCable(), gridPaneObserver, false);
             cablesConnected.addAll(cablesNegative);
         }
-        if(gridPaneObserver.getBatery().getPositivePole().hasCable()){
+        if(positivePole.hasCable()){
             ArrayList<Cable> cablesPositive = Utils.getConnectedCables(gridPaneObserver.getCables(), gridPaneObserver.getBatery().getPositivePole().getCable(), gridPaneObserver,false);
             cablesConnected.addAll(cablesPositive);
         }
 
         ArrayList<ArrayList<CustomCircle>> columnscopies = new ArrayList<>();
+
+        //se obtienen las columnas energizadas del gridPaneObserver.
         for (Pair<Integer, ArrayList<CustomCircle>> column : gridPaneObserver.getEnergizedColumns()) {
+            //por cada columna se revisan todos los circulos de esta.
             for (CustomCircle circle : column.getSecondValue()) {
                 if(circle.hasCable()){
                     if(!cablesConnected.contains(circle.getCable())){
