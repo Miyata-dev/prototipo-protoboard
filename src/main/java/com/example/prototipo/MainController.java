@@ -48,6 +48,17 @@ public class MainController {
     public void setStage(Stage stage) {
         this.stage = stage;
 
+        stage.xProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("Posición X cambiada: " + newValue);
+            getCoordsFromScreen.run();
+        });
+
+        // Listener para detectar cambios en la posición Y
+        stage.yProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("Posición Y cambiada: " + newValue);
+            getCoordsFromScreen.run();
+        });
+
         // Now you can use the stage, for example, to listen for window size changes
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
             System.out.println("Width changed: " + newVal);

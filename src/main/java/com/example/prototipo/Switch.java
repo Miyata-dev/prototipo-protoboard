@@ -280,6 +280,7 @@ public class Switch extends Group {
     //Este metodo lo que hara es la funcionalidad del Switch
     public void Function() {
 
+        if(!gridPaneObserver.getIsEnergyActivated()) return;
         System.out.println("ChargePass is: " + ChargePass);
         setEnergyfromClosestCircles(Legs);
         originHaveNoEnergy();
@@ -304,6 +305,7 @@ public class Switch extends Group {
             this.coOriginCircle = null;
             this.coOrigin = null;
         } else {
+            updateLegs();
             originHaveNoEnergy();
             paintLegs();
             originHaveNoEnergy();
@@ -611,10 +613,10 @@ public class Switch extends Group {
     public void setChargePass(Boolean chargePass){
         this.ChargePass = chargePass;
         if(this.ChargePass){
-            Image image = new Image(getClass().getResource("Switch.png").toExternalForm());
+            Image image = new Image(getClass().getResource("Switch_OFF.png").toExternalForm());
             this.Shape.setImage(image);
         } else{
-            Image image = new Image(getClass().getResource("Switch_OFF.png").toExternalForm());
+            Image image = new Image(getClass().getResource("Switch.png").toExternalForm());
             this.Shape.setImage(image);
         }
     }
