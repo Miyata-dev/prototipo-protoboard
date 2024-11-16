@@ -51,6 +51,7 @@ public class CustomCircle extends Circle {
         this.removeEnergy();
         this.setisTaken(true);
         this.isBurned = true;
+        this.setFill(Color.BLACK);
     }
 
     public void setState(int state) {

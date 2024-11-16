@@ -99,7 +99,7 @@ public class GridPaneObserver {
         RefreshElements(gridPane);
         refreshCables(gridPane);
         refreshEnergizedColumns(gridPane); //con esto aquí no deja que las columnas de los chips se pinten.
-        checkEnergyzedColumns(gridPane);
+        //checkEnergyzedColumns(gridPane);
     }
 
     public static void simplifiedRefresh(GridPaneObserver gridPane, CustomCircle pole) {
@@ -231,8 +231,10 @@ public class GridPaneObserver {
                 if (cable.getFirstCircle().hasEnergy() && cable.getSecondCircle().hasEnergy()) {
 
                     if (
-                        cable.getFirstCircle().getIsAffectedByChip() &&
-                        cable.getSecondCircle().getIsAffectedByChip() &&
+                        (
+                            cable.getFirstCircle().getIsAffectedByChip() &&
+                            cable.getSecondCircle().getIsAffectedByChip()
+                        ) ||
                         cable.getIsGhostCable()
                     ) return;
 
