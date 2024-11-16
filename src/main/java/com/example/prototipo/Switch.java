@@ -120,7 +120,6 @@ public class Switch extends Group {
         this.Legs.add(this.Leg3);
         this.Legs.add(this.Leg4);
 
-
         //Ahora lo Agregamos a u
         this.UpperLegs = new CustomCircle[]{
                 Legs.get(0),
@@ -142,8 +141,7 @@ public class Switch extends Group {
     //Este metodo lo que hara
     public void manageEvents() {
         ArrayList<CustomCircle> closestCircles = new ArrayList<>();
-        ArrayList<CustomCircle> circlesCollecition = gridPaneObserver.getCirclesCollection();
-
+        ArrayList<CustomCircle> circlesCollection = gridPaneObserver.getCirclesCollection();
 
         //Cuando se da click al Switch
         this.setOnMouseClicked(e -> {
@@ -163,7 +161,6 @@ public class Switch extends Group {
                     //Eliminamos el cable de la coleccion del gridPaneObserver
                     gridPaneObserver.removeCable(leg.getCable());
                     gridPaneObserver.removeColumn(circles);
-
                     GridPaneObserver.refreshProtoboard(gridPaneObserver);
                 }
                 //se le va la energia alas columnas energizadas al eliminar el switch.
@@ -180,7 +177,6 @@ public class Switch extends Group {
                     setChargePass(!this.ChargePass);
                     if (gridPaneObserver.getIsEnergyActivated()) {
                         Function();
-
 
                         //Ya que al momento de refrescar no se puede agregar cables a la colección, debemos mover el agregado de de cables fuera de la función del Switch
 
@@ -225,10 +221,10 @@ public class Switch extends Group {
             this.Leg3.setCoords(x - 17.5, y + 20);
             this.Leg4.setCoords(x + 17.5, y + 20);
 
-            double maxRange = (circlesCollecition.get(0).getRadius() * 2) - (Leg1.getRadius() * 2) + 4; //ese es el rango maximo que puede tener.
+            double maxRange = (circlesCollection.get(0).getRadius() * 2) - (Leg1.getRadius() * 2) + 4; //ese es el rango maximo que puede tener.
 
             for (CustomCircle leg : Legs) {
-                CustomCircle circleFound = Utils.getClosestCircle(circlesCollecition, leg.getX(), leg.getY());
+                CustomCircle circleFound = Utils.getClosestCircle(circlesCollection, leg.getX(), leg.getY());
 
                 if (circleFound.hasCable() || circleFound.getIsBurned()) return;
 
@@ -336,7 +332,6 @@ public class Switch extends Group {
             ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, UpperLegs[0].getCable().getSecondCircle().getID());
             circles.forEach(cir -> cir.setState(UpperLegs[1].getState()));
 
-
             //Añadimos la columna a la coleccion de columnas energizadas
             addEnergizedColumn(circles);
             setCoOrigin(circles);
@@ -368,8 +363,6 @@ public class Switch extends Group {
         }
 
     }
-
-
 
     //Este metodo lo que hara sera ver si el Switch se deberia quemar o no y ademas actualizamos el estado de los circulos
     public void checkisBurned( ){

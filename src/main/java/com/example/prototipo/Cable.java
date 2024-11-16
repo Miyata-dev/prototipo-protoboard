@@ -231,7 +231,7 @@ public class Cable extends Line {
 
     @Override
     public String toString() {
-        return "FirsCircle" + getFirstCircle().getID().getGridName() + " SecondCircle: "+ getSecondCircle().getID().getGridName() + " carga: " + tipodecarga + " is ghost cable?: " + isGhostCable;
+        return "FirsCircle: " + getFirstCircle().getID().getGridName() + " SecondCircle: "+ getSecondCircle().getID().getGridName() + " carga: " + tipodecarga + " is ghost cable?: " + isGhostCable;
     }
 
     //TODO revisar.
