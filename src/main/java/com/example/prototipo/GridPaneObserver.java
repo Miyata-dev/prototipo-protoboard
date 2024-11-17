@@ -18,6 +18,7 @@ public class GridPaneObserver {
     private ArrayList<ChipAND> chipsAND = new ArrayList<>();
     private ArrayList<ChipOR> chipsOR = new ArrayList<>();
     private ArrayList<ChipNOT> chipsNot = new ArrayList<>();
+    private ArrayList<Display> displays = new ArrayList<>();
     //guarda las columnas con energía y la energía que tienen.
     private ArrayList<Pair<Integer, ArrayList<CustomCircle>>> energizedColumns = new ArrayList<>();
     //aqui se guardan las columnas quemadas.
@@ -218,6 +219,10 @@ public class GridPaneObserver {
 
         for (ChipNOT c : chipsNot) {
             c.checkColumns();
+        }
+
+        for (Display display : gridPaneObserver.getDisplays()) {
+            display.displayFunction();
         }
 
     }//Actualizamos todos los switchs
@@ -422,6 +427,17 @@ public class GridPaneObserver {
     //BurnedColumn
     public void addBurnedColumn(ArrayList<CustomCircle> column) {
         burnedCircles.add(column);
+    }
+
+    //Display
+    public void addDisplay(Display display){
+        displays.add(display);
+    }
+    public ArrayList<Display> getDisplays(){
+        return displays;
+    }
+    public void removeDisplays(Display display){
+        displays.remove(display);
     }
 
     //Setters...

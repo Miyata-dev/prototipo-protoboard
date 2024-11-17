@@ -61,12 +61,10 @@ public class MainController {
 
         // Now you can use the stage, for example, to listen for window size changes
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("Width changed: " + newVal);
             getCoordsFromScreen.run();
         });
 
         stage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("Height changed: " + newVal);
             getCoordsFromScreen.run();
         });
     }
@@ -170,7 +168,6 @@ public class MainController {
             CustomShape customShape = new CustomShape(720, 554, 125, 34, Color.BLACK, "CHIP");
 
             if (selectedOption.equals(options.get(0))) {
-                System.out.println("creating chip and...");
                 ChipAND chip = new ChipAND(customShape, basurero, gridPaneObserver);
 
                 gridPaneObserver.addChipAND(chip);
@@ -180,7 +177,6 @@ public class MainController {
 
                 gridPaneObserver.addChipOR(chip);
                 parent.getChildren().add(chip);
-                System.out.println("creating chip or...");
             } else if (selectedOption.equals(options.get(2))) {
                 ChipNOT chip = new ChipNOT(customShape, basurero, gridPaneObserver);
 
@@ -218,28 +214,17 @@ public class MainController {
         Platform.runLater(() -> getCoordsFromScreen.run());
     }
 
-    public void crearLed() {
-        CustomShape customShape = new CustomShape(720, 504, 25, 15, Color.YELLOW, "LED");
-        LED led = new LED(false, customShape, basurero, parent, gridPaneObserver);
-        parent.getChildren().add(led);
-    }
-
     public void CreateSwitch(){
         Switch switch2 = new Switch(false, gridPaneObserver, parent, basurero);
         gridPaneObserver.addSwitches(switch2);
         parent.getChildren().add(switch2);
     }
-    //in mainController
-    public void createChip() {
-        CustomShape customShape = new CustomShape(720, 554, 125, 34, Color.BLACK, "CHIP");
-        Chip chip = new Chip(customShape, basurero, gridPaneObserver, 7);
-        parent.getChildren().add(chip);
-    }
 
     public void createDisplay() {
-        CustomShape customShape = new CustomShape(720, 554, 88, 70, Color.BLACK, "CHIP");
+        CustomShape customShape = new CustomShape(720, 644, 88, 95, Color.BLACK, "CHIP");
         Display display = new Display(customShape, basurero, gridPaneObserver);
         parent.getChildren().add(display);
+        gridPaneObserver.addDisplay(display);
     }
 
     public void setModoResistencia(ActionEvent event) {
