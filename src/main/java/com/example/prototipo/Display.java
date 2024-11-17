@@ -136,14 +136,24 @@ public class Display extends Chip {
         for (ArrayList<CustomCircle> column : super.getColumns()) {
             //Preguntamos si el indice de la columnas no son la tercera y la octava, porque son las que necesitan ser energizadas
             if(i.get() != 2 && i.get() != 7){
-                //preguntamos si en el caso de que el caracter es igual a h, ya que cuando es de caracter h, su llave debe ser dp(decimal point)
-                if(chars.equals("h")){
-                    this.displayColumns.put("dp", column);
+                if(i.get() == 0){
+                    this.displayColumns.put("g", column);
+                } else if(i.get() == 1){
+                    this.displayColumns.put("f", column);
+                } else if(i.get() == 5){
+                    this.displayColumns.put("e", column);
+                } else if(i.get() == 6){
+                    this.displayColumns.put("d", column);
+                } else{
+                    //preguntamos si en el caso de que el caracter es igual a h, ya que cuando es de caracter h, su llave debe ser dp(decimal point)
+                    if(chars.equals("d")){
+                        this.displayColumns.put("dp", column);
 
-                    break;
+                        break;
+                    }
+                    this.displayColumns.put(chars, column);
+                    chars = Display. avanzarCharacter(chars);
                 }
-                this.displayColumns.put(chars, column);
-                chars = Display. avanzarCharacter(chars);
             } else {
                 this.displayColumns.put("energy" + i, column);
             }
