@@ -371,6 +371,10 @@ public class GridPaneObserver {
         chipsOR.add(chipor);
     }
 
+    public void removeChipOR(ChipOR chipor) {
+        chipsOR.remove(chipor);
+    }
+
     //ChipAND
     public void addChipAND(ChipAND chip) {
         chipsAND.add(chip);

@@ -29,7 +29,11 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
         this.setOnMouseClicked(e -> {
             if (super.getAffectedColumns() == null) return;
 
-            super.mouseClicked(e, customShape);
+            Runnable func = () -> {
+                gridPaneObserver.removeChipAND(this);
+            };
+
+            super.mouseClicked(e, customShape, func);
         });
 
     }
@@ -52,14 +56,18 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
         if (index - 2 < 0) return;
         super.getAffectedColumns().add(arr.get(index)); //se agrega a las columnas afectadas.
 
+        ArrayList<CustomCircle> firstToCheck = arr.get(index - 2);
+        ArrayList<CustomCircle> secondToCheck = arr.get(index - 1);
+        ArrayList<CustomCircle> affectedColumn = arr.get(index);
+
         //si la primera y segunda columna tiene energía, y tienen la misma energía entonces se agrega la tercera.
-        if (hasEnergy.test(arr.get(index - 2)) && hasEnergy.test(arr.get(index - 1)) && !haveDifferenteEnergy.test(index)) { //n -2 y n -1
+        if (hasEnergy.test(firstToCheck) && hasEnergy.test(secondToCheck) && !haveDifferenteEnergy.test(index)) { //n -2 y n -1
             //si ya tiene energía, se sale de la función
-            if (hasEnergy.test(arr.get(index))) return;
+            if (hasEnergy.test(affectedColumn)) return;
 
             System.out.println("adding column same energy AND...");
             //la columna a inspeccionar se le setea como afectadaporchip y se pasa el estado.
-            arr.get(index).forEach(cir -> {
+            affectedColumn.forEach(cir -> {
                 cir.setIsAffectedByChip(true);
                 cir.setState(getFirstCircle.apply(arr.get(index - 2)).getState());
             });
@@ -67,35 +75,40 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
             connectWithGhostCable(arr, index, index -  2);
         }
         //si la 1ra y segunda tienen energía pero no tiene el mismo tipo de energía, se pasa negativo.
-        if (hasEnergy.test(arr.get(index - 2)) && hasEnergy.test(arr.get(index - 1)) && haveDifferenteEnergy.test(index)) {
+        if (hasEnergy.test(firstToCheck) && hasEnergy.test(secondToCheck) && haveDifferenteEnergy.test(index)) {
             //si ya tiene energía, se sale de la función
-            if (hasEnergy.test(arr.get(index))) return;
+            if (hasEnergy.test(affectedColumn)) return;
 
             System.out.println("adding column differente energy AND...");
             //la columna a inspeccionar se le setea como afectadaporchip y se pasa el estado.
-            arr.get(index).forEach(cir -> {
+            affectedColumn.forEach(cir -> {
                 cir.setIsAffectedByChip(true);
                 cir.setState(-1);
             });
 
+            System.out.println("energy from index to connect: " + getFirstCircle.apply(firstToCheck).getState());
+
             connectWithGhostCable(arr, index, index - 2, -1);
-            gridPaneObserver.addColumn(arr.get(index), -1);
+            gridPaneObserver.addColumn(affectedColumn, -1);
         }
+
+        //si ya tiene energía la columna a revisar se mira que sea la correcta.
+
 
         //en el casod de que una de las columnas no tenga energia, se le quita la energía.
         if (
-            !hasEnergy.test(arr.get(index - 2)) && hasEnergy.test(arr.get(index - 1)) ||
-            hasEnergy.test(arr.get(index - 2)) && !hasEnergy.test(arr.get(index - 1))
+            !hasEnergy.test(firstToCheck) && hasEnergy.test(secondToCheck) ||
+            hasEnergy.test(firstToCheck) && !hasEnergy.test(secondToCheck)
         ) {
             //todo obtener los cables acociados paa quitarles la energía.
             Utils.unPaintCircles(gridPaneObserver, arr.get(index).get(0)); //se pasa el primer circulo de la columna inspeccionada.
-            gridPaneObserver.removeColumn(arr.get(index));
+            gridPaneObserver.removeColumn(affectedColumn);
         }
         //si nunguno de los dos tiene energía se el quita la energía se le quita la energía a la columna seleccionada.
-        if (!hasEnergy.test(arr.get(index - 2)) && !hasEnergy.test(arr.get(index - 1))) {
+        if (!hasEnergy.test(firstToCheck) && !hasEnergy.test(secondToCheck)) {
             //todo obtener los cables acociados paa quitarles la energía.
             Utils.unPaintCircles(gridPaneObserver, arr.get(index).get(0));
-            gridPaneObserver.removeColumn(arr.get(index));
+            gridPaneObserver.removeColumn(affectedColumn);
         }
 
     }

@@ -30,7 +30,11 @@ public class ChipNOT extends Chip {
         this.setOnMouseClicked(e -> {
             if (super.getAffectedColumns() == null) return;
 
-            super.mouseClicked(e, customShape);
+            Runnable removeChip = () -> {
+                gridPaneObserver.removeChipNOT(this);
+            };
+
+            super.mouseClicked(e, customShape, removeChip);
         });
     }
 

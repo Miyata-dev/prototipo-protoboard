@@ -25,14 +25,14 @@ public class ChipOR extends Chip{
             checkColumns();
         });
 
-        Runnable removeAffectedCols = () -> {
-            System.out.println("number of ghostCables " + getGhostCables().size());
+        Runnable removeChip = () -> {
+            gridPaneObserver.removeChipOR(this);
         };
 
         this.setOnMouseClicked(e -> {
             if (affectedColumns == null) return;
 
-            super.mouseClicked(e, customShape, removeAffectedCols);
+            super.mouseClicked(e, customShape, removeChip);
         });
     }
 
