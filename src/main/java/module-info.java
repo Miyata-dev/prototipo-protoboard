@@ -5,6 +5,7 @@ module com.example.prototipo {
     requires java.management;
     requires jdk.jshell;
     requires java.sql;
+    requires jdk.xml.dom;
 
 
     opens com.example.prototipo to javafx.fxml;

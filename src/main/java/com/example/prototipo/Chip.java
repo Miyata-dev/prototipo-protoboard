@@ -19,7 +19,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-//TODO Prueba de posible error
 public class Chip extends Group {
     private ArrayList<Rectangle> patitas = new ArrayList<>();
     private ArrayList<Double[]> coords = new ArrayList<>(); // coords[0]= x, coords[1] = y
