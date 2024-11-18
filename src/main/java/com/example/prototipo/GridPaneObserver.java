@@ -2,6 +2,7 @@ package com.example.prototipo;
 
 import javafx.scene.layout.AnchorPane;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class GridPaneObserver {
@@ -164,7 +165,31 @@ public class GridPaneObserver {
     public static void freeEnergy(GridPaneObserver gridPane,CustomCircle pole) {
         ArrayList<Cable> ConnectWithBatery = Utils.getConnectedCables(gridPane.getCables(),pole.getCable(),gridPane, false);
         ArrayList<Cable> notConnectedWithBatery = new ArrayList<>(gridPane.getCables());
+
+        ArrayList<Cable> cablesInGhostColumn = new ArrayList<>();   //TODO: REFACTORIZAR Y PASARLO A UN METODO
+
+        //saca los cables fantasma
+        List<Cable> ghostCables = gridPane.getCables()
+                .stream()
+                .filter(cable -> cable.getIsGhostCable()).toList();
+
+        for (Cable c : ghostCables) {
+            ArrayList<CustomCircle> circleFromFirstCircle = Utils.getColumnOfCustomCircles(gridPane, c.getFirstCircle().getID());
+            //se obtienen los cables de la columna que NO SON GHOST.
+            for (CustomCircle cir : circleFromFirstCircle) {
+                if(cir.hasCable() && !cir.getCable().getIsGhostCable()){
+                    cablesInGhostColumn.add(cir.getCable());
+                }
+            }
+        }
+        notConnectedWithBatery.removeAll(cablesInGhostColumn);
+        for(Cable c: ghostCables){
+            ArrayList<Cable> cablesConnectedToGhost = Utils.getConnectedCables(notConnectedWithBatery,c,gridPane,false);
+            notConnectedWithBatery.removeAll(cablesConnectedToGhost);
+        }
+        notConnectedWithBatery.addAll(cablesInGhostColumn);
         notConnectedWithBatery.removeAll(ConnectWithBatery);
+
         for (Cable cable: notConnectedWithBatery) {
             if(cable.getFirstCircle().getID().getGridName().equals("LedVolt1") || cable.getSecondCircle().getID().getGridName().equals("LedVolt1")){
                 if(cable.getFirstCircle().getID().getGridName().equals("LedVolt1")){
@@ -235,7 +260,7 @@ public class GridPaneObserver {
                         cable.getFirstCircle().getIsAffectedByChip() &&
                         cable.getSecondCircle().getIsAffectedByChip() &&
                         cable.getIsGhostCable()
-                    ) return;
+                    ) continue;
 
                     if(cable.getTipo() == null){
                         ArrayList<CustomCircle> circleToBurn = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
