@@ -85,6 +85,16 @@ public class Chip extends Group {
                 );
             });
 
+            //por cada cable conectado al ghost cable se le quita la energía
+            ghostCables.forEach(ghost -> {
+                ArrayList<Cable> connectedCables = Utils.getConnectedCables(gridPaneObserver.getCables(), ghost, gridPaneObserver, false);
+
+                connectedCables.forEach(cable -> {
+                    Utils.unPaintCircles(gridPaneObserver, cable.getFirstCircle());
+                    Utils.unPaintCircles(gridPaneObserver, cable.getSecondCircle());
+                });
+            });
+
             affectedColumns.clear();
             lowerCols.clear();
             upperCols.clear();
