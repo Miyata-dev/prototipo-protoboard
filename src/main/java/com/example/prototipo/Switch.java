@@ -5,7 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-
+import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -455,6 +455,11 @@ public class Switch extends Group {
 
     //Este metodo lo que es remover todas las columnas energizadas que estan conectadas a la pata del switch correspondiente.
     public void removeEnergyzedConnected(Cable cable){
+        //saca los cables que no son fantasma
+        List<Cable> notGhostCables = gridPaneObserver.getCables()
+            .stream()
+            .filter(c -> !c.getIsGhostCable()).toList();
+
         //Conseguimos los cables conectados a remover
         ArrayList<Cable> cabletoRemove = Utils.getConnectedCables(gridPaneObserver.getCables(), cable, gridPaneObserver, true);
         if(cabletoRemove.isEmpty()){//Si la coleccion de cables esta vacia entonces le quitamos energia a la columan del cable dado
@@ -469,7 +474,26 @@ public class Switch extends Group {
         System.out.println("-------------------------- cabletoremove");
         for (Cable cable1 : cabletoRemove) {//Vamos por cada cable de la coleccion
 
-            if(cable1.getFirstCircle().getState() == cable1.getSecondCircle().getState() && cable1.getFirstCircle().getState() == origin.getSecondValue().getState() && cable1.getSecondCircle().getState() == origin.getSecondValue().getState()) {
+            //si uno de los circulos está siendo afectado por un chip, se obtiene los cables conectados a ese cable en particular
+            //para quitarle la energia manualmente
+            if (cable1.getFirstCircle().getIsAffectedByChip() || cable1.getSecondCircle().getIsAffectedByChip()) {
+                ArrayList<Cable> connectedWithOutGhost = Utils.getConnectedCables(
+                    new ArrayList<>(notGhostCables),
+                    cable1,
+                    gridPaneObserver,
+                    true
+                );
+
+                connectedWithOutGhost.forEach(cab -> {
+                    Utils.removeEnergyFromCable(gridPaneObserver, cab);
+                });
+            }
+
+            if(
+                cable1.getFirstCircle().getState() == cable1.getSecondCircle().getState() &&
+                cable1.getFirstCircle().getState() == origin.getSecondValue().getState() &&
+                cable1.getSecondCircle().getState() == origin.getSecondValue().getState()
+            ) {
                 System.out.println("tipo de carga: " + cable1.getTipodecarga() + " first id: " + cable1.getFirstCircle().getID() + " second id: " + cable1.getSecondCircle().getID());
                 //Obtenemos las columnas correspondientes y les quitamos la energia
                 ArrayList<CustomCircle> firstcol = GridPaneObserver.getCircles(gridPaneObserver, cable1.getFirstCircle().getID());

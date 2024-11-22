@@ -17,6 +17,27 @@ import javafx.scene.shape.Circle;
 public class Utils {
     public Utils() {
     }
+
+    public static boolean isColumnAffectedByChip(ArrayList<CustomCircle> circles) {
+        for (CustomCircle c : circles) {
+            if (c.getIsAffectedByChip()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static void removeEnergyFromCable(GridPaneObserver gridPaneObserver, Cable cable) {
+        ArrayList<CustomCircle> firstcol = GridPaneObserver.getCircles(gridPaneObserver, cable.getFirstCircle().getID());
+        ArrayList<CustomCircle> secondcol = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
+        firstcol.forEach(CustomCircle::removeEnergy);
+        secondcol.forEach(CustomCircle::removeEnergy);
+        //para asi quitarlas de la coleccion de columnas energizadas del gridpaneObserver
+        gridPaneObserver.removeColumn(firstcol);
+        gridPaneObserver.removeColumn(secondcol);
+    }
+
     //este método agrega un círclo a la colección que recibe como parámetro solo si son de la misma columna.
     private static void addCirclesFromSameColumn(ID id, Iterator<Node> fristCircleToPaint, ArrayList<CustomCircle> circles) {
         while(fristCircleToPaint.hasNext()) {

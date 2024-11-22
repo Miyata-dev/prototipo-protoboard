@@ -267,6 +267,8 @@ public class GridPaneObserver {
                         cable.getIsGhostCable()
                     ) continue;
 
+                    if (cable.isAffectedByChip()) continue;
+
                     if(cable.getTipo() == null){
                         ArrayList<CustomCircle> circleToBurn = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
                         cable.setBurned();
