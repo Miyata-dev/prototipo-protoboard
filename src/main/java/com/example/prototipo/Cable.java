@@ -229,7 +229,11 @@ public class Cable extends Line {
         return this.isBurned;
     }
     //si uno de los 2 ciruclos en los que el cable está conectado, entonces se concidera afectado por un chip.
-    public boolean isAffectedByChip() {
+    public boolean isParciallyAffectedByChip() {
+        return getFirstCircle().getIsAffectedByChip() || getSecondCircle().getIsAffectedByChip();
+    }
+
+    public boolean isFullyAffectedByChip() {
         return getFirstCircle().getIsAffectedByChip() && getSecondCircle().getIsAffectedByChip();
     }
 
