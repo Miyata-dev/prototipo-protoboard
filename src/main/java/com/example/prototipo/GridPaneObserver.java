@@ -156,20 +156,15 @@ public class GridPaneObserver {
     }
 
     public static void burntEnergyCleaner(GridPaneObserver gridPane,ArrayList<CustomCircle> burnedCircles) {  // Este metodo busca los cables que estan en la columna quemada, para luego eliminarlos de la coleccion
-        for (CustomCircle circulo : burnedCircles) {
-            if(circulo.hasCable()){
-                gridPane.getBurnedCables().add(circulo.getCable());
+        for (CustomCircle circle : burnedCircles) {
+            if(circle.hasCable()){
+                gridPane.getBurnedCables().add(circle.getCable());
             }
         }
     }
 
-    public static void freeEnergy(GridPaneObserver gridPane,CustomCircle pole) {
-        ArrayList<Cable> ConnectWithBatery = Utils.getConnectedCables(gridPane.getCables(),pole.getCable(),gridPane, false);
-        ArrayList<Cable> notConnectedWithBatery = new ArrayList<>(gridPane.getCables());
-
-        ArrayList<Cable> cablesInGhostColumn = new ArrayList<>();   //TODO: REFACTORIZAR Y PASARLO A UN METODO
-
-        //saca los cables fantasma
+    public static void ghostCablesObserver(ArrayList<Cable> notConnectedWithBatery,GridPaneObserver gridPane){
+        ArrayList<Cable> cablesInGhostColumn = new ArrayList<>();
         List<Cable> ghostCables = gridPane.getCables()
                 .stream()
                 .filter(cable -> cable.getIsGhostCable()).toList();
@@ -189,15 +184,33 @@ public class GridPaneObserver {
             notConnectedWithBatery.removeAll(cablesConnectedToGhost);
         }
         notConnectedWithBatery.addAll(cablesInGhostColumn);
+
+    }
+
+    public static void freeEnergy(GridPaneObserver gridPane,CustomCircle pole) {
+        ArrayList<Cable> ConnectWithBatery = Utils.getConnectedCables(gridPane.getCables(),pole.getCable(),gridPane, false);
+        ArrayList<Cable> notConnectedWithBatery = new ArrayList<>(gridPane.getCables());
+
+        if(gridPane.isThereAnyChip()){
+            ghostCablesObserver(notConnectedWithBatery,gridPane);
+        }
         notConnectedWithBatery.removeAll(ConnectWithBatery);
 
         for (Cable cable: notConnectedWithBatery) {
-            if(cable.getFirstCircle().getID().getGridName().equals("LedVolt1") || cable.getSecondCircle().getID().getGridName().equals("LedVolt1")){
-                if(cable.getFirstCircle().getID().getGridName().equals("LedVolt1")){
-                    Utils.unPaintCircles(gridPane,cable.getFirstCircle());
-                }if(cable.getSecondCircle().getID().getGridName().equals("LedVolt1")){
-                    Utils.unPaintCircles(gridPane,cable.getSecondCircle());
+            CustomCircle firstCircle = cable.getFirstCircle();
+            CustomCircle secondCircle = cable.getSecondCircle();
+            String firstGridName = firstCircle.getID().getGridName();
+            String secondGridName = secondCircle.getID().getGridName();
+
+            if(firstGridName.equals("LedVolt1") || secondGridName.equals("LedVolt1")){
+                if(firstGridName.equals("LedVolt1")){
+                    Utils.unPaintCircles(gridPane,firstCircle);
+                }if(secondGridName.equals("LedVolt1")){
+                    Utils.unPaintCircles(gridPane,secondCircle);
                 }
+            }else if(cable.getTipodecarga() == pole.getState()){
+                Utils.unPaintCircles(gridPane, secondCircle);
+                Utils.unPaintCircles(gridPane, firstCircle);
             }else if(cable.getTipodecarga() == pole.getState() && !cable.isFullyAffectedByChip()){
                 Utils.unPaintCircles(gridPane, cable.getSecondCircle());
                 Utils.unPaintCircles(gridPane, cable.getFirstCircle());
@@ -227,7 +240,6 @@ public class GridPaneObserver {
         for (LED led : gridPaneObserver.getLeds()) {
             led.ONorOFF();
         }
-
         ArrayList<ChipAND> chips = gridPaneObserver.getChipsAND();
         ArrayList<ChipOR> chipsOr = gridPaneObserver.getChipsOR();
         ArrayList<ChipNOT> chipsNot = gridPaneObserver.getChipsNot();
@@ -304,6 +316,7 @@ public class GridPaneObserver {
             }
         }
     }
+
 
     public ArrayList<CustomCircle> createCirclesCollection(GridPaneObserver gridPaneObserver){
         ArrayList<CustomCircle> CircleCollection = new ArrayList<>();
@@ -403,6 +416,10 @@ public class GridPaneObserver {
 
     public void removeChipAND(ChipAND chipAND) {
         chipsAND.remove(chipAND);
+    }
+
+    public boolean isThereAnyChip(){
+        return !getChipsOR().isEmpty() || !getChipsAND().isEmpty() || !getChipsNot().isEmpty();
     }
 
     //Column
