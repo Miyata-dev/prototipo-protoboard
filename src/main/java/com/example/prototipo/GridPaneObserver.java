@@ -198,7 +198,7 @@ public class GridPaneObserver {
                 }if(cable.getSecondCircle().getID().getGridName().equals("LedVolt1")){
                     Utils.unPaintCircles(gridPane,cable.getSecondCircle());
                 }
-            }else if(cable.getTipodecarga() == pole.getState()){
+            }else if(cable.getTipodecarga() == pole.getState() && !cable.isFullyAffectedByChip()){
                 Utils.unPaintCircles(gridPane, cable.getSecondCircle());
                 Utils.unPaintCircles(gridPane, cable.getFirstCircle());
             }
