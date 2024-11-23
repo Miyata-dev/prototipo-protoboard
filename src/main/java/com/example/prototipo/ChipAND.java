@@ -29,6 +29,7 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
         this.setOnMouseClicked(e -> {
             if (super.getAffectedColumns() == null) return;
 
+            System.out.println("number of ghost cables: " + getGhostCables().size());
             super.mouseClicked(e, customShape);
         });
 
@@ -51,6 +52,9 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
         //debe se asi ya que se revisan las 2 columnas de atras del indice.
         if (index - 2 < 0) return;
         super.getAffectedColumns().add(arr.get(index)); //se agrega a las columnas afectadas.
+
+        //esta es la columna que se energiza dependiendo de las columnas anteriores a esta.
+        ArrayList<CustomCircle> columnToCheck = arr.get(index);
 
         //si la primera y segunda columna tiene energía, y tienen la misma energía entonces se agrega la tercera.
         if (hasEnergy.test(arr.get(index - 2)) && hasEnergy.test(arr.get(index - 1)) && !haveDifferenteEnergy.test(index)) { //n -2 y n -1
@@ -90,12 +94,16 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
             //todo obtener los cables acociados paa quitarles la energía.
             Utils.unPaintCircles(gridPaneObserver, arr.get(index).get(0)); //se pasa el primer circulo de la columna inspeccionada.
             gridPaneObserver.removeColumn(arr.get(index));
+            //cuando se va la energia de la columna es necesario quitar el cable fantasma.
+            disconnectGhostCable(columnToCheck.get(0).getID());
         }
         //si nunguno de los dos tiene energía se el quita la energía se le quita la energía a la columna seleccionada.
         if (!hasEnergy.test(arr.get(index - 2)) && !hasEnergy.test(arr.get(index - 1))) {
             //todo obtener los cables acociados paa quitarles la energía.
             Utils.unPaintCircles(gridPaneObserver, arr.get(index).get(0));
             gridPaneObserver.removeColumn(arr.get(index));
+            //cuando se va la energia de la columna es necesario quitar el cable fantasma.
+            disconnectGhostCable(columnToCheck.get(0).getID());
         }
 
     }

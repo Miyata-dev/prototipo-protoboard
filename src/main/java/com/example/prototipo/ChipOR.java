@@ -1,6 +1,7 @@
 package com.example.prototipo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -9,6 +10,8 @@ public class ChipOR extends Chip{
     private GridPaneObserver gridPaneObserver;
     private Basurero basurero;
     private List<ArrayList<CustomCircle>> lowerCols, upperCols, affectedColumns = new ArrayList<>();
+
+    private HashMap<ID, Cable> ghostCables = new HashMap<>(); //
 
     public ChipOR(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver) {
         super(customShape, basurero, gridPaneObserver, 7);
@@ -31,7 +34,7 @@ public class ChipOR extends Chip{
 
         this.setOnMouseClicked(e -> {
             if (affectedColumns == null) return;
-
+            System.out.println("number of ghost cables: " + getGhostCables().size());
             super.mouseClicked(e, customShape, removeAffectedCols);
         });
     }
@@ -54,6 +57,8 @@ public class ChipOR extends Chip{
         //debe se asi ya que se revisan las 2 columnas de atras del indice.
         if (index - 2 < 0) return;
         super.getAffectedColumns().add(arr.get(index)); //se agrega a las columnas afectadas.
+
+        ArrayList<CustomCircle> columnToCheck = arr.get(index);
 
         //TODO mejorar la lógica del if de abajo.
         //si la 1ra y segunda tienen energía pero no tiene el mismo tipo de energía, se pasa negativo.
@@ -95,6 +100,7 @@ public class ChipOR extends Chip{
             //todo obtener los cables acociados paa quitarles la energía.
             Utils.unPaintCircles(gridPaneObserver, arr.get(index).get(0)); //se pasa el primer circulo de la columna inspeccionada.
             gridPaneObserver.removeColumn(arr.get(index));
+            disconnectGhostCable(columnToCheck.get(0).getID());
         }
     }
 

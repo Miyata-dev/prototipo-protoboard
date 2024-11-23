@@ -10,6 +10,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -26,6 +27,7 @@ public class Chip extends Group {
     private ArrayList<Cable> ghostCables = new ArrayList<>();
     private ArrayList<ArrayList<CustomCircle>> columns = new ArrayList<>();
     private List<ArrayList<CustomCircle>> lowerCols, upperCols, affectedColumns = new ArrayList<>();
+    private HashMap<ID, Cable> ghostCableMap = new HashMap<>();
     private Basurero basurero;
     private GridPaneObserver gridPaneObserver;
     private boolean isPlacedCorrectly = true, isUndraggable = false;
@@ -263,6 +265,20 @@ public class Chip extends Group {
             ghostCables.add(cable);
         }
     }
+
+    public void removeGhostCable(Cable cable) {
+        if (ghostCables.isEmpty()) return;
+
+        ghostCables.remove(cable);
+    }
+
+    public void addGhostCableToMap(ID id, Cable cable) {
+        //si ya está el cable en la coleccion, entonces no se agrega.
+        if (ghostCableMap.get(id) != null) return;
+
+        ghostCableMap.put(id, cable);
+    }
+
     //conecta artificialmente a los cables reales del protoboard con un cable fantasma.
     public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index, int indexToConnect, int state) {
         Function<ArrayList<CustomCircle>, CustomCircle> getFirstCircle = (a) -> a.get(0);
@@ -270,6 +286,11 @@ public class Chip extends Group {
         Cable cable = new Cable(getFirstCircle.apply(arr.get(indexToConnect)), getFirstCircle.apply(arr.get(index)));
         cable.setRandomID();
         cable.setIsGhostCable(true);
+
+        //se pasas como llave la ID del primer circulo para dsp poder conseguirlo a la hora de eliminarlo.
+        CustomCircle circleToConnect = getFirstCircle.apply(arr.get(index));
+        addGhostCableToMap(circleToConnect.getID(), cable);
+
         //si no se tiene un estado en especifico, se toma el primer circulo de la columna.
         if (state == 0) {
             cable.setTipodecarga(getFirstCircle.apply(arr.get(indexToConnect)).getState());
@@ -285,12 +306,13 @@ public class Chip extends Group {
     public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index, int indexToConnect) {
         connectWithGhostCable(arr, index, indexToConnect,0);
     }
-
-    public void removeGhostCable(Cable cableToRemove) {
-        if (!cableToRemove.getIsGhostCable()) return;
-
+    //necesariamente se debe pasar la id del primer circulo.
+    public void disconnectGhostCable(ID id) {
+        Cable cableToRemove = ghostCableMap.get(id);
+        removeGhostCable(cableToRemove);
         gridPaneObserver.removeCable(cableToRemove);
-        ghostCables.remove(cableToRemove);
+        ghostCableMap.remove(id);
+        System.out.println("removedCable: " + cableToRemove);
     }
 
     public void addText() {
@@ -356,6 +378,8 @@ public class Chip extends Group {
     public List<ArrayList<CustomCircle>> getAffectedColumns() {
         return affectedColumns;
     }
+
+    public HashMap<ID, Cable> getGhostCableMap() { return ghostCableMap; }
 
     public ArrayList<Cable> getGhostCables() {
         return ghostCables;
