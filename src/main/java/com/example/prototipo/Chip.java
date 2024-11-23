@@ -286,6 +286,13 @@ public class Chip extends Group {
         connectWithGhostCable(arr, index, indexToConnect,0);
     }
 
+    public void removeGhostCable(Cable cableToRemove) {
+        if (!cableToRemove.getIsGhostCable()) return;
+
+        gridPaneObserver.removeCable(cableToRemove);
+        ghostCables.remove(cableToRemove);
+    }
+
     public void addText() {
         Bounds parentBounds = customShape.getBoundsInParent();
         double y = parentBounds.getCenterY();

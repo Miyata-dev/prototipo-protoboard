@@ -28,6 +28,16 @@ public class Utils {
         return false;
     }
 
+    public static boolean isColumnBurned(ArrayList<CustomCircle> circles) {
+        for (CustomCircle c : circles) {
+            if (c.getIsBurned()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static void removeEnergyFromCable(GridPaneObserver gridPaneObserver, Cable cable) {
         ArrayList<CustomCircle> firstcol = GridPaneObserver.getCircles(gridPaneObserver, cable.getFirstCircle().getID());
         ArrayList<CustomCircle> secondcol = GridPaneObserver.getCircles(gridPaneObserver, cable.getSecondCircle().getID());
