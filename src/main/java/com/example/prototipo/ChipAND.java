@@ -102,10 +102,17 @@ public class ChipAND extends Chip { //implementar un equyals en la clase CHIP pa
             //todo obtener los cables acociados paa quitarles la energía.
             Utils.unPaintCircles(gridPaneObserver, arr.get(index).get(0));
             gridPaneObserver.removeColumn(arr.get(index));
-            //cuando se va la energia de la columna es necesario quitar el cable fantasma.
-            disconnectGhostCable(columnToCheck.get(0).getID());
         }
 
+        if (!hasEnergy.test(arr.get(index - 2))) {
+            CustomCircle circle = getFirstCircle.apply(arr.get(index - 2));
+            disconnectGhostCable(circle.getID());
+        }
+
+        if (!hasEnergy.test(arr.get(index - 1))) {
+            CustomCircle circle = getFirstCircle.apply(arr.get(index - 1));
+            disconnectGhostCable(circle.getID());
+        }
     }
 
     // si el 0, 1 tienen el 2 tiene automaticamente y asi sucesivamente.

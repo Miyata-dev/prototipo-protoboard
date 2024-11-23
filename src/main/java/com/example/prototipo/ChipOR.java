@@ -58,9 +58,25 @@ public class ChipOR extends Chip{
         if (index - 2 < 0) return;
         super.getAffectedColumns().add(arr.get(index)); //se agrega a las columnas afectadas.
 
+        ArrayList<CustomCircle> firstColToCheck = arr.get(index - 1); //un indice atras de la columna que estamos revisando
         ArrayList<CustomCircle> columnToCheck = arr.get(index);
 
-        //TODO mejorar la lógica del if de abajo.
+        //se asegura de que la energía de la columna a checkear tenga la erergía correspondiente
+        //en caso de tener + y - en las columnas anteriores.
+        if (
+            hasEnergy.test(arr.get(index - 2)) &&
+            hasEnergy.test(arr.get(index - 1)) &&
+            haveDifferenteEnergy.test(index) &&
+            columnToCheck.get(0).getState() != 1
+        ) {
+            columnToCheck.forEach(cir -> {
+                cir.setIsAffectedByChip(true);
+                cir.setState(1);
+            });
+            connectWithGhostCable(arr, index, index - 1,1);
+            gridPaneObserver.addColumn(arr.get(index), 1);
+        }
+
         //si la 1ra y segunda tienen energía pero no tiene el mismo tipo de energía, se pasa negativo.
         if (hasEnergy.test(arr.get(index - 2)) && hasEnergy.test(arr.get(index - 1)) && haveDifferenteEnergy.test(index)) {
             //si ya tiene energía, se sale de la función
@@ -100,10 +116,18 @@ public class ChipOR extends Chip{
             //todo obtener los cables acociados paa quitarles la energía.
             Utils.unPaintCircles(gridPaneObserver, arr.get(index).get(0)); //se pasa el primer circulo de la columna inspeccionada.
             gridPaneObserver.removeColumn(arr.get(index));
-            disconnectGhostCable(columnToCheck.get(0).getID());
+        }
+
+        if (!hasEnergy.test(arr.get(index - 2))) {
+            CustomCircle circle = getFirstCircle.apply(arr.get(index - 2));
+            disconnectGhostCable(circle.getID());
+        }
+
+        if (!hasEnergy.test(arr.get(index - 1))) {
+            CustomCircle circle = getFirstCircle.apply(arr.get(index - 1));
+            disconnectGhostCable(circle.getID());
         }
     }
-
     // si el 0, 1 tienen el 2 tiene automaticamente y asi sucesivamente.
     @Override
     public void checkColumns() {
