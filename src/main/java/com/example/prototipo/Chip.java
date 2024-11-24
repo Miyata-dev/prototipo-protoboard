@@ -288,7 +288,7 @@ public class Chip extends Group {
         cable.setIsGhostCable(true);
 
         //se pasas como llave la ID del primer circulo para dsp poder conseguirlo a la hora de eliminarlo.
-        CustomCircle circleToConnect = getFirstCircle.apply(arr.get(index));
+        CustomCircle circleToConnect = getFirstCircle.apply(arr.get(indexToConnect));
         addGhostCableToMap(circleToConnect.getID(), cable);
 
         //si no se tiene un estado en especifico, se toma el primer circulo de la columna.
@@ -306,7 +306,7 @@ public class Chip extends Group {
     public void connectWithGhostCable(List<ArrayList<CustomCircle>> arr, int index, int indexToConnect) {
         connectWithGhostCable(arr, index, indexToConnect,0);
     }
-    //necesariamente se debe pasar la id del primer circulo.
+    //necesariamente se debe pasar la id del primer circulo, espec ificamente el de la columna que pierde energia.
     public void disconnectGhostCable(ID id) {
         Cable cableToRemove = ghostCableMap.get(id);
         removeGhostCable(cableToRemove);
