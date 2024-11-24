@@ -310,6 +310,12 @@ public class Chip extends Group {
     public void disconnectGhostCable(ID id) {
         Cable cableToRemove = ghostCableMap.get(id);
         removeGhostCable(cableToRemove);
+
+        if(cableToRemove != null){
+            Utils.unPaintCircles(gridPaneObserver, cableToRemove.getFirstCircle());
+            Utils.unPaintCircles(gridPaneObserver, cableToRemove.getSecondCircle());
+        }
+
         gridPaneObserver.removeCable(cableToRemove);
         ghostCableMap.remove(id);
         System.out.println("removedCable: " + cableToRemove);

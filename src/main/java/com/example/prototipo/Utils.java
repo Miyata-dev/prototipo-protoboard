@@ -107,7 +107,8 @@ public class Utils {
         ID circleID = circle.getID();
 
         ArrayList<CustomCircle> circles = gridPaneObserver.getCircles(gridPaneObserver, circleID);
-//        if (hasVoltCable(circles) && ignoreVoltCables) return;
+
+        if(circles.isEmpty() || circles.get(0).getIsBurned()) return;
 
         //mira si el círculo pertenece a un led, si pertenece a un led, se elimina ese circulo de las columnas energizadas.
         if (circleID.getGridName().contains(gridPaneObserver.getLedIdPrefix())) {
