@@ -73,19 +73,23 @@ public class Chip extends Group {
                 col.forEach(cir -> cir.setIsAffectedByChip(false));
             });
 
-            lowerCols.forEach(col -> {
-                Utils.unPaintCircles(gridPaneObserver, col.get(0));
-                col.forEach(
-                    cir -> cir.setIsAffectedByChip(false)
-                );
-            });
+            if (lowerCols != null) {
+                lowerCols.forEach(col -> {
+                    Utils.unPaintCircles(gridPaneObserver, col.get(0));
+                    col.forEach(
+                            cir -> cir.setIsAffectedByChip(false)
+                    );
+                });
+            }
 
-            upperCols.forEach(col -> {
-                Utils.unPaintCircles(gridPaneObserver, col.get(0));
-                col.forEach(
-                    cir -> cir.setIsAffectedByChip(false)
-                );
-            });
+            if (upperCols != null) {
+                upperCols.forEach(col -> {
+                    Utils.unPaintCircles(gridPaneObserver, col.get(0));
+                    col.forEach(
+                            cir -> cir.setIsAffectedByChip(false)
+                    );
+                });
+            }
 
             //por cada cable conectado al ghost cable se le quita la energía
             ghostCables.forEach(ghost -> {
@@ -98,8 +102,8 @@ public class Chip extends Group {
             });
 
             affectedColumns.clear();
-            lowerCols.clear();
-            upperCols.clear();
+            if (lowerCols != null) lowerCols.clear();
+            if (upperCols != null) upperCols.clear();
             gridPaneObserver.getCables().removeAll(ghostCables);
             ghostCables.clear();
         };
