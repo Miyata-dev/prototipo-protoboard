@@ -11,7 +11,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="parent" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.prototipo.MainController">
+<AnchorPane fx:id="parent" prefHeight="590.0" prefWidth="829.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.prototipo.MainController">
    <children>
       <Group layoutX="123.0" layoutY="10.0">
          <children>
@@ -274,5 +274,6 @@
       <Button layoutX="550.0" layoutY="542.0" mnemonicParsing="false" onAction="#CreateSwitch" text="Crear Switch" />
       <Button layoutX="127.0" layoutY="542.0" mnemonicParsing="false" onAction="#setModoResistencia" text="Activar modo resistencia" />
       <Button layoutX="662.0" layoutY="541.0" mnemonicParsing="false" onAction="#createDisplay" text="Crear Display" />
+      <Button layoutX="36.0" layoutY="542.0" mnemonicParsing="false" onAction="#CreateSwitch8" text="Switch de 8" />
    </children>
 </AnchorPane>

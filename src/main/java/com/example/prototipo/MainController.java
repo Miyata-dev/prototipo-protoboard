@@ -220,6 +220,13 @@ public class MainController {
         parent.getChildren().add(switch2);
     }
 
+    public void CreateSwitch8(){
+        CustomShape customShape = new CustomShape(720, 644, 143, 40, Color.RED, "Switch8");
+        Switch8 switch8 = new Switch8(customShape, basurero, gridPaneObserver);
+        gridPaneObserver.addSwitches8(switch8);
+        parent.getChildren().add(switch8);
+    }
+
     public void createDisplay() {
         CustomShape customShape = new CustomShape(720, 644, 88, 95, Color.BLACK, "CHIP");
         Display display = new Display(customShape, basurero, gridPaneObserver);

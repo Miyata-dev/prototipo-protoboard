@@ -16,6 +16,7 @@ public class GridPaneObserver {
     private ArrayList<Resistencia> resistencias = new ArrayList<>();
     private ArrayList<LED> leds = new ArrayList<>();
     private ArrayList<Switch> switches = new ArrayList<>();
+    private ArrayList<Switch8> switches8 = new ArrayList<>();
     private ArrayList<ChipAND> chipsAND = new ArrayList<>();
     private ArrayList<ChipOR> chipsOR = new ArrayList<>();
     private ArrayList<ChipNOT> chipsNot = new ArrayList<>();
@@ -59,6 +60,7 @@ public class GridPaneObserver {
             col.forEach(CustomCircle::removeEnergy);
         });
 
+        RefreshElements(this);
         leds.forEach(led -> LED.UpdatingState(led, false)); //apaga todos los leds del protoboard
     }
 
@@ -208,9 +210,6 @@ public class GridPaneObserver {
                 }if(secondGridName.equals("LedVolt1")){
                     Utils.unPaintCircles(gridPane,secondCircle);
                 }
-            }else if(cable.getTipodecarga() == pole.getState()){
-                Utils.unPaintCircles(gridPane, secondCircle);
-                Utils.unPaintCircles(gridPane, firstCircle);
             }else if(cable.getTipodecarga() == pole.getState() && !cable.isFullyAffectedByChip()){
                 Utils.unPaintCircles(gridPane, cable.getSecondCircle());
                 Utils.unPaintCircles(gridPane, cable.getFirstCircle());
@@ -236,6 +235,10 @@ public class GridPaneObserver {
         for (Switch aSwitch : gridPaneObserver.getSwitches()) {
             aSwitch.Function();
         }
+        for(Switch8 switch8: gridPaneObserver.getSwitches8()){
+            switch8.checkColumns();
+        }
+
         //Actualizamos todos los LEDs
         for (LED led : gridPaneObserver.getLeds()) {
             led.ONorOFF();
@@ -261,6 +264,7 @@ public class GridPaneObserver {
         for (Display display : gridPaneObserver.getDisplays()) {
             display.displayFunction();
         }
+
 
     }//Actualizamos todos los switchs
 
@@ -468,6 +472,14 @@ public class GridPaneObserver {
         switches.remove(switchs);
     }
 
+    public void addSwitches8(Switch8 switchs8){
+        switches8.add(switchs8);
+    }
+
+    public void removeSwitches8(Switch switchs8){
+        switches8.remove(switchs8);
+    }
+
     //BurnedColumn
     public void addBurnedColumn(ArrayList<CustomCircle> column) {
         burnedCircles.add(column);
@@ -503,6 +515,10 @@ public class GridPaneObserver {
 
     public void setSwitches(ArrayList<Switch> switches) {
         this.switches = switches;
+    }
+
+    public void setSwitches8(ArrayList<Switch8> switches8) {
+        this.switches8 = switches8;
     }
 
 
@@ -554,9 +570,9 @@ public class GridPaneObserver {
         return leds;
     }
 
-    public ArrayList<Switch> getSwitches(){
-        return switches;
-    }
+    public ArrayList<Switch> getSwitches(){return switches;}
+
+    public ArrayList<Switch8> getSwitches8(){return switches8;}
 
     public ArrayList<Pair<Integer, ArrayList<CustomCircle>>> getEnergizedColumns() {
         return energizedColumns;

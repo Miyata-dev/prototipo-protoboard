@@ -86,6 +86,7 @@ public class Display extends Chip {
                 rectangleb.getBoundsInParent().getMaxY() + rectanglegrosor * 1.5, rectanglegrosor, rectanglelarge);
         rectanglec.setFill(Color.GRAY);
 
+
         displayElements.put("c", rectanglec);
 
 
@@ -177,7 +178,6 @@ public class Display extends Chip {
     public void displayFunction(){
         //En el caso de que las columnas sean nulas se retorna
         if(super.getColumns() == null || this.displayisBurned == null) return;
-
 
         //Preguntamos si las columnas que son conexion a tierra tienen energia positiva
         if (this.displayColumns.get("energy2").get(0).getState() == 1 || this.displayColumns.get("energy7").get(0).getState() == 1) {
