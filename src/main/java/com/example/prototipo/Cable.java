@@ -142,6 +142,19 @@ public class Cable extends Line {
         return isFirstConnected || isSecondConnected;
     }
 
+    //si uno de los 2 ciruclos en los que el cable está conectado, entonces se concidera afectado por un chip.
+    public boolean isParciallyAffectedByChip() {
+        return getFirstCircle().getIsAffectedByChip() || getSecondCircle().getIsAffectedByChip();
+    }
+
+    public boolean isFullyAffectedByChip() {
+        return getFirstCircle().getIsAffectedByChip() && getSecondCircle().getIsAffectedByChip();
+    }
+
+    public boolean haveEnergyCable(){
+        return this.tipodecarga == 1 || this.tipodecarga == -1;
+    }
+
     //Setters
     public void setTipodecarga(int tipodecarga) {
         //si el tipo de energia es neutra (0), no se asigna al cable.
@@ -227,14 +240,6 @@ public class Cable extends Line {
 
     public boolean getIsBurned(){
         return this.isBurned;
-    }
-    //si uno de los 2 ciruclos en los que el cable está conectado, entonces se concidera afectado por un chip.
-    public boolean isParciallyAffectedByChip() {
-        return getFirstCircle().getIsAffectedByChip() || getSecondCircle().getIsAffectedByChip();
-    }
-
-    public boolean isFullyAffectedByChip() {
-        return getFirstCircle().getIsAffectedByChip() && getSecondCircle().getIsAffectedByChip();
     }
 
     @Override
