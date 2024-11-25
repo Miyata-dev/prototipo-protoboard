@@ -315,14 +315,19 @@ public class Chip extends Group {
         Cable cableToRemove = ghostCableMap.get(id);
         removeGhostCable(cableToRemove);
 
+
         if(cableToRemove != null){
-            Utils.unPaintCircles(gridPaneObserver, cableToRemove.getFirstCircle());
-            Utils.unPaintCircles(gridPaneObserver, cableToRemove.getSecondCircle());
+            ArrayList<Cable> cablesconnect = Utils.getConnectedCables(gridPaneObserver.getCables(),cableToRemove,gridPaneObserver,false);
+            for (Cable cable : cablesconnect) {
+                Utils.unPaintCircles(gridPaneObserver, cable.getSecondCircle());
+                Utils.unPaintCircles(gridPaneObserver, cable.getFirstCircle());
+            }
         }
+
 
         gridPaneObserver.removeCable(cableToRemove);
         ghostCableMap.remove(id);
-        System.out.println("removedCable: " + cableToRemove);
+//        System.out.println("removedCable: " + cableToRemove);
     }
 
     public void addText() {

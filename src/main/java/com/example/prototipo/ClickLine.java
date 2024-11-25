@@ -82,11 +82,11 @@ public class ClickLine {
                 );
             }
 
-            System.out.println("-----------------");
-            gridPaneObserver.getCables().forEach(cable -> {
-                System.out.println(cable);
-            });
-            System.out.println("------------------------------");
+//            System.out.println("-----------------");
+//            gridPaneObserver.getCables().forEach(cable -> {
+//                System.out.println(cable);
+//            });
+//            System.out.println("------------------------------");
 
         });
 
@@ -156,10 +156,10 @@ public class ClickLine {
                     }
                 }
 
-                gridPaneObserver.getCables().forEach(c -> {
-                    System.out.println(c);
-                });
-                System.out.println("--------");
+//                gridPaneObserver.getCables().forEach(c -> {
+//                    System.out.println(c);
+//                });
+//                System.out.println("--------");
             }
 
         });

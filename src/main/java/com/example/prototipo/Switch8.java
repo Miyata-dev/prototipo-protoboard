@@ -126,7 +126,9 @@ public class Switch8 extends Chip{
         List<ArrayList<CustomCircle>> lowerCols = super.getLowerCols();
         List<ArrayList<CustomCircle>> upperCols = super.getUpperCols();
 
-        if(lowerCols == null || upperCols == null) return;
+
+        if (lowerCols == null  || upperCols == null) return;
+        if (lowerCols.isEmpty() || upperCols.isEmpty()) return;
 
         Function<ArrayList<CustomCircle>, CustomCircle> getFirstCircle = (a) -> a.get(0);
         Predicate<ArrayList<CustomCircle>> hasEnergy = (a) -> getFirstCircle.apply(a).hasEnergy();
@@ -167,6 +169,7 @@ public class Switch8 extends Chip{
         if (!isActivated) {
             CustomCircle circle = getFirstCircle.apply(upperCol);
             disconnectGhostCable(circle.getID());
+
         }
 
     }
