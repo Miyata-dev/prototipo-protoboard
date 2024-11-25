@@ -12,7 +12,7 @@ public class Cable extends Line {
     private String randomID; //esta id se da valor con un setter, no en el constructor.
     private CustomCircle[] circles;
     private String tipo; //null == Normal, resistencia == resistencia
-    private boolean isBurned = false, isGhostCable = false;
+    private boolean isBurned = false, isGhostCable = false,isCableSwitch8 = false;
 
     public Cable() {
         this.tipodecarga = 0;
@@ -153,6 +153,9 @@ public class Cable extends Line {
         this.isGhostCable = ghostCable;
     }
 
+    public void setisCableSwitch8(boolean isCableSwitch8) {this.isCableSwitch8 = isCableSwitch8;}
+
+
     public void setIds(ID[] ids) {
         this.ids = ids;
     }
@@ -217,6 +220,8 @@ public class Cable extends Line {
     }
 
     public boolean getIsGhostCable() { return isGhostCable; }
+
+    public boolean getisCableSwitch8(){ return isCableSwitch8; }
 
     //calcula el largo de la linea
     public double getLineWidth() {

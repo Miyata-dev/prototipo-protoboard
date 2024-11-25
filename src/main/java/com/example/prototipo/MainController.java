@@ -49,13 +49,13 @@ public class MainController {
         this.stage = stage;
 
         stage.xProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println("Posición X cambiada: " + newValue);
+//            System.out.println("Posición X cambiada: " + newValue);
             getCoordsFromScreen.run();
         });
 
         // Listener para detectar cambios en la posición Y
         stage.yProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println("Posición Y cambiada: " + newValue);
+//            System.out.println("Posición Y cambiada: " + newValue);
             getCoordsFromScreen.run();
         });
 

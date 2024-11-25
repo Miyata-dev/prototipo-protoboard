@@ -96,6 +96,7 @@ public class Switch8 extends Chip{
         Cable cable = new Cable(getFirstCircle.apply(lowerCols.get(index)), getFirstCircle.apply(upperCols.get(index)));
         cable.setRandomID();
         cable.setIsGhostCable(true);
+        cable.setisCableSwitch8(true);
 
         //se pasas como llave la ID del primer circulo para dsp poder conseguirlo a la hora de eliminarlo.
         CustomCircle circleToConnect = isFromUpper
@@ -125,11 +126,23 @@ public class Switch8 extends Chip{
         List<ArrayList<CustomCircle>> lowerCols = super.getLowerCols();
         List<ArrayList<CustomCircle>> upperCols = super.getUpperCols();
 
+
+        if (lowerCols == null  || upperCols == null) return;
+        if (lowerCols.isEmpty() || upperCols.isEmpty()) return;
+
         Function<ArrayList<CustomCircle>, CustomCircle> getFirstCircle = (a) -> a.get(0);
         Predicate<ArrayList<CustomCircle>> hasEnergy = (a) -> getFirstCircle.apply(a).hasEnergy();
 
         ArrayList<CustomCircle> lowerCol = lowerCols.get(index);
         ArrayList<CustomCircle> upperCol = upperCols.get(index);
+
+        upperCol.forEach(cir -> {
+            cir.setIsAffectedByChip(false);
+        });
+        lowerCol.forEach(cir -> {
+            cir.setIsAffectedByChip(false);
+        });
+
 
         if (hasEnergy.test(lowerCol) && !hasEnergy.test(upperCol) && isActivated) {
             System.out.println("index: " + index + "painting upperCol");
@@ -137,7 +150,6 @@ public class Switch8 extends Chip{
             connectWithGhostCable(index, state,false);
 
             upperCol.forEach(cir -> {
-                cir.setIsAffectedByChip(true);
                 cir.setState(state);
             });
 
@@ -148,19 +160,16 @@ public class Switch8 extends Chip{
             System.out.println("index: " + index + "painting lowercol");
             int state = getFirstCircle.apply(upperCol).getState();
             connectWithGhostCable(index, state,true);
-
             lowerCol.forEach(cir -> {
-                cir.setIsAffectedByChip(true);
                 cir.setState(state);
             });
             gridPaneObserver.addColumn(lowerCol, state);
         }
 
         if (!isActivated) {
-            //System.out.println("unpainting from checkColumn...");
             CustomCircle circle = getFirstCircle.apply(upperCol);
-            //System.out.println("key: " + circle.getID());
             disconnectGhostCable(circle.getID());
+
         }
 
     }

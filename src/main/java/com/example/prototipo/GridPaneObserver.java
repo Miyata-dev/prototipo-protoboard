@@ -101,9 +101,10 @@ public class GridPaneObserver {
             col.forEach(cir -> cir.setState(energy));
         });
         //Actualizamos todos los elementos del GridPaneObserver despues de pintar todos los circulos.
+
         RefreshElements(gridPane);
         refreshCables(gridPane);
-        refreshEnergizedColumns(gridPane); //con esto aquí no deja que las columnas de los chips se pinten.
+//        refreshEnergizedColumns(gridPane); //con esto aquí no deja que las columnas de los chips se pinten.
 //        checkEnergyzedColumns(gridPane);
     }
 
@@ -161,6 +162,9 @@ public class GridPaneObserver {
         for (CustomCircle circle : burnedCircles) {
             if(circle.hasCable()){
                 gridPane.getBurnedCables().add(circle.getCable());
+                Utils.unPaintCircles(gridPane,circle.getCable().getFirstCircle());
+                Utils.unPaintCircles(gridPane,circle.getCable().getSecondCircle());
+
             }
         }
     }
@@ -169,7 +173,7 @@ public class GridPaneObserver {
         ArrayList<Cable> cablesInGhostColumn = new ArrayList<>();
         List<Cable> ghostCables = gridPane.getCables()
                 .stream()
-                .filter(cable -> cable.getIsGhostCable()).toList();
+                .filter(cable -> cable.getIsGhostCable() && !cable.getisCableSwitch8()).toList();
 
         for (Cable c : ghostCables) {
             ArrayList<CustomCircle> circleFromFirstCircle = Utils.getColumnOfCustomCircles(gridPane, c.getFirstCircle().getID());
@@ -191,6 +195,13 @@ public class GridPaneObserver {
 
     public static void freeEnergy(GridPaneObserver gridPane,CustomCircle pole) {
         ArrayList<Cable> ConnectWithBatery = Utils.getConnectedCables(gridPane.getCables(),pole.getCable(),gridPane, false);
+
+        System.out.println("Cables conectados: ");
+        for(Cable c : ConnectWithBatery){
+            System.out.println(c);
+        }
+
+
         ArrayList<Cable> notConnectedWithBatery = new ArrayList<>(gridPane.getCables());
 
         if(gridPane.isThereAnyChip()){
@@ -334,7 +345,6 @@ public class GridPaneObserver {
     public void toggleObserver() {
         this.isEnergyActivated = !isEnergyActivated;
     }
-
 
     //Este metodo lo que hace es verificar si las Columnas realmente deberian o no tener energia
     public static void checkEnergyzedColumns(GridPaneObserver gridPaneObserver){
