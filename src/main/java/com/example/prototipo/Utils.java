@@ -459,7 +459,7 @@ public class Utils {
                     }
                 });
             };
-            System.out.println("size of circle: " + matrizCirculosUnoController.getCircles().get(0).getRadius());
+//            System.out.println("size of circle: " + matrizCirculosUnoController.getCircles().get(0).getRadius());
             // Código para actualizar la UIA
             addCoords.accept(matrizCirculosUnoController.getGridPane());
             addCoords.accept(matrizCirculosDosController.getGridPane());
