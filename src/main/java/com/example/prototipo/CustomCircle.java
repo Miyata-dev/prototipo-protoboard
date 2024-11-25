@@ -53,6 +53,16 @@ public class CustomCircle extends Circle {
         this.isBurned = true;
     }
 
+    public void setStateSimple(int state){
+        this.state = state;
+
+        if (state == 1) {
+            this.setFill(Color.ORANGE);
+        } else if (state == -1) {
+            this.setFill(Color.BLUE);
+        }
+    }
+
     public void setState(int state) {
         //si el círculo está quemado sin importar la carga que tenga se coloca como negro pq está qyemado.
         if (isBurned) {

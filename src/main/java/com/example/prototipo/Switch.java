@@ -593,6 +593,7 @@ public class Switch extends Group {
             this.origin = null;
             this.coOrigin = null;
             this.coOriginCircle = null;
+            this.energizedColumns.clear();
         }
     }
 
