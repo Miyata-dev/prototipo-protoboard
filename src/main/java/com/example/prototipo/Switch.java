@@ -5,8 +5,6 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-
-import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,8 +22,6 @@ public class Switch extends Group {
     private ArrayList<CustomCircle> Legs = new ArrayList<>(); // son las patas que tiene el Switch2
     private CustomCircle[] UpperLegs;
     private CustomCircle[] LowerLegs;
-    private Cable UpperCable;
-    private Cable LowerCable;
 
     private Boolean ChargePass;
     private String UniqueId;
@@ -124,21 +120,15 @@ public class Switch extends Group {
         this.Legs.add(this.Leg3);
         this.Legs.add(this.Leg4);
 
-        //Ahora lo Agregamos a una coleccion de patas Superiores
+        //Ahora lo Agregamos a u
         this.UpperLegs = new CustomCircle[]{
                 Legs.get(0),
                 Legs.get(1)
         };
-        this.UpperCable = new Cable(Legs.get(0), Legs.get(1));
-
-
-        //Y lo mismo con las inferiores
         this.LowerLegs = new CustomCircle[]{
                 Legs.get(2),
                 Legs.get(3)
         };
-        this.LowerCable = new Cable(Legs.get(2), Legs.get(3));
-
 
         //Agregamos la Imagen y los CustomCircle al grupo del Switch
         this.getChildren().add(this.Shape);
@@ -171,6 +161,7 @@ public class Switch extends Group {
                     //Eliminamos el cable de la coleccion del gridPaneObserver
                     gridPaneObserver.removeCable(leg.getCable());
                     gridPaneObserver.removeColumn(circles);
+                    GridPaneObserver.refreshProtoboard(gridPaneObserver);
                 }
                 //se le va la energia alas columnas energizadas al eliminar el switch.
                 energizedColumns.forEach(pair -> {
@@ -179,42 +170,41 @@ public class Switch extends Group {
                 });
                 energizedColumns.clear();
                 gridPaneObserver.removeSwitches(this);
-
-                new ArrayList<>(gridPaneObserver.getCables()).forEach(cable->GridPaneObserver.refreshProtoboard(gridPaneObserver));
-
             } else {
                 if (isUndragableAlready && !isBurned) {
+                    this.hasmoved = true;
                     //Cuando el basurero no este activo y ya no se puede mover y se de un click se actualiza el estado
                     setChargePass(!this.ChargePass);
                     if (gridPaneObserver.getIsEnergyActivated()) {
-                        //Function();
+                        Function();
 
                         //Ya que al momento de refrescar no se puede agregar cables a la colección, debemos mover el agregado de de cables fuera de la función del Switch
 
                         //Para eso preguntamos el estado de la carga del Switch y si el origen es distinto de nulo, si es asi, podremos
-//                        if (this.ChargePass && this.origin != null) {
-//                            //Preguntamos por el origen, y añadimos la pata de la coleccion
-//                            if (origin.getFirstValue() == 1) {//Arriba
-//                                for (CustomCircle circle : LowerLegs) {
-//                                    gridPaneObserver.addCable(circle.getCable());
-//                                }
-//                            } else if (origin.getFirstValue() == -1) {// abajo
-//                                for (CustomCircle circle : UpperLegs) {
-//                                    gridPaneObserver.addCable(circle.getCable());
-//                                }
-//                            }
-//                        } else if (!this.ChargePass && this.origin != null) {
-//                            Legs.forEach(leg -> {
-//                                if (!leg.equals(origin.getSecondValue()) && !leg.equals(this.coOriginCircle)) {
-//                                    leg.removeEnergy();
-//                                    gridPaneObserver.removeCable(leg.getCable());
-//                                }
-//                            });
-//                        }
+                        if (this.ChargePass && this.origin != null) {
+                            //Preguntamos por el origen, y añadimos la pata de la coleccion
+                            if (origin.getFirstValue() == 1) {//Arriba
+                                for (CustomCircle circle : LowerLegs) {
+                                    gridPaneObserver.addCable(circle.getCable());
+                                }
+                            } else if (origin.getFirstValue() == -1) {// abajo
+                                for (CustomCircle circle : UpperLegs) {
+                                    gridPaneObserver.addCable(circle.getCable());
+                                }
+                            }
+                        } else if (!this.ChargePass && this.origin != null) {
+                            Legs.forEach(leg -> {
+                                if (!leg.equals(origin.getSecondValue()) && !leg.equals(this.coOriginCircle)) {
+                                    leg.removeEnergy();
+                                    gridPaneObserver.removeCable(leg.getCable());
+                                }
+                            });
+                        }
 
                         for (Cable cable : new ArrayList<>(gridPaneObserver.getCables())) {
                             GridPaneObserver.refreshProtoboard(gridPaneObserver);
                         }
+
                     }
                 }
             }
@@ -275,171 +265,26 @@ public class Switch extends Group {
                     System.out.println("-------------------------------------------");
                     Utils.makeUndraggableNode(this);
                     this.isUndragableAlready = true;
-                    this.hasmoved = true;
-                    gridPaneObserver.addCable(UpperCable);
-                    gridPaneObserver.addCable(LowerCable);
-                    setEnergyfromClosestCircles(Legs);
-                    this.cables.add(this.LowerCable);
-                    this.cables.add(this.UpperCable);
+                    updateLegs();
                 }
 
             }
         });
     }
 
-    //Este metodo lo que hara
-    public HashSet<Cable> CablesConnected(HashSet<Cable> cableHashSet, Cable cabletoConnect){
-        if(this.isBurned) return cableHashSet;
-        askEnergy();
-        energieTransfer();
-
-        if(this.ChargePass){
-            if(this.LowerCable.haveEnergyCable() && this.UpperCable.haveEnergyCable()) {
-                if (this.LowerCable.getTipodecarga() != this.UpperCable.getTipodecarga()) {
-                    this.isBurned = true;
-                } else {
-                    if (isFromUpper(cabletoConnect)) {
-                        cableHashSet.add(LowerCable);
-                        cableHashSet.add(LowerLegs[0].getCable());
-                        cableHashSet.add(LowerLegs[1].getCable());
-                        cableHashSet.add(UpperLegs[0].getCable());
-                        cableHashSet.add(UpperLegs[1].getCable());
-                    } else {
-                        cableHashSet.add(UpperCable);
-                        cableHashSet.add(UpperLegs[0].getCable());
-                        cableHashSet.add(UpperLegs[1].getCable());
-
-                        cableHashSet.add(LowerLegs[0].getCable());
-                        cableHashSet.add(LowerLegs[1].getCable());
-                    }
-                }
-            } else{
-                transferToNextCable();
-                if (isFromUpper(cabletoConnect)) {
-                    cableHashSet.add(LowerCable);
-                    cableHashSet.add(LowerLegs[0].getCable());
-                    cableHashSet.add(LowerLegs[1].getCable());
-                    cableHashSet.add(UpperLegs[0].getCable());
-                    cableHashSet.add(UpperLegs[1].getCable());
-                } else {
-                    cableHashSet.add(UpperCable);
-                    cableHashSet.add(UpperLegs[0].getCable());
-                    cableHashSet.add(UpperLegs[1].getCable());
-
-                    cableHashSet.add(LowerLegs[0].getCable());
-                    cableHashSet.add(LowerLegs[1].getCable());
-                }
-            }
-        } else {
-            if(isFromUpper(cabletoConnect)){
-                cableHashSet.add(UpperCable);
-                cableHashSet.add(UpperLegs[0].getCable());
-                cableHashSet.add(UpperLegs[1].getCable());
-                cableHashSet.remove(LowerCable);
-                cableHashSet.remove(LowerLegs[0].getCable());
-                cableHashSet.remove(LowerLegs[1].getCable());
-                LowerLegs[0].removeEnergy();
-                LowerLegs[1].removeEnergy();
-                LowerCable.removeTipodecarga();
-            } else{
-                cableHashSet.add(LowerCable);
-                cableHashSet.add(LowerLegs[0].getCable());
-                cableHashSet.add(LowerLegs[1].getCable());
-
-                cableHashSet.remove(UpperCable);
-                cableHashSet.remove(UpperLegs[0].getCable());
-                cableHashSet.remove(UpperLegs[1].getCable());
-                UpperLegs[0].removeEnergy();
-                UpperLegs[1].removeEnergy();
-                UpperCable.removeTipodecarga();
-            }
-        }
-
-        return cableHashSet;
-    }
-
-    public Boolean isFromUpper(Cable cable){
-        return cable.equals(UpperCable) || cable.equals(UpperLegs[0].getCable()) || cable.equals(UpperLegs[1].getCable());
-    }
-
-
-    public void energieTransfer(){
-        setEnergyfromClosestCircles(this.Legs);
-        if(UpperLegs[0].hasEnergy() || UpperLegs[1].hasEnergy()){
-            UpperCable.setTipodecarga(UpperLegs[0].getState());
-            UpperCable.setTipodecarga(UpperLegs[1].getState());
-        }
-
-        if(LowerLegs[0].hasEnergy() || LowerLegs[1].hasEnergy()){
-            LowerCable.setTipodecarga(LowerLegs[0].getState());
-            LowerCable.setTipodecarga(LowerLegs[1].getState());
-        }
-    }
-
-    public void transferToNextCable(){
-        if(UpperCable.haveEnergyCable() && !LowerCable.haveEnergyCable()){
-            LowerCable.setTipodecarga(UpperCable.getTipodecarga());
-            LowerCable.getFirstCircle().setState(UpperCable.getTipodecarga());
-            LowerCable.getSecondCircle().setState(UpperCable.getTipodecarga());
-        } else if (!UpperCable.haveEnergyCable() && LowerCable.haveEnergyCable()){
-            UpperCable.setTipodecarga(LowerCable.getTipodecarga());
-            UpperCable.getFirstCircle().setState(LowerCable.getTipodecarga());
-            UpperCable.getSecondCircle().setState(LowerCable.getTipodecarga());
-        }
-    }
-
-    public void askEnergy(){
-        if(UpperLegs[0].hasEnergy() && !UpperLegs[1].hasEnergy()){
-            UpperLegs[1].setState(UpperLegs[0].getState());
-
-            ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, UpperLegs[1].getCable().getSecondCircle().getID());
-            circles.forEach(cir -> cir.setState(UpperLegs[0].getState()));
-            addEnergizedColumn(circles);
-        } else if(!UpperLegs[0].hasEnergy() && UpperLegs[1].hasEnergy()){
-            UpperLegs[0].setState(UpperLegs[1].getState());
-
-            ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, UpperLegs[0].getCable().getSecondCircle().getID());
-            circles.forEach(cir -> cir.setState(UpperLegs[1].getState()));
-            addEnergizedColumn(circles);
-        }
-
-        if(LowerLegs[0].hasEnergy() && !LowerLegs[1].hasEnergy()){
-            LowerLegs[1].setState(LowerLegs[0].getState());
-
-            ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, LowerLegs[1].getCable().getSecondCircle().getID());
-            circles.forEach(cir-> cir.setState(LowerLegs[0].getState()));
-            addEnergizedColumn(circles);
-
-        } else if (!LowerLegs[0].hasEnergy() && LowerLegs[1].hasEnergy()) {
-            LowerLegs[0].setState(LowerLegs[1].getState());
-
-            ArrayList<CustomCircle> circles = GridPaneObserver.getCircles(gridPaneObserver, LowerLegs[0].getCable().getSecondCircle().getID());
-            circles.forEach(cir-> cir.setState(LowerLegs[1].getState()));
-            addEnergizedColumn(circles);
-
-        }
-    }
-
-
 
     //Este metodo lo que hara es la funcionalidad del Switch
     public void Function() {
 
         if(!gridPaneObserver.getIsEnergyActivated()) return;
-
         System.out.println("ChargePass is: " + ChargePass);
-        //Seteamos la energia desde los circulos cercanos a las patas del Switch
         setEnergyfromClosestCircles(Legs);
-        //Despues Preguntamos si el Origen no tiene Carga
         originHaveNoEnergy();
-
-        //Si el Paso de Carga del Switch es falso
         if (!ChargePass) {
-            //Despintamos las patas
             unPaintLegs();
             updateLegs();
             originHaveNoEnergy();
-            //checkisBurned(); -> esto se comento porque el paso de carga al ser falso no deberia quemarse el Switch
+            checkisBurned();
             return;
         }
         //Actualizamos la energia desde los circulos
@@ -558,8 +403,8 @@ public class Switch extends Group {
         //se asegura de que tenga un origen.
         if (origin == null) return;
 
-        //Se les setean el estado del estado que tengan los circulos cercanos a cada pata
-        //setEnergyfromClosestCircles(Legs);
+        //Se les setean el estado de la energia a la que estan conectada
+        setEnergyfromClosestCircles(Legs);
 
         //si el origen del Switch es 1, se ocupara UpperLegs, lo que lleva a pintar la parte inferior
         if (origin.getFirstValue() == 1) {//Arriba
@@ -582,24 +427,11 @@ public class Switch extends Group {
     }
 
 
-
-
-    //TODO MODIFICAR METODO PARA CUANDO EL SWITCH TENGA ENERGIA DE DISTINTA CARGAS NO DESPINTE ARBITRARIAMENTE
-    public void disPainLegs(){
-        if (origin == null) return;
-
-    }
-
-
     //Este metodo lo que hace es despintar las patas del Switch que no estan conectada a un cable energizado
     public void unPaintLegs(){
-        //Preguntamos si el origen es nulo, si lo es se retorna
         if(this.origin == null) return;
 
-        //Creamos una Coleccion de Columnas Copiadas, para trabajarlas mas tarde
         ArrayList<ArrayList<CustomCircle>> colsCopies = new ArrayList<>();
-
-        //Despues vamos por cada Columna energizada
         energizedColumns.forEach(pair -> {
             if(!pair.getSecondValue().equals(this.coOrigin) && !pair.getSecondValue().equals(GridPaneObserver.getCircles(gridPaneObserver, origin.getSecondValue().getCable().getSecondCircle().getID()))){
                 ArrayList<CustomCircle> col = pair.getSecondValue();
@@ -723,19 +555,19 @@ public class Switch extends Group {
 
     //Este metodo lo que hace es agregar la columna a las diferentes colecciones del gridPaneObserver
     public void addEnergizedColumn(ArrayList<CustomCircle> col) {
-        Pair pair = new Pair<>(col.get(0).getState(), col);
+        Pair pair = new Pair<>(origin.getSecondValue().getState(), col);
 
         //En el caso de que la columna dada ya estaba en la coleccion de columnas energizadas se sale del metodo y no se agrega
         if(energizedColumns.contains(pair)) return;
         energizedColumns.add(pair);
-        gridPaneObserver.addColumn(col, col.get(0).getState());
+        gridPaneObserver.addColumn(col, origin.getSecondValue().getState());
     }
 
 
     //Este metodo lo que hace es remover las columnas energizadas que estan dentro de una coleccion
     public void removeEnergizedColumn(ArrayList<ArrayList<CustomCircle>> cols) {
         cols.forEach(col->{
-            Pair pair = new Pair<>(col.get(0).getState(), col);
+            Pair pair = new Pair<>(origin.getSecondValue().getState(), col);
             energizedColumns.remove(pair);
             gridPaneObserver.removeColumn(col);
         });
@@ -757,7 +589,7 @@ public class Switch extends Group {
                 removeEnergyzedConnected(leg.getCable());
                 leg.removeEnergy();
             }
-            //Reiniciamos el estado de todos los circulos relacionados con el origen
+            //Reiniciamos el estado de todos los
             this.origin = null;
             this.coOrigin = null;
             this.coOriginCircle = null;

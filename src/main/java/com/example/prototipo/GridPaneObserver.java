@@ -109,9 +109,7 @@ public class GridPaneObserver {
 
     public static void simplifiedRefresh(GridPaneObserver gridPane, CustomCircle pole) {
         ArrayList<Cable> poleCables = Utils.getConnectedCables(new ArrayList<>(gridPane.getCables()),pole.getCable(),gridPane, false);
-        System.out.println("------------------------------------------------------------ HERE BITCH");
         for(Cable cable : poleCables){
-            System.out.println(cable);
             //se obtienen los circulos que están conectados al cable.
             CustomCircle firstCol = cable.getFirstCircle();
             CustomCircle secondCol = cable.getSecondCircle();
@@ -157,7 +155,6 @@ public class GridPaneObserver {
                 }
             }
         }
-        System.out.println("--------------------------------------------------------------- END HERE BITCH");
     }
 
     public static void burntEnergyCleaner(GridPaneObserver gridPane,ArrayList<CustomCircle> burnedCircles) {  // Este metodo busca los cables que estan en la columna quemada, para luego eliminarlos de la coleccion
@@ -236,7 +233,7 @@ public class GridPaneObserver {
     public static void RefreshElements(GridPaneObserver gridPaneObserver){
         //Actualizamos todos los switchs
         for (Switch aSwitch : gridPaneObserver.getSwitches()) {
-            //aSwitch.Function();
+            aSwitch.Function();
         }
         for(Switch8 switch8: gridPaneObserver.getSwitches8()){
             switch8.checkColumns();
