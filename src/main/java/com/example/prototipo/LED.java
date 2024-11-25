@@ -138,10 +138,11 @@ public class LED extends Group {
     //Metodo para mostrar si el LED esta encendido o Apagado
 
     public void ONorOFF(){
-
         if(this.shape.getLeg1().hasCable() && this.shape.getLeg1().getCable().getTipo() != null){
             isResistencia(this.shape.getLeg1());
-        }if(this.shape.getLeg2().hasCable() && this.shape.getLeg2().getCable().getTipo() != null){
+        }
+
+        if(this.shape.getLeg2().hasCable() && this.shape.getLeg2().getCable().getTipo() != null){
             isResistencia(this.shape.getLeg2());
         }
         //Si las dos patas no tienen cables entonces se sale del metodo
@@ -178,19 +179,19 @@ public class LED extends Group {
         if(ID.isSameID(this.shape.getLeg1().getID(), this.shape.getLeg1().getCable().getFirstCircle().getID())){  //LEG1 ID == PRIMER CIRCULO DEL CABLE (ID)
             //Al ver que los dos circulos son iguales entonces sabemos que el que es distinto es el segundo
             if(this.shape.getLeg1().getCable().getTipo() == null) {
-                this.shape.getLeg1().setState(this.shape.getLeg1().getCable().getSecondCircle().getState());
+                this.shape.getLeg1().setStateSimple(this.shape.getLeg1().getCable().getSecondCircle().getState());
             }
         } else{
             //Sabemos que las id no son iguales entonces actualizamos el estado
-            this.shape.getLeg1().setState(this.shape.getLeg1().getCable().getFirstCircle().getState());  // LEG1 ID == SEGUNDO CIRCULO DEL CABLE (ID)
+            this.shape.getLeg1().setStateSimple(this.shape.getLeg1().getCable().getFirstCircle().getState());  // LEG1 ID == SEGUNDO CIRCULO DEL CABLE (ID)
         }
         //Ahora pregutamos por la segunda pata del LED
         if(ID.isSameID(shape.getLeg2().getID(), this.shape.getLeg2().getCable().getFirstCircle().getID())){
             if(this.shape.getLeg2().getCable().getTipo() == null){
-                this.shape.getLeg2().setState(this.shape.getLeg2().getCable().getSecondCircle().getState());
+                this.shape.getLeg2().setStateSimple(this.shape.getLeg2().getCable().getSecondCircle().getState());
             }
         } else {
-            this.shape.getLeg2().setState(this.shape.getLeg2().getCable().getFirstCircle().getState()); // LEG2 ID == SEGUNDO CIRCULO DEL CABLE (ID)
+            this.shape.getLeg2().setStateSimple(this.shape.getLeg2().getCable().getFirstCircle().getState()); // LEG2 ID == SEGUNDO CIRCULO DEL CABLE (ID)
         }
     }
 

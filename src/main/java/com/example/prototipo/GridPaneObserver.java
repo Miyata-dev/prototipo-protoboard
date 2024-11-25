@@ -247,10 +247,7 @@ public class GridPaneObserver {
             switch8.checkColumns();
         }
 
-        //Actualizamos todos los LEDs
-        for (LED led : gridPaneObserver.getLeds()) {
-            led.ONorOFF();
-        }
+
         ArrayList<ChipAND> chips = gridPaneObserver.getChipsAND();
         ArrayList<ChipOR> chipsOr = gridPaneObserver.getChipsOR();
         ArrayList<ChipNOT> chipsNot = gridPaneObserver.getChipsNot();
@@ -267,6 +264,12 @@ public class GridPaneObserver {
 
         for (ChipNOT c : chipsNot) {
             c.checkColumns();
+        }
+
+
+        //Actualizamos todos los LEDs
+        for (LED led : gridPaneObserver.getLeds()) {
+            led.ONorOFF();
         }
 
         for (Display display : gridPaneObserver.getDisplays()) {
