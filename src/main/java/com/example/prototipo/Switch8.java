@@ -16,7 +16,7 @@ public class Switch8 extends Chip{
     private GridPaneObserver gridPaneObserver;
     private Basurero basurero;
     private ArrayList<Pair<Boolean,Rectangle>> activatedButtons = new ArrayList<>(); // True = pasando energia, false = no pasando energia
-    private ArrayList<Pair<Boolean,Rectangle>> burnedButtons = new ArrayList<>(); // True = quemado, false = no quemado
+    private ArrayList<Rectangle> burnedButtons = new ArrayList<>(); // True = quemado, false = no quemado
 
     public Switch8(CustomShape customShape, Basurero basurero, GridPaneObserver gridPaneObserver) {
         super(customShape, basurero, gridPaneObserver, 8);
@@ -49,6 +49,10 @@ public class Switch8 extends Chip{
                 System.out.println("CLICKEANDO");
                 pair.setFirstValue(!pair.getFirstValue());
                 System.out.println(pair.getFirstValue());
+
+                if(burnedButtons.contains(pair.getSecondValue())) {
+                    return;
+                }
 
                 if(pair.getFirstValue()){
                     System.out.println("painting...");
@@ -87,7 +91,7 @@ public class Switch8 extends Chip{
 
     //conecta artificialmente a los cables reales del protoboard con un cable fantasma.
     //false = viene de abajo, true = viene de arriba
-    public void connectWithGhostCable(int index, int state, boolean isFromUpper) {
+    public void connectWithGhostCable(int index, int state, boolean isFromUpper, Rectangle rec) {
         List<ArrayList<CustomCircle>> lowerCols = super.getLowerCols();
         List<ArrayList<CustomCircle>> upperCols = super.getUpperCols();
 
@@ -107,6 +111,7 @@ public class Switch8 extends Chip{
             ? upperCols.get(index)
             : lowerCols.get(index);
 
+
         addGhostCableToMap(getFirstCircle.apply(upperCols.get(index)).getID(), cable);
         System.out.println("key of ghostCable: " + getFirstCircle.apply(upperCols.get(index)).getID());
         //si no se tiene un estado en especifico, se toma el primer circulo de la columna.
@@ -116,13 +121,22 @@ public class Switch8 extends Chip{
             cable.setTipodecarga(state);
         }
 
+        System.out.println("firstcircle: " + cable.getFirstCircle().hasEnergy() + " second circle: " + cable.getSecondCircle().hasEnergy());
+
+        if (cable.getFirstCircle().hasEnergy() && cable.getSecondCircle().hasEnergy() && (cable.getFirstCircle().getState() != cable.getSecondCircle().getState())) {
+            rec.setFill(Color.BLACK);
+            rec.setY(rec.getY()+2);
+            burnedButtons.add(rec);
+            return;
+        }
+
         gridPaneObserver.addCable(cable);
         addGhostCable(cable);
         gridPaneObserver.addColumn(circlesToPower, state);
     }
 
     //a partir de un indice se revisa la columna de arriba y abajo de dicho indice.
-    public void checkColumn(int index, boolean isActivated) {
+    public void checkColumn(int index, boolean isActivated,Rectangle rec) {
         List<ArrayList<CustomCircle>> lowerCols = super.getLowerCols();
         List<ArrayList<CustomCircle>> upperCols = super.getUpperCols();
 
@@ -143,11 +157,10 @@ public class Switch8 extends Chip{
             cir.setIsAffectedByChip(false);
         });
 
-
         if (hasEnergy.test(lowerCol) && !hasEnergy.test(upperCol) && isActivated) {
             System.out.println("index: " + index + "painting upperCol");
             int state = getFirstCircle.apply(lowerCol).getState();
-            connectWithGhostCable(index, state,false);
+            connectWithGhostCable(index, state,false,rec);
 
             upperCol.forEach(cir -> {
                 cir.setState(state);
@@ -159,11 +172,16 @@ public class Switch8 extends Chip{
         if (hasEnergy.test(upperCol) && !hasEnergy.test(lowerCol) && isActivated) {
             System.out.println("index: " + index + "painting lowercol");
             int state = getFirstCircle.apply(upperCol).getState();
-            connectWithGhostCable(index, state,true);
+            connectWithGhostCable(index, state,true,rec);
             lowerCol.forEach(cir -> {
                 cir.setState(state);
             });
             gridPaneObserver.addColumn(lowerCol, state);
+        }
+
+        if(hasEnergy.test(upperCol) && hasEnergy.test(lowerCol) && isActivated){
+            int state = getFirstCircle.apply(lowerCol).getState();
+            connectWithGhostCable(index, state,false,rec);
         }
 
         if (!isActivated) {
@@ -179,10 +197,13 @@ public class Switch8 extends Chip{
         List<ArrayList<CustomCircle>> upperCols = super.getUpperCols();
 
         for (Pair<Boolean, Rectangle> pair : activatedButtons) {
+            if(burnedButtons.contains(pair.getSecondValue())){
+                continue;
+            }
             int index = activatedButtons.indexOf(pair);
             boolean isActivated = pair.getFirstValue();
 
-            checkColumn(index, isActivated);
+            checkColumn(index, isActivated,pair.getSecondValue());
         }
     }
 }

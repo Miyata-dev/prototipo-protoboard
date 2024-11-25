@@ -195,13 +195,10 @@ public class GridPaneObserver {
 
     public static void freeEnergy(GridPaneObserver gridPane,CustomCircle pole) {
         ArrayList<Cable> ConnectWithBatery = Utils.getConnectedCables(gridPane.getCables(),pole.getCable(),gridPane, false);
-
-        System.out.println("Cables conectados: ");
-        for(Cable c : ConnectWithBatery){
-            System.out.println(c);
-        }
-
-
+//        System.out.println("Cables conectados: ");
+//        for(Cable c : ConnectWithBatery){
+//            System.out.println(c);
+//        }
         ArrayList<Cable> notConnectedWithBatery = new ArrayList<>(gridPane.getCables());
 
         if(gridPane.isThereAnyChip()){
@@ -291,7 +288,7 @@ public class GridPaneObserver {
                     if (
                         cable.getFirstCircle().getIsAffectedByChip() &&
                         cable.getSecondCircle().getIsAffectedByChip() &&
-                        cable.getIsGhostCable()
+                        (cable.getIsGhostCable() && !cable.getisCableSwitch8())
                     ) continue;
 
                     if (cable.isParciallyAffectedByChip()) continue;
