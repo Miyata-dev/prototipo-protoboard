@@ -145,19 +145,18 @@ public class Utils {
                     //recorre toda la coleccion de cables entregada y mira si el elemento iterado está conectado
                     //con uno de los elementos del hashset
                     for (Cable cable : cables) {
+
+                        if(cable.getIds()[0].getGridName().equals("switchvolt1") || cable.getIds()[1].getGridName().equals("switchvolt1")) {
+                            gridPane.getSwitches().forEach(switc -> {
+                                switc.getCables().forEach(cable1 -> {
+                                    if(cable1.getRandomID().equals(cable.getRandomID())){
+                                        connectedCablesHashSet.addAll(switc.CablesConnected(connectedCablesHashSet, cable1));
+                                    }
+                                });
+                            });
+                        }
                         //se agregan a la colección de cables si está la opción de ignorar el caso de que pertenezcan a los volts.
                         if (Cable.areConnected(arrayListAux.get(j), cable,gridPane)) {
-                            if(!isFromSwitch && cable.getIds()[0].getGridName().equals("switchvolt1") || cable.getIds()[1].getGridName().equals("switchvolt1")) {
-                                gridPane.getSwitches().forEach(switc -> {
-                                    switc.getCables().forEach(cable1 -> {
-                                        if(cable1.getRandomID().equals(cable.getRandomID())){
-                                            if(switc.getConnectedCablesSwitch() != null){
-                                                connectedCablesHashSet.addAll(switc.getConnectedCablesSwitch());
-                                            }
-                                        }
-                                    });
-                                });
-                            }
                             connectedCablesHashSet.add(cable);
                         }
                     }
